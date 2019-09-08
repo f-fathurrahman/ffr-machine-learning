@@ -33,48 +33,41 @@ class Perceptron:
             strs += "w = {}\n".format(w)
         return strs
 
-    def train(self, inputs, targets, eta, nIterations):
+    def train(self, inputs, targets, eta, nIterations, randomize_order=False, verbose=False):
         """ Train the network """
+
         # Add the inputs that match the bias node
-        inputs = np.concatenate((inputs,-np.ones((self.nData,1))),axis=1)
+        inputs = np.concatenate((inputs, -np.ones((self.nData,1))), axis=1)
+        
         # Training
         change = range(self.nData)
-
         for n in range(nIterations):
-            
-            self.activations = self.forward(inputs);
-            self.weights -= eta*np.dot(np.transpose(inputs),self.activations-targets)
-        
+            self.activations = self.forward(inputs)
+            self.weights -= eta*np.dot(np.transpose(inputs), self.activations - targets)
+            if verbose:
+                print("nIterations: ", n)
+                print("weights = ")
+                print(self.weights)
             # Randomise order of inputs
-            #np.random.shuffle(change)
-            #inputs = inputs[change,:]
-            #targets = targets[change,:]
-            
-        #return self.weights
+            if randomize_order:
+                np.random.shuffle(change)
+                inputs = inputs[change,:]
+                targets = targets[change,:]
 
     def forward(self, inputs):
         """ Run the network forward """
         # Compute activations
         activations =  np.dot(inputs,self.weights)
-
         # Threshold the activations
         return np.where(activations > 0, 1, 0)
 
-    def confusion_matrix(self,inputs,targets):
-        """Confusion matrix"""
-
-        # Add the inputs that match the bias node
+    def confusion_matrix(self, inputs, targets):
         inputs = np.concatenate((inputs, -np.ones((self.nData,1))), axis=1)
-        print(inputs)
-        
-        outputs = np.dot(inputs,self.weights)
-        print(outputs)
-
+        outputs = np.dot(inputs, self.weights)
         nClasses = np.shape(targets)[1]
-
         if nClasses==1:
             nClasses = 2
-            outputs = np.where(outputs>0, 1, 0)
+            outputs = np.where(outputs > 0, 1, 0)
         else:
             # 1-of-N encoding
             outputs = np.argmax(outputs, 1)
@@ -84,24 +77,7 @@ class Perceptron:
         for i in range(nClasses):
             for j in range(nClasses):
                 cm[i,j] = np.sum( np.where(outputs==i,1,0)*np.where(targets==j, 1, 0))
-
+        print("Confusion matrix:")
         print(cm)
+        print("tr/sum of confusion matrix:")
         print(np.trace(cm)/np.sum(cm))
-        
-
-def test_logic():
-
-    """ Run AND and XOR logic functions"""
-    a = np.array([[0,0,0],[0,1,0],[1,0,0],[1,1,1]])
-    b = np.array([[0,0,0],[0,1,1],[1,0,1],[1,1,0]])
-
-    p = Perceptron(a[:,0:2],a[:,2:])
-    print(p)
-    p.train(a[:,0:2],a[:,2:],0.25,10)
-    p.confusion_matrix(a[:,0:2],a[:,2:])
-
-    #q = Perceptron(b[:,0:2], b[:,2:])
-    #q.train(b[:,0:2], b[:,2:], 0.25, 10)
-    #q.confusion_matrix(b[:,0:2], b[:,2:])
-
-test_logic()
