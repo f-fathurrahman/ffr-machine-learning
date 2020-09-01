@@ -307,10 +307,6 @@ Result:
 w = [36.416455902505334, -0.013330885710962845]
 \end{textcode}
 
-Tugas
-
-Implementasikan program Python pada dataset yang sama dengan tugas sebelumnya
-namun menggunakan notasi matriks-vektor sesuai Pers. \ref{eq:w_vektor}
 
 \subsection{Generalization to more complex models}
 
@@ -333,7 +329,7 @@ adding one column to the matrix $\mathbf{X}$:
 \begin{bmatrix}
 1 & x_{1} & x_{1}^{2} \\
 1 & x_{2} & x_{1}^{2} \\
-\vdots & & \vdots \vdots \\
+\vdots & \vdots & \vdots \\
 1 & x_{N} & x_{N}^{2} \\
 \end{bmatrix}
 \end{equation}
@@ -343,14 +339,14 @@ adding one column to the matrix $\mathbf{X}$:
 
 We can define a measure of complexity of out linear model by
 \begin{equation}
-\sum_{i} w_{i}^{2}\,\,\text{atau }\mathbf{w}^{\mathsf{T}}\mathbf{w}
+\sum_{i} w_{i}^{2}\,\,\text{or }\mathbf{w}^{\mathsf{T}}\mathbf{w}
 \end{equation}
 
 As opposed to minimizing loss function \eqref{eq:loss_function_02}, we can minimize
 a regularized loss function by adding penalty for overcomplexity:
-\begin{equation}
+\begin{equation*}
 \mathcal{L}' = \mathcal{L} + \lambda \mathbf{w}^{\mathsf{T}} \mathbf{w}
-\end{equation}
+\end{equation*}
 where the arameter $\lambda$ control the trade off between model accuracy and
 model complexity.
 To find the best parameter, we can proceed by using similar procedure as before.
@@ -362,15 +358,15 @@ The regularized loss function is written as
 + \lambda \mathbf{w}^{\mathsf{T}} \mathbf{w}
 \end{equation}
 First derivative of the loss function with respect to model paramater $\mathbf{w}$ is
-\begin{equation}
+\begin{equation*}
 \frac{\partial \mathcal{L}'}{\partial \mathbf{w}} =
 \frac{2}{N} \mathbf{X}^{\mathsf{T}} \mathbf{X} \mathbf{w}
 - \frac{2}{N} \mathbf{X}^{\mathsf{T}} \mathbf{t} + 2\lambda\mathbf{w}
-\end{equation}
+\end{equation*}
 Equating this to zero:
-\begin{equation}
+\begin{equation*}
 ( \mathbf{X}^{\mathsf{T}} \mathbf{X} + N \lambda \mathbf{I} ) \mathbf{w} = \mathbf{X}^{\mathsf{T}} \mathbf{t}
-\end{equation}
+\end{equation*}
 we obtain
 \begin{equation}
 \hat{\mathbf{w}} =
