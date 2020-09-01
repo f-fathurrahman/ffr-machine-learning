@@ -1,5 +1,5 @@
 %\documentclass[a4paper,11pt]{article} % print setting
-\documentclass[a4paper,12pt]{article} % screen setting
+\documentclass[a4paper,11pt]{article} % screen setting
 
 \usepackage[a4paper]{geometry}
 \geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=1.5cm}
@@ -7,15 +7,16 @@
 \setlength{\parskip}{\smallskipamount}
 \setlength{\parindent}{0pt}
 
-\usepackage{cmbright}
-\renewcommand{\familydefault}{\sfdefault}
+%\usepackage{cmbright}
+%\renewcommand{\familydefault}{\sfdefault}
 
-\usepackage{fontspec}
-\setmonofont{DejaVu Sans Mono}
+%\usepackage{fontspec}
+\usepackage[libertine]{newtxmath}
+\usepackage[no-math]{fontspec}
+\setmainfont{Linux Libertine O}
+%\setmonofont{DejaVu Sans Mono}
+\setmonofont{JuliaMono-Regular}
 
-%\usepackage{sfmath}
-%\usepackage{mathptmx}
-%\usepackage{mathpazo}
 
 \usepackage{hyperref}
 \usepackage{url}
@@ -44,9 +45,13 @@
 
 \definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
 \usepackage{mdframed}
-
-\BeforeBeginEnvironment{minted}{\begin{mdframed}[backgroundcolor=mintedbg]}
+\BeforeBeginEnvironment{minted}{
+    \begin{mdframed}[backgroundcolor=mintedbg,%
+        topline=false,bottomline=false,%
+        leftline=false,rightline=false]
+}
 \AfterEndEnvironment{minted}{\end{mdframed}}
+
 
 \usepackage{setspace}
 
@@ -63,94 +68,130 @@
 \begin{document}
 
 
-\title{Linear Modeling - Least Square Approach \\
+\title{Linear Modeling\\
 TF4xxx}
 \author{Fadjar Fathurrahman}
 \date{}
 \maketitle
 
-Diberikan pasangan data $(x,t)$ di mana $x$ adalah input dan $t$
-adalah target, model linear dengan parameter $(w_0, w_1)$ dapat
-dinyatakan sebagai:
+\section{Least Square Approach}
 
+\subsection{Loss function}
+
+Given pair of data $(x,t)$ where $x$ are inputs dan $t$
+are targets, a linear model with parameter $(w_0, w_1)$ can
+be written as:
 \begin{equation}
-\highlighteq{
 t = f(x; w_0, w_1) = w_0 + w_1 x
-}
 \label{eq:model_linear_01}
 \end{equation}
 
-Untuk memilih model dengan parameter \((w_0, w_1)\) yang paling baik,
-kita perlu mengkuantifikasi seberapa baik model tersebut. Salah satu ukuran
-yang sering digunakan untuk hal ini adalah dengan menghitung kuadrat beda antara
-target dan prediksi model. Untuk data ke-$n$ dapat dituliskan:
+We are now left with the task of choosing the best parameters $(w_0, w_1)$
+fir this model.
+We need to quantify how good the model is.
+One metric that we can use to quantify this is the squared difference (or
+error) between target and model prediction. For $n$-th data we can write
 $$
-\mathcal{L}_n = \left( t_n - f(x_n; w_0, w_1) \right)^2
+\mathcal{L}_n \equiv \left( t_n - f(x_n; w_0, w_1) \right)^2
 $$
 %
-Dengan menjumlahkan $\mathcal{L}_{n}$ untuk semua data kita peroleh:
+By summing contributions from all data:
 \begin{equation}
 \mathcal{L} = \frac{1}{N} \sum_{n=1}^{N} \mathcal{L}_n
 \label{eq:loss_function_01}
 \end{equation}
-Kuantitas ini akan kita sebut sebagai \highlight{loss function}.
-Kita ingin kuantitas ini bernilai minimum.
+We will call this quantity as \highlight{loss function}
+and we want to this quantity to be as small as possible.
 
+\subsection{Minimizing loss function}
 
-Minimisasi loss function
-
-Untuk mencari parameter $(w_{0},w_{1})$ yang memberikan loss function yang minimum
-kita harus melakukan proses optimisasi (minimisasi). Pada umumnya kita dapat menggunakan
-metode numerik seperti gradient descent.
-
-$$
+We can find the parameters $(w_{0},w_{1})$ by using minimization procedures:
+\begin{equation}
 \arg\min_{w_{0},w_{1}} \frac{1}{N} \sum_{n=1}^{N} \mathcal{L}_{n}
-$$
+\end{equation}
 
-Untuk kasus loss function pada Pers. \eqref{eq:loss_function_01}, kita dapat mencari
-minimumnya secara analitik: yaitu mencari nilai ekstrim dengan menyamakan turun pertama
-dari loss function terhadap parameter model menjadi nol.
+For our particular case of Eq. \eqref{eq:loss_function_01}, we can found this analitically,
+i.e. calculating the first derivatives of $\mathcal{L}$ with respect to $w_0$ and $w_1$, equating
+them to zero, and solve the resulting equations for $w_0$ and $w_1$.
+For more general cases, we can use various numerical optimization procedures such as
+gradient descent.
 
-Untuk keperlua ini kita akan menuliskan loss function sebagai berikut:
+We begin by writing our loss function as:
 \begin{align*}
 \mathcal{L} & = \frac{1}{N} \sum_{n=1}^{N} \left( t_n - (w_0 + w_1 x_{n}) \right)^2 \\
 & = \frac{1}{N} \sum_{n=1}^{N} \left( w_1^2 x_n^2 + 2w_{1}x_{n}(w_0 - t_n) + w_0^2 - 2w_0 t_n + t_n^2 \right)
 \end{align*}
-
-
-Hitung turunan pertama terhadap $w_0$ dan $w_1$, kemudian samakan dengan nol.
-
-$$
+%
+Now we find the first derivatives of $\mathcal{L}$ with respect to
+$w_0$, $w_1$ and equating them to zero.
+\begin{equation*}
 \frac{\partial\mathcal{L}}{\partial w_1} = 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n^2 \right) +
 \frac{2}{N} \left( \sum_{n=1}^{N} x_{n} (w_0 - t_n) \right)
-$$
+\end{equation*}
 
 $$
 \frac{\partial \mathcal{L}}{\partial w_0} = 2w_0 + 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n \right) -
 \frac{2}{N} \left( \sum_{n=1}^{N} t_n \right)
 $$
 
-Sehingga diperoleh:
+We obtain
 \begin{align}
 w_{1} & = \frac{\overline{xt} - \overline{x}\overline{t}}{\overline{x^2} - \overline{x}^2} \\
 w_{0} & = \overline{t} - w_{1} \overline{x}
 \end{align}
-di mana tanda overline menyatakan nilai rata-rata.
+where symbols with overline denotes average value.
+
+Example
+
+Olympic 100m data
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Year & Seconds \\
+\hline
+1896 & 12.00 \\
+1900 & 11.00 \\
+1904 & 11.00 \\
+...  & ...   \\
+2008 & 9.69  \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
 
 
-Tugas
+\begin{juliacode}
+# Load data
+data = readdlm("../../DATA/olympic100m.txt", ',')
+x = data[:,1]
+t = data[:,2]
+xbar = mean(x)
+tbar = mean(t)
+w_1 = (mean(x.*t) - xbar*tbar)/(mean(x.^2) - xbar^2)
+w_0 = tbar- w_1*xbar
+\end{juliacode}
 
-Implementasikan program Python untuk menghitung $w_{0}$ dan $w_{1}$ untuk beberapa
-dataset sederhana dan/atau dataset yang Anda buat sendiri.
+Result for the weights:
+\begin{textcode}
+w_0 = 36.41645590250286
+w_1 = -0.01333088571096
+\end{textcode}
 
-Untuk menghitung rata-rata Anda dapat menggunakan metode \pyinline{np.mean}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.75]{codes/IMG_linreg_simple.pdf}
+\end{center}
+\end{figure}
 
-Menggunakan notasi matriks dan vektor
 
-Kita dapat menggunakan notasi matriks dan vektor untuk model linear.
+\subsection{Using matrix and vector notation}
 
-Dengan mendefinisikan input dan parameter model sebagai vektor:
-$$
+We will rewrite our previous problem in matrix and vector notation. This will
+give us more flexibility and enable us to generalize to more complex situations.
+We start by defining inputs and model parameters as vectors.
+\begin{equation*}
 \mathbf{x}_{n} = \begin{bmatrix}
 1 \\
 x_{n}
@@ -160,26 +201,25 @@ x_{n}
 w_{0} \\
 w_{1}
 \end{bmatrix}
-$$
-kita dapat menuliskan model linear sebagai pada Pers. \eqref{eq:model_linear_01}
-sebagai:
+\end{equation*}
+
+Using this definition, we can write our previous linear model in Eq.
+\eqref{eq:model_linear_01} as:
 \begin{equation}
 f(x_n; w_0, w_1) = \mathbf{w}^{\mathsf{T}} \mathbf{x}_{n}
 \label{eq:model_linear_02}
 \end{equation}
-%
-dan loss function pada Pers. \eqref{eq:loss_function_01} menjadi
+
+The expression for loss function, Eq. \eqref{eq:loss_function_01}, becomes
 \begin{equation}
 \mathcal{L} = \frac{1}{N} \sum_{n=1}^{N} \left( t_{n} - \mathbf{w}^{\mathsf{T}}
 \mathbf{x}_{n} \right)^2
 \label{eq:loss_function_02}
 \end{equation}
-
-
-Notasi matriks dan vektor
-
-Kita dapat menyusun input vektor dalam suatu matriks:
-$$
+%
+We now arrange several input vector into a matrix:
+%
+\begin{equation*}
 \mathbf{X} = \begin{bmatrix}
 \mathbf{x}^{\mathsf{T}}_{1} \\
 \mathbf{x}^{\mathsf{T}}_{2} \\
@@ -192,28 +232,29 @@ $$
 \vdots & \vdots \\
 1 & x_{N} \\
 \end{bmatrix}
-$$
-%
-Kemudian dengan mendefinisikan vektor target sebagai:
-$$
+\end{equation*}
+
+As with inputs, we now define target vectors as
+\begin{equation}
 \mathbf{t} = \begin{bmatrix}
 t_1 \\
 t_2 \\
 \vdots \\
 t_N
 \end{bmatrix}
-$$
+\end{equation}
 %
-Loss function dapat ditulis dengan lebih kompak:
-$$
+With this definition we can write the loss function as
+\begin{equation}
 \mathcal{L} = \frac{1}{N} \left( \mathbf{t} - \mathbf{Xw} \right)^{\mathsf{T}}
 \left( \mathbf{t} - \mathbf{Xw} \right)
-$$
+\end{equation}
 
-Minimisasi loss function
 
-Untuk mencari nilai $\mathbf{w}$ yang optimal kita dapat melakukan prosedur
-seperti sebelumnya, yaitu mencari solusi dari $\dfrac{\partial \mathcal{L}}{\partial \mathbf{w}} = 0$
+
+To find the best value of $\mathbf{w}$ we can follow similar procedure that we have used
+in the previous part. We need to find the solution of
+$\dfrac{\partial \mathcal{L}}{\partial \mathbf{w}} = 0$
 
 \begin{align}
 \mathcal{L} & = \frac{1}{N} \left(
@@ -228,18 +269,16 @@ seperti sebelumnya, yaitu mencari solusi dari $\dfrac{\partial \mathcal{L}}{\par
 \mathbf{t}^{\mathsf{T}} \mathbf{t}
 \right)
 \end{align}
-
-Nilai ekstrim dapat dicari dari:
+Equating these to zeros we have
 $$
 \frac{\partial \mathcal{L}}{\partial \mathbf{w}} =
 \frac{2}{N} \left( \mathbf{X}^{\mathsf{T}} \mathbf{Xw} - \mathbf{X}^{\mathsf{T}}\mathbf{t} \right) = 0
 $$
-
-Sehingga diperoleh:
+So we have
 \begin{equation}
 \mathbf{X}^{\mathsf{T}} \mathbf{Xw} = \mathbf{X}^{\mathsf{T}} \mathbf{t}
 \end{equation}
-atau:
+or
 \begin{equation}
 \highlighteq{
 \mathbf{w} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X} \right)^{-1} \mathbf{X}^{\mathsf{T}} \mathbf{t}
@@ -247,22 +286,44 @@ atau:
 \label{eq:w_vektor}
 \end{equation}
 
+\begin{juliacode}
+data = readdlm("../../DATA/olympic100m.txt", ',')
+x = data[:,1]
+t = data[:,2]
+Ndata = size(data,1)
+# Build X matrix
+X = zeros(Ndata,2)
+for i in 1:Ndata
+    X[i,1] = 1.0
+    X[i,2] = x[i]
+end
+# Calculate w
+w = inv(X' * X) * X' * t
+println("w = ", w)
+\end{juliacode}
+
+Result:
+\begin{textcode}
+w = [36.416455902505334, -0.013330885710962845]
+\end{textcode}
 
 Tugas
 
 Implementasikan program Python pada dataset yang sama dengan tugas sebelumnya
 namun menggunakan notasi matriks-vektor sesuai Pers. \ref{eq:w_vektor}
 
-Generalisasi
+\subsection{Generalization to more complex models}
 
-Kita dapat melakukan generalisasi model linear menjadi lebih kompleks, namun
-masih linear dalam parameter model, misalnya dengan fungsi kuadratik:
+We can use more complex models than \eqref{eq:model_linear_02}. For example
+the quadratic equation:
 \begin{equation}
 f(x; w_{0}, w_{1}, w_{2}) = w_{0} +w_{1}x + w_{2}x^{2}
+\label{eq:quadratic_eq}
 \end{equation}
-
-Ukuran vektor $\mathbf{w}$ akan bertambah dan juga matriks $\mathbf{X}$ menjadi:
-$$
+Note that the model is still linear in parameter, so this is still a linear model.
+Using matrix and vector notation, we can fit the data to this equation simply by
+adding one column to the matrix $\mathbf{X}$:
+\begin{equation}
 \mathbf{X} = \begin{bmatrix}
 \mathbf{x}^{\mathsf{T}}_{1} \\
 \mathbf{x}^{\mathsf{T}}_{2} \\
@@ -275,53 +336,42 @@ $$
 \vdots & & \vdots \vdots \\
 1 & x_{N} & x_{N}^{2} \\
 \end{bmatrix}
-$$
+\end{equation}
 
 
-Tugas
+\subsection{Regularization}
 
-Sama seperti sebelumnya namun gunakan polinomial dengan orde > 1.
-
-Apa yang terjadi jika orde polinomial menjadi semakin besar?
-
-
-Regularisasi Model Linear
-
-Ukuran kompleksitas model:
+We can define a measure of complexity of out linear model by
 \begin{equation}
 \sum_{i} w_{i}^{2}\,\,\text{atau }\mathbf{w}^{\mathsf{T}}\mathbf{w}
 \end{equation}
 
-Sebagai ganti dari minimisasi fungsi loss, kita dapat meminimisasi fungsi loss yang
-sudah teregularisasi $\mathcal{L}$ dengan menambahkan suku penalti untuk overcomplexity:
+As opposed to minimizing loss function \eqref{eq:loss_function_02}, we can minimize
+a regularized loss function by adding penalty for overcomplexity:
 \begin{equation}
 \mathcal{L}' = \mathcal{L} + \lambda \mathbf{w}^{\mathsf{T}} \mathbf{w}
 \end{equation}
-Parameter $\lambda$ mengontrol trade-off antar fitting data dan model yang terlalu
-kompleks.
-
-Regularisasi
-
+where the arameter $\lambda$ control the trade off between model accuracy and
+model complexity.
+To find the best parameter, we can proceed by using similar procedure as before.
+The regularized loss function is written as
 \begin{equation}
 \mathcal{L}' = \frac{1}{N} \mathbf{w}^{\mathsf{T}} \mathbf{X}^{\mathsf{T}} \mathbf{X} \mathbf{w}
 - \frac{2}{N} \mathbf{w}^{\mathsf{T}} \mathbf{X}^{\mathsf{T}} \mathbf{t}
 + \frac{1}{N} \mathbf{t}^{\mathsf{T}} \mathbf{t}
 + \lambda \mathbf{w}^{\mathsf{T}} \mathbf{w}
 \end{equation}
-
-Turunan parsial:
+First derivative of the loss function with respect to model paramater $\mathbf{w}$ is
 \begin{equation}
 \frac{\partial \mathcal{L}'}{\partial \mathbf{w}} =
 \frac{2}{N} \mathbf{X}^{\mathsf{T}} \mathbf{X} \mathbf{w}
 - \frac{2}{N} \mathbf{X}^{\mathsf{T}} \mathbf{t} + 2\lambda\mathbf{w}
 \end{equation}
-
-Set menjadi nol untuk mendapatkan nilai ekstrim:
+Equating this to zero:
 \begin{equation}
 ( \mathbf{X}^{\mathsf{T}} \mathbf{X} + N \lambda \mathbf{I} ) \mathbf{w} = \mathbf{X}^{\mathsf{T}} \mathbf{t}
 \end{equation}
-
-Sehingga diperoleh:
+we obtain
 \begin{equation}
 \hat{\mathbf{w}} =
 ( \mathbf{X}^{\mathsf{T}} \mathbf{X} + N \lambda \mathbf{I} )^{-1}
