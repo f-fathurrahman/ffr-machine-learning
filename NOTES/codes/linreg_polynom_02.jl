@@ -1,6 +1,6 @@
 #=
 Simple linear regression: t = w_0 + w_1*x
-Using matrix and vector notation.
+Using matrix and vector notation. Using polynomial.
 =#
 
 using Printf
@@ -11,31 +11,6 @@ import PyPlot
 const plt = PyPlot
 plt.rc("text", usetex=true)
 plt.matplotlib.style.use("ggplot")
-
-# Plot per order of polynomial
-function plot_data_one(x, t, w; NptsPlot=100)
-    # Prepare for plot
-    x_min = minimum(x)
-    x_max = maximum(x)
-    #
-    x_plt = range(x_min, x_max, length=NptsPlot)
-    #
-    Norder = length(w) - 1
-    t_plt = ones(NptsPlot)*w[1]
-    for n in 1:Norder
-        t_plt[:] = t_plt[:] + w[n+1]*x_plt.^n
-    end
-    plt.clf()
-    plt.plot(x, t, linestyle="None", marker="o", label="data")
-    plt.plot(x_plt, t_plt, label="model") # no marker
-    plt.xlabel("Year")
-    plt.ylabel("Time (s)")
-    plt.legend()
-    plt.grid(true)
-    plt.tight_layout()
-    plt.savefig("IMG_linreg_poly_"*string(Norder)*".pdf")
-end
-
 
 function do_fit(x, t, Norder)
     @assert Norder >= 1
@@ -63,7 +38,7 @@ function do_predict(w, x)
     return t
 end
 
-function main()
+function main(Norder)
     
     data = readdlm("../../DATA/olympic100m.txt", ',')
     x = data[:,1]
@@ -80,21 +55,21 @@ function main()
     x_min = minimum(x) - 5.0
     x_max = maximum(x) + 5.0
     x_plt = range(x_min, x_max, length=NptsPlot)
+
     plt.clf()
-    for Norder in 1:8
-        # Fit
-        w = do_fit(x, t, Norder)
-        #
-        t_pred = do_predict(w, x)
-        loss = sum( (t - t_pred).^2 )/Ndata
-        @printf("Order: %3d Loss: %10.5f\n", Norder, loss)
-        # Plot
-        t_plt = do_predict(w, x_plt)
-        # Transform the x_plt back
-        x_plt2 = 4*x_plt
-        x_plt2 = x_plt2 .+ minimum(data[:,1])
-        plt.plot(x_plt2, t_plt, label="poly-"*string(Norder))
-    end
+    w = do_fit(x, t, Norder)
+    println("w = ", w)
+    #
+    t_pred = do_predict(w, x)
+    loss = sum( (t - t_pred).^2 )/Ndata
+    #
+    @printf("Order: %3d Loss: %10.5f\n", Norder, loss)
+    t_plt = do_predict(w, x_plt)
+    # Transform the x_plt back
+    x_plt2 = 4*x_plt
+    x_plt2 = x_plt2 .+ minimum(data[:,1])
+    plt.plot(x_plt2, t_plt, label="poly-"*string(Norder))
+    #plt.plot(x_plt, t_plt, label="poly-"*string(Norder))
     plt.plot(data[:,1], t, linestyle="None", marker="o", label="data")
     plt.xlabel("Year")
     plt.ylabel("Time (s)")
@@ -102,7 +77,9 @@ function main()
     plt.legend()
     plt.grid(true)
     plt.tight_layout()
-    plt.savefig("IMG_linreg_polynom.pdf")
+    plt.savefig("IMG_linreg_polynom_"*string(Norder)*".pdf")
 end
 
-main()
+for Norder in range(1,stop=8)
+    main(Norder)
+end

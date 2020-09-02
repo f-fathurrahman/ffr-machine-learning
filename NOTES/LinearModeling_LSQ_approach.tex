@@ -68,15 +68,19 @@
 \begin{document}
 
 
-\title{Linear Modeling\\
-TF4xxx}
+\title{Linear Modeling - Least Square Approach\\
+TF4063}
 \author{Fadjar Fathurrahman}
 \date{}
 \maketitle
 
-\section{Least Square Approach}
+The material in this note is based on \cite{Rogers2017}.
+Most of the code in this note is written in Julia programming language
+\cite{Bezanson2017,juliaorg}.
+We only show only some portion of the code to illustrate the idea described in the
+note.
 
-\subsection{Loss function}
+\section{Linear model and its loss function}
 
 Given pair of data $(x,t)$ where $x$ are inputs dan $t$
 are targets, a linear model with parameter $(w_0, w_1)$ can
@@ -91,19 +95,23 @@ fir this model.
 We need to quantify how good the model is.
 One metric that we can use to quantify this is the squared difference (or
 error) between target and model prediction. For $n$-th data we can write
-$$
-\mathcal{L}_n \equiv \left( t_n - f(x_n; w_0, w_1) \right)^2
-$$
-%
-By summing contributions from all data:
 \begin{equation}
-\mathcal{L} = \frac{1}{N} \sum_{n=1}^{N} \mathcal{L}_n
+\mathcal{L}_n \equiv \left( t_n - f(x_n; w_0, w_1) \right)^2
+\end{equation}
+%
+By averaging contributions from all data:
+\begin{equation}
+\mathcal{L} = \frac{1}{N} \sum_{n=1}^{N} \mathcal{L}_n =
+\frac{1}{N} \sum_{n=1}^{N} \left( t_n - f(x_n; w_0, w_1) \right)^2
 \label{eq:loss_function_01}
 \end{equation}
 We will call this quantity as \highlight{loss function}
 and we want to this quantity to be as small as possible.
+Finding model parameters by minimizing loss functions such as in Eq. \eqref{eq:loss_function_01}
+is known as least square approach to linear regression.
 
-\subsection{Minimizing loss function}
+
+\section{Minimizing loss function}
 
 We can find the parameters $(w_{0},w_{1})$ by using minimization procedures:
 \begin{equation}
@@ -114,7 +122,7 @@ For our particular case of Eq. \eqref{eq:loss_function_01}, we can found this an
 i.e. calculating the first derivatives of $\mathcal{L}$ with respect to $w_0$ and $w_1$, equating
 them to zero, and solve the resulting equations for $w_0$ and $w_1$.
 For more general cases, we can use various numerical optimization procedures such as
-gradient descent.
+gradient descent methods.
 
 We begin by writing our loss function as:
 \begin{align*}
@@ -124,26 +132,34 @@ We begin by writing our loss function as:
 %
 Now we find the first derivatives of $\mathcal{L}$ with respect to
 $w_0$, $w_1$ and equating them to zero.
-\begin{equation*}
-\frac{\partial\mathcal{L}}{\partial w_1} = 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n^2 \right) +
-\frac{2}{N} \left( \sum_{n=1}^{N} x_{n} (w_0 - t_n) \right)
-\end{equation*}
-
-$$
-\frac{\partial \mathcal{L}}{\partial w_0} = 2w_0 + 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n \right) -
-\frac{2}{N} \left( \sum_{n=1}^{N} t_n \right)
-$$
+\begin{align*}
+\frac{\partial\mathcal{L}}{\partial w_1} & = 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n^2 \right) +
+\frac{2}{N} \left( \sum_{n=1}^{N} x_{n} (w_0 - t_n) \right) = 0 \\
+\frac{\partial \mathcal{L}}{\partial w_0} & = 2w_0 + 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n \right) -
+\frac{2}{N} \left( \sum_{n=1}^{N} t_n \right) = 0
+\end{align*}
 
 We obtain
 \begin{align}
+\begin{split}
 w_{1} & = \frac{\overline{xt} - \overline{x}\overline{t}}{\overline{x^2} - \overline{x}^2} \\
 w_{0} & = \overline{t} - w_{1} \overline{x}
+\end{split}
+\label{eq:w0_w1_simple}
 \end{align}
-where symbols with overline denotes average value.
+where symbols with overline denotes their average value, for examples
+\begin{align*}
+\overline{x} & = \frac{1}{N} \sum_{n=1}^{N} x_{n} \\
+\overline{t} & = \frac{1}{N} \sum_{n=1}^{N} t_{n}
+\end{align*}
 
 Example
 
-Olympic 100m data
+Now we want to implement least square approach to linear regression based on
+Eq. \ref{eq:w0_w1_simple}. For this purpose, we need a simple data to work on.
+We choose to work with \txtinline{olympic100m} data which describes 
+winning time of men's 100m sprint Olympic Games. You can choose to work with other
+data or synthetic data.
 
 \begin{table}[H]
 \begin{center}
@@ -173,20 +189,25 @@ w_1 = (mean(x.*t) - xbar*tbar)/(mean(x.^2) - xbar^2)
 w_0 = tbar- w_1*xbar
 \end{juliacode}
 
-Result for the weights:
+We have the following result for the weights (paramaters of the model)
 \begin{textcode}
 w_0 = 36.41645590250286
 w_1 = -0.01333088571096
 \end{textcode}
 
+We can visualize the result by plotting the data and the a line described
+linear equation Eq. \eqref{eq:model_linear_01}. The result is shown in
+Fig. \ref{fig:linreg_01}.
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale=0.75]{codes/IMG_linreg_simple.pdf}
 \end{center}
+\caption{Result of linear regression for \txtinline{olympic100m}.}
+\label{fig:linreg_01}
 \end{figure}
 
 
-\subsection{Using matrix and vector notation}
+\section{Using matrix and vector notation}
 
 We will rewrite our previous problem in matrix and vector notation. This will
 give us more flexibility and enable us to generalize to more complex situations.
@@ -250,8 +271,6 @@ With this definition we can write the loss function as
 \left( \mathbf{t} - \mathbf{Xw} \right)
 \end{equation}
 
-
-
 To find the best value of $\mathbf{w}$ we can follow similar procedure that we have used
 in the previous part. We need to find the solution of
 $\dfrac{\partial \mathcal{L}}{\partial \mathbf{w}} = 0$
@@ -270,10 +289,10 @@ $\dfrac{\partial \mathcal{L}}{\partial \mathbf{w}} = 0$
 \right)
 \end{align}
 Equating these to zeros we have
-$$
+\begin{equation}
 \frac{\partial \mathcal{L}}{\partial \mathbf{w}} =
 \frac{2}{N} \left( \mathbf{X}^{\mathsf{T}} \mathbf{Xw} - \mathbf{X}^{\mathsf{T}}\mathbf{t} \right) = 0
-$$
+\end{equation}
 So we have
 \begin{equation}
 \mathbf{X}^{\mathsf{T}} \mathbf{Xw} = \mathbf{X}^{\mathsf{T}} \mathbf{t}
@@ -286,6 +305,7 @@ or
 \label{eq:w_vektor}
 \end{equation}
 
+The following snippet describes how Eq. \eqref{eq:w_vektor} is implemented.
 \begin{juliacode}
 data = readdlm("../../DATA/olympic100m.txt", ',')
 x = data[:,1]
@@ -308,15 +328,15 @@ w = [36.416455902505334, -0.013330885710962845]
 \end{textcode}
 
 
-\subsection{Generalization to more complex models}
+\section{Generalization to more complex models}
 
-We can use more complex models than \eqref{eq:model_linear_02}. For example
+We can use more "complex" models than \eqref{eq:model_linear_02}. For example
 the quadratic equation:
 \begin{equation}
 f(x; w_{0}, w_{1}, w_{2}) = w_{0} +w_{1}x + w_{2}x^{2}
 \label{eq:quadratic_eq}
 \end{equation}
-Note that the model is still linear in parameter, so this is still a linear model.
+Note that the model is still linear in parameter, so this model is also a linear model.
 Using matrix and vector notation, we can fit the data to this equation simply by
 adding one column to the matrix $\mathbf{X}$:
 \begin{equation}
@@ -328,14 +348,175 @@ adding one column to the matrix $\mathbf{X}$:
 \end{bmatrix} =
 \begin{bmatrix}
 1 & x_{1} & x_{1}^{2} \\
-1 & x_{2} & x_{1}^{2} \\
+1 & x_{2} & x_{2}^{2} \\
 \vdots & \vdots & \vdots \\
 1 & x_{N} & x_{N}^{2} \\
 \end{bmatrix}
 \end{equation}
 
+This scheme also applies to higher order polynomials. The following snippet shows
+how to build the matrix $\mathbf{X}$, find the parameters $\mathbf{w}$ and
+also how to make prediction given model parameter and input.
+\begin{juliacode}
+function do_fit(x, t, Norder)
+  @assert Norder >= 1
+  Ndata = size(x,1)
+  # Build X matrix
+  X = zeros(Ndata,Norder+1)
+  for i in 1:Ndata
+    X[i,1] = 1.0
+    for n in 1:Norder
+      X[i,n+1] = x[i]^n
+    end
+  end
+  # Calculate w
+  w = inv(X'*X) * X' * t
+  return w
+end
 
-\subsection{Regularization}
+function do_predict(w, x)
+  Ndata = size(x,1)
+  Norder = size(w,1) - 1
+  t = ones(Ndata)*w[1]
+  for n in 1:Norder
+    t[:] = t[:] + w[n+1]*x.^n
+  end
+  return t
+end
+\end{juliacode}
+
+In the following figure we show the result of fitting \txtinline{olympic100m} data
+to 3rd order polynomial.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.75]{codes/IMG_linreg_polynom_3.pdf}
+\end{center}
+\caption{3rd order polynomial fit to \txtinline{olympic100m} data.}
+\end{figure}
+
+\section{Model selection}
+
+Evaluating the value of loss according to Eq. \eqref{eq:loss_function_02}
+on the observation data for different polynomial order
+we have the following result.
+\begin{textcode}
+Order:   1 Loss:    0.05031
+Order:   2 Loss:    0.03796
+Order:   3 Loss:    0.02961
+Order:   4 Loss:    0.02706
+Order:   5 Loss:    0.02350
+Order:   6 Loss:    0.02202
+Order:   7 Loss:    0.01970
+Order:   8 Loss:    0.01698    
+\end{textcode}
+We note that the loss is decreasing as we increase the polynomial order.
+Using this result, we might decide to choose 8-th order polynomial as the
+best model. However, this is not a good idea.
+The result of 8-th order fit is shown in Figure \ref{fig:8th_order_fit}.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.75]{codes/IMG_linreg_polynom_8.pdf}
+\end{center}
+\caption{8-th order polynomial fit to \txtinline{olympic100m} data.}
+\label{fig:8th_order_fit}
+\end{figure}
+It can be seen that the model is not behaved very well if we try to predict
+$t$ for other years other than the ones in our original data.
+
+One solution to mitigate this problem is to split the data that we have
+into two subsets: the \emph{training} and \emph{validation} data.
+The model parameters $\mathbf{w}$ is calculated (or trained) using
+training data while the loss is calculated using validation data.
+
+As an example, let's say that we want to use the data for year larger
+than 1979 as validation data and otherwiseas training data. The following
+snippet shows how to do this.
+\begin{juliacode}
+# Load data
+data = readdlm("../../DATA/olympic100m.txt", ',')
+x = data[:,1]
+t = data[:,2]
+Ndata = size(data,1)
+# Data indices for validation and training data
+idx_val = x .> 1979
+idx_train = x .<= 1979
+# Scale x, to prevent numerical problems with large numbers
+x_min = minimum(x)
+x = x .- x_min
+x = x/4
+# Validation data
+x_val = x[idx_val]
+t_val = t[idx_val]
+# Training data
+x_train = x[idx_train]
+t_train = t[idx_train]
+# Train using training data
+w = do_fit(x_train, t_train, Norder)
+# Predict for validation data
+t_pred = do_predict(w, x_val)
+# Evaluate loss for validation data
+NdataVal = size(t_val,1)
+loss = sum( (t_val - t_pred).^2 )/NdataVal
+@printf("Order: %3d Loss: %10.5f\n", Norder, loss)
+\end{juliacode}
+
+The result is shown below.
+\begin{textcode}
+Order:   1 Loss:    0.10130
+Order:   2 Loss:    0.16763
+Order:   3 Loss:    1.06188
+Order:   4 Loss:    4.45706
+Order:   5 Loss:    5.51420
+Order:   6 Loss: 1533.43686
+Order:   7 Loss:   61.91361
+Order:   8 Loss: 6023.27708    
+\end{textcode}
+From this result, we can say that first order polynomial is the best model.
+
+However, note that the above result is very sensitive on the choice of validation data.
+This is particularly problematic if our data is small.
+A technique called \emph{cross-validation} can be used to mitigate this problem.
+$K$-fold cross-validation splits the data into $K$ equally (or as close to equal as
+possible) sized blocks.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=1.0]{images_priv/Rogers_Fig_1_14.pdf}
+\end{center}
+\end{figure}
+
+Each block takes its turn as a
+validation set for a training set comprised of the other $K−1$ blocks. Averaging over
+the resulting $k$ loss values gives us our final loss value.
+
+An extreme case of $K$-fold
+cross-validation is where $K=N$ , the number of observations in our dataset: each
+data observation is held out in turn and used to test a model trained on the other
+This particular form of cross-validation is also known as Leave-One-Out
+Cross-Validation (LOOCV).
+
+\begin{mdframed}
+\textbf{Task 1}
+
+Implement LOOCV on \txtinline{olympic100m} dataset. Which polynomial gives the
+minimum loss?
+\end{mdframed}
+
+One drawback of illustrating model selection on a real dataset is that we don’t
+know what the "true" model is and therefore don’t know if our selection techniques
+are working. We can overcome this by generating a synthetic dataset.
+
+\begin{mdframed}
+\textbf{Task 2}
+
+Create a synthetic dataset from, for example generated from 3rd order
+polynomial plus random noise term. Fit polynomial from first to, say 7th order,
+to this data. Plot order vs LOOCV loss. Which polynomial order give the minimum loss?
+\end{mdframed}
+
+
+
+\section{Regularization}
 
 We can define a measure of complexity of out linear model by
 \begin{equation}
@@ -369,11 +550,65 @@ Equating this to zero:
 \end{equation*}
 we obtain
 \begin{equation}
-\hat{\mathbf{w}} =
+\mathbf{w} =
 ( \mathbf{X}^{\mathsf{T}} \mathbf{X} + N \lambda \mathbf{I} )^{-1}
 \mathbf{X}^{\mathsf{T}} \mathbf{t}
 \end{equation}
 
+We can implement this by simple modification to our code.
+\begin{juliacode}
+function do_fit(x, t, Norder; λ=0.0)
+  @assert Norder >= 1
+  Ndata = size(x,1)
+  # Build X matrix
+  X = zeros(Ndata,Norder+1)
+  for i in 1:Ndata
+    X[i,1] = 1.0
+    for n in 1:Norder
+      X[i,n+1] = x[i]^n
+    end
+  end
+  # Calculate w
+  w = inv( X'*X + Ndata*diagm(λ*ones(Ndata)) ) * X' * t
+  return w
+end
+\end{juliacode}
+
+As an example we will implement this for synthetic data generated from linear
+function plus noise term.
+\begin{juliacode}
+x_min = 0.0; x_max = 1.0
+x = range(x_min, x_max, step=0.2) # input data
+y = 2*x .- 3 # linear function
+A_noise = 1.0
+t = y + A_noise*randn(size(x,1)) # add noise
+\end{juliacode}
+Fitting 5-th order polynomial to this data and using various values for regularization
+parameter $\lambda$, we obtain the following result.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.75]{codes/IMG_linreg_regularized_01.pdf}
+\end{center}
+\end{figure}
+Best value for $\lambda$ can be obtained by using validation data as we have done before.
+
+\begin{mdframed}
+\textbf{Task 3}
+
+Apply regularized linear regression to olympic100m data or synthetic data or other simple
+dataset of your choice. Determine the best model parameters (along with regularization
+parameter $\lambda$)
+and describe the procedure that you have used to determine them.
+\end{mdframed}
+
+\section{Linear regression in Scikit Learn Python package}
+Linear regression in Scikit Learn \cite{scikit-learn} can be done using the
+\pyinline{sklearn.linear_model.LinearRegression} module.
+Several regularization methods are also applied such as:
+\begin{itemize}
+\item ridge regression
+\item lasso regression
+\end{itemize}
 
 
 \bibliographystyle{unsrt}

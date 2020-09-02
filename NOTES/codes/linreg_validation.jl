@@ -72,6 +72,10 @@ function main(Norder)
     NdataVal = size(t_val,1)
     loss = sum( (t_val - t_pred).^2 )/NdataVal
     @printf("Order: %3d Loss: %10.5f\n", Norder, loss)
+    #for i in 1:NdataVal
+    #    @printf("%18.10f %18.10f\n", t_val[i], t_pred[i])
+    #end
+    #println()
 end
 
 for Norder in range(1,stop=8)
