@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 data = np.matrix( np.loadtxt("../DATA/olympic100m.txt", delimiter=",") )
 
-Ndata = len(data)
+Ndata = len(data) # data.shape[0]
 
 X = np.matrix( np.zeros( (Ndata,2) ) )
 X[:,0] = np.ones( (Ndata,1) )
