@@ -1,0 +1,204 @@
+%\documentclass[a4paper,11pt]{article} % print setting
+\documentclass[a4paper,11pt]{article} % screen setting
+
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=10.0cm}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+%\usepackage{cmbright}
+%\renewcommand{\familydefault}{\sfdefault}
+
+%\usepackage{fontspec}
+\usepackage[libertine]{newtxmath}
+\usepackage[no-math]{fontspec}
+\setmainfont{Linux Libertine O}
+%\setmonofont{DejaVu Sans Mono}
+\setmonofont{JuliaMono-Regular}
+
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+
+% DARKMODE
+%\pagecolor[rgb]{0,0,0} %black
+%\color[rgb]{0.8,0.8,0.8} %grey
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{minted}
+
+\newminted{julia}{breaklines,fontsize=\footnotesize}
+\newminted{python}{breaklines,fontsize=\footnotesize}
+
+\newminted{bash}{breaklines,fontsize=\footnotesize}
+\newminted{text}{breaklines,fontsize=\footnotesize}
+
+\newcommand{\txtinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{text}{#1}}
+\newcommand{\jlinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{julia}{#1}}
+\newcommand{\pyinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{python}{#1}}
+
+\newmintedfile[juliafile]{julia}{breaklines,fontsize=\footnotesize}
+\newmintedfile[pythonfile]{python}{breaklines,fontsize=\footnotesize}
+
+\definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
+\usepackage{mdframed}
+\BeforeBeginEnvironment{minted}{
+    \begin{mdframed}[backgroundcolor=mintedbg,%
+        topline=false,bottomline=false,%
+        leftline=false,rightline=false]
+}
+\AfterEndEnvironment{minted}{\end{mdframed}}
+
+
+\usepackage{setspace}
+
+\onehalfspacing
+
+\usepackage{appendix}
+
+
+\newcommand{\highlighteq}[1]{\colorbox{blue!25}{$\displaystyle#1$}}
+\newcommand{\highlight}[1]{\colorbox{red!25}{#1}}
+
+
+
+\begin{document}
+
+
+\title{Linear Modeling - Maximum Likelihood\\
+TF4063}
+\author{Fadjar Fathurrahman}
+\date{}
+\maketitle
+
+The material in this note is based on \cite{Rogers2017}.
+Most of the code in this note is written in Julia programming language
+\cite{Bezanson2017,juliaorg}.
+We only show only some portion of the code to illustrate the idea described in the
+note.
+
+\section{Thinking generatively}
+Model
+\begin{equation}
+t_{n} = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{n} + \epsilon_{n}
+\end{equation}
+$\epsilon_{n}$ is a continuous random variable.
+We do not just have one random variable, but one for each observed data.
+We assume that these values are independent:
+\begin{equation}
+p(\epsilon_{1},\epsilon_{2},\ldots,\epsilon_{N}) = \prod_{n=1}^{N} p(\epsilon_{n})
+\end{equation}
+We additionally assume the form pf $p(\epsilon_{n})$ is that of Gaussian
+distribution with zero mean and variance $\sigma^2$.
+
+Our model is of the following form:
+\begin{equation}
+t_{n} = f(\mathbf{x}_{n}; \mathbf{w}) + \epsilon_{n}, \,\, \epsilon_{n} \sim \mathcal{N}(0,\sigma^2)
+\end{equation}
+
+The loss measured the difference between the observed
+values of t and those predicted by the model. The effect of adding a random variable
+to the model is that the output of the model, $t$, is now itself a random variable. In
+other words, there is no single value of $t_n$ for a particular $x_n$.
+As such, we cannot use the loss as a means of optimizing $\mathbf{w}$
+and $\sigma_{2}$
+
+Adding a constant $\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}$ to a
+Gaussian random variable is equivalent to another Gaussian random variable
+with the mean shifted by the same constant:
+\begin{align*}
+y & = a + z \\
+p(z) & = \mathcal{N}(\mu,\sigma^2) \\
+p(y) & = \mathcal{N}(\mu + a,\sigma^2)
+\end{align*}
+Therefore, the random variable $t_n$ has the density function:
+\begin{equation}
+p(t_{n}|\mathbf{x},\mathbf{w},\sigma^2) =
+\mathcal{N}(\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n},\sigma^2)
+\end{equation}
+
+
+In general we are not interested in the likelihood of single data point but that of
+all of the data. If we have $N$ data points we have the following joint conditional
+density
+\begin{equation*}
+p(t_{1}, \ldots, t_{N} | \mathbf{x}_{1}, \ldots, \mathbf{x}_{N}, \mathbf{w}, \sigma^2)
+\end{equation*}
+This is a joint density over all of the responses in our dataset.
+We will write this compactly
+as $p( \mathbf{t} | \mathbf{X}, \mathbf{w}, \sigma^2)$.
+Evaluating this density at the observed data points gives a single
+likelihood value for the whole dataset, which we can optimise by varying $\mathbf{w}$
+and $\sigma^2$.
+
+The assumption that the noise at each data point is independent, i.e.
+\begin{equation*}
+p(\epsilon_{1}, \ldots, \epsilon_{N}) = \prod_{n} p(\epsilon_{n})
+\end{equation*}
+enables us to factorise this density into something more manageable. In
+particular, this joint conditional density can be factorised into $N$ separate terms,
+one for each data object:
+\begin{equation}
+L = p(\mathbf{t} | \mathbf{X},\mathbf{w},\sigma^2)
+= \prod_{n=1}^{N} p(\mathbf{t} | \mathbf{x}_{n},\mathbf{w},\sigma^2)
+= \prod_{n=1}^{N} \mathcal{N}(\mathbf{w}^{T}\mathbf{x}_{n},\sigma^2)
+\end{equation}
+
+Maximixing likelihood
+\begin{align*}
+\log L & = \log \prod_{n=1}^{N} \mathcal{N}(\mathbf{w}^{T}\mathbf{x}_{n},\sigma^2) \\
+& = \sum_{n=1} \log \left( \frac{1}{\sqrt{2\pi\sigma^2}}
+\exp\left\{ -\frac{1}{2\sigma^2}
+\left( t_{n} - f(\mathbf{x};\mathbf{w}) \right)^2
+\right\} \right) \\
+& = \sum_{n=1}^{N} \left(
+-\frac{1}{2}\log(2\pi) - \log\sigma - \frac{1}{2\sigma^2}
+\left( t_{n} - f(\mathbf{x};\mathbf{w}) \right)^2 \right) \\
+& = -\frac{N}{2}\log 2\pi - N\log\sigma - \frac{1}{2\sigma^2}
+\sum_{n=1}^{N} \left( t_{n} - f(\mathbf{x};\mathbf{w}) \right)^2
+\end{align*}
+
+For our choice of model
+$f(\mathbf{x}_{n}; \mathbf{w}) = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}$, we have
+\begin{equation}
+\log L = -\frac{N}{2} \log 2\pi - N\log\sigma - \frac{1}{2\sigma^2}
+\sum_{n=1}^{N} \left( t_{n} - \mathbf{w}^{\mathsf{T}}\mathbf{x}_{n} \right)^2
+\end{equation}
+
+First derivative w.r.t $\mathbf{w}$:
+\begin{align*}
+\frac{\partial\log L}{\partial w} & = \frac{1}{\sigma^2}
+\sum_{n=1}^{N} \mathbf{x}_{n} \left( t_{n} - \mathbf{x}^{\mathsf{T}}_{n} \mathbf{w} \right) \\
+& = \frac{1}{\sigma^2}\sum_{n=1}^{N} \mathbf{x}_{n} t_{n} - 
+\mathbf{x}_{n}\mathbf{x}_{n}^{\mathsf{T}}\mathbf{w}
+= \mathbf{0}
+\end{align*}
+we have used
+$\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n} = \mathbf{x}_{n}^{\mathsf{T}}\mathbf{w}$
+
+We also note that ...
+
+so we have
+\begin{equation}
+\frac{\partial\log L}{\partial w} = \frac{1}{\sigma^2}\left(
+\mathbf{X}^{\mathsf{T}}\mathbf{t} - \mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w} = \mathbf{0}
+\right)
+\end{equation}
+
+solving this equation we finally have
+\begin{equation}
+\mathbf{w} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X}\right)^{-1}
+\mathbf{X}^{\mathsf{T}}\mathbf{t}
+\end{equation}
+
+\bibliographystyle{unsrt}
+\bibliography{BIBLIO}
+
+\end{document}
