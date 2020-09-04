@@ -6,7 +6,7 @@ const plt = PyPlot
 plt.rc("text", usetex=true)
 plt.matplotlib.style.use("ggplot")
 
-function eval_LLH(t, x, w, σ2)
+function eval_LH_gauss(t, x, w, σ2)
     σ = sqrt(σ2)
     μ = dot(w, x) # alternatively use w0 + w1*x
     return exp(-0.5/σ2*(t - μ)^2)/(σ*sqrt(2*pi))
@@ -23,7 +23,7 @@ function main()
     t_grid = range(9.0, stop=11.0, length=NptsPlot)
     p_grid = zeros(Float64,NptsPlot)
     for i in 1:NptsPlot
-        p_grid[i] = eval_LLH(t_grid[i], x, w, σ2)
+        p_grid[i] = eval_LH_gauss(t_grid[i], x, w, σ2)
     end
     plt.clf()
     plt.plot(t_grid, p_grid)
