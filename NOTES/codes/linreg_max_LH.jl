@@ -22,11 +22,19 @@ function main()
     w = inv(X' * X) * X' * t
     println("w = ", w)
     # Calculate σ2
-    ss = 0.0
-    for i in 1:Ndata
-        ss = ss + ( t[i] - (w[1] + w[2]*x[i]) )^2
-    end
-    σ2 = ss/Ndata
+    # Alternative 1
+    #ss = 0.0
+    #for i in 1:Ndata
+    #    ss = ss + ( t[i] - (w[1] + w[2]*x[i]) )^2
+    #end
+    #σ2 = ss/Ndata
+
+    # Alternative 2
+    #σ2 = (dot(t,t) - dot(t,X*w))/Ndata
+
+    # Alternative 3
+    σ2 = (t'*t - t'*X*w)/Ndata
+    
     println("σ2 = ", σ2)
 end
 
