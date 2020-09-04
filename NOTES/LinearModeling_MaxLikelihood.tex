@@ -194,9 +194,56 @@ so we have
 
 solving this equation we finally have
 \begin{equation}
-\mathbf{w} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X}\right)^{-1}
+\hat{\mathbf{w}} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X}\right)^{-1}
 \mathbf{X}^{\mathsf{T}}\mathbf{t}
 \end{equation}
+
+This is the maximum likelihood solution for $\mathbf{w}$ and this solution is exactly
+the same as the solution obtained by minimizing the loss function.
+Minimizing the squared loss is equivalent
+to the maximum likelihood solution if the noise is assumed to be Gaussian.
+
+To obtain the expression for $\sigma^2$, we can use the same procedure,
+assuming that $\mathbf{w} = \hat{\mathbf{w}}$:
+\begin{equation}
+\frac{\partial \log L}{\partial \sigma} = -\frac{N}{\sigma} +
+\frac{1}{\sigma^3}\sum_{n=1}^{N} (t_{n} - \mathbf{x}^{\mathsf{T}}\hat{\mathbf{w}})^2 = 0
+\end{equation}
+Rearranging the equation we have
+\begin{equation}
+\hat{\sigma^2} = \frac{1}{N}\sum_{n=1}^{N} (t_n - \mathbf{x}^{\mathsf{T}}\hat{\mathbf{w}})
+\end{equation}
+or
+\begin{equation}
+\hat{\sigma^2} = \frac{1}{N} = \frac{1}{N}\left(
+\mathbf{t}^{\mathsf{T}}\mathbf{t} - \mathbf{t}^{\mathsf{T}}\mathbf{X}\hat{\mathbf{w}}
+\right)
+\end{equation}
+
+Test program output
+\begin{textcode}
+w = [36.416455902505334, -0.013330885710962845]
+σ2 = 0.05030711047565789
+\end{textcode}
+
+Hessian matrix:
+\begin{equation}
+\frac{\partial^2 \log L}{\partial\mathbf{w}\partial\mathbf{w}^{\mathsf{T}}} =
+-\frac{1}{\sigma^2}\mathbf{X}^{\mathsf{T}}\mathbf{X}
+\end{equation}
+
+\begin{equation}
+\frac{\partial^2\log L}{\partial \sigma^2} = \frac{N}{\sigma^2} -
+\frac{3}{\sigma^4}(\mathbf{t} - \mathbf{X}\hat{\mathbf{w}})^{\mathsf{T}}
+(\mathbf{t} - \mathbf{X}\hat{\mathbf{w}})
+\end{equation}
+
+The more complex model is overfitting - we have given the model too
+much freedom and it is attempting to make sense out of what is essentially noise.
+We showed how regularisation could be used to penalise overcomplex
+parameter values. The same can be done with probabilistic models through the use
+of prior distributions on the parameter values.
+
 
 \bibliographystyle{unsrt}
 \bibliography{BIBLIO}
