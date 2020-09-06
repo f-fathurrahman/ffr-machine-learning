@@ -11,7 +11,7 @@ Random.seed!(1234)
 
 function main()
 
-    true_w = [-2.0, 3.0]
+    w_true = [-2.0, 3.0]
     σ2_true = 0.5^2
 
     Nsizes = range(20, stop=1000, step=20)
@@ -28,8 +28,9 @@ function main()
             X[i,1] = 1.0
             X[i,2] = x[i]
         end
+        # Generate different data set (different random number)
         for i in 1:Nsample
-            t = X*true_w + randn(Ndata)*sqrt(σ2_true)
+            t = X*w_true + randn(Ndata)*sqrt(σ2_true)
             w = inv(X'*X) * X' * t
             σ2 = (t'*t - t'*X*w)/Ndata # estimate σ2 from data
             all_ss[j,i] = σ2
