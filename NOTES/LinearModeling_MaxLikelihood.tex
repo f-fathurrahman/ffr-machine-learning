@@ -2,7 +2,7 @@
 \documentclass[a4paper,11pt]{article} % screen setting
 
 \usepackage[a4paper]{geometry}
-\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=10.0cm}
+%\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=10.0cm}
 
 \setlength{\parskip}{\smallskipamount}
 \setlength{\parindent}{0pt}
@@ -243,6 +243,60 @@ much freedom and it is attempting to make sense out of what is essentially noise
 We showed how regularisation could be used to penalise overcomplex
 parameter values. The same can be done with probabilistic models through the use
 of prior distributions on the parameter values.
+
+Uncertainty in estimates
+
+The value of $\hat{\mathbf{w}}$ is strongly influenced by the particular noise values in the data.
+It would be useful to know how much uncertainty there was in $\hat{\mathbf{w}}$.
+In other words, is this $\hat{\mathbf{w}}$ is unique in explaining the data well or are there
+many that could do almost as well?
+\begin{equation}
+t_{n} = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{n} + \epsilon_{n}
+\end{equation}
+where $\mathbf{w}$ represents the true value of the parameters and $\epsilon_n$ is a random
+variable that we have defined to be normally distributed. This assumption means that the
+generating distribution of likelihood is a product of normal densities:
+\begin{equation}
+p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2) =
+\prod_{n=1}^{N} p(t_{n} | \mathbf{x}_{n},\mathbf{w},\sigma^2) =
+\prod_{n=1}^{N} \mathcal{N}(\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n},\sigma^2)
+\end{equation}
+
+It is more convenient to work with multivariate Gaussian
+\begin{equation}
+p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2) = \mathcal{N}(\mathbf{X}\mathbf{w},\sigma^2\mathbf{I})
+\end{equation}
+
+Now, $\hat{\mathbf{w}}$ is an estimate of the true parameter value $\mathbf{w}$.
+
+Computing the expectation of $\hat{\mathbf{w}}$ w.r.t the generating distribution will tell us
+what we expect $\hat{\mathbf{w}}$ to be on average, and using
+$\hat{\mathbf{w}} = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{t}$,
+we have
+\begin{align*}
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\hat{\mathbf{w}}\} & =
+\int \hat{\mathbf{w}} p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)\,\mathrm{d}\mathbf{t} \\
+& = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} \\
+& = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} 
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\mathbf{t}\} \\
+& = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}
+& = \mathbf{w}
+\end{align*}
+where we have used the fact that the expected value of a normally distributed random
+variable is equal to its mean
+$\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\mathbf{t}\} =
+\mathbf{X}\mathbf{w}$.
+
+
+into this expression:
+
+
+Covariance matrix
+
+\begin{equation}
+\mathrm{cov}\{\hat{\mathbf{w}}\} = \sigma^2 (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1} =
+-\left( \frac{\partial\log L}{\partial\mathbf{w}\partial\mathbf{w}} \right)^{-1}
+\end{equation}
 
 
 \bibliographystyle{unsrt}
