@@ -194,7 +194,7 @@ so we have
 
 solving this equation we finally have
 \begin{equation}
-\hat{\mathbf{w}} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X}\right)^{-1}
+\widehat{\mathbf{w}} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X}\right)^{-1}
 \mathbf{X}^{\mathsf{T}}\mathbf{t}
 \end{equation}
 
@@ -204,19 +204,19 @@ Minimizing the squared loss is equivalent
 to the maximum likelihood solution if the noise is assumed to be Gaussian.
 
 To obtain the expression for $\sigma^2$, we can use the same procedure,
-assuming that $\mathbf{w} = \hat{\mathbf{w}}$:
+assuming that $\mathbf{w} = \widehat{\mathbf{w}}$:
 \begin{equation}
 \frac{\partial \log L}{\partial \sigma} = -\frac{N}{\sigma} +
-\frac{1}{\sigma^3}\sum_{n=1}^{N} (t_{n} - \mathbf{x}^{\mathsf{T}}\hat{\mathbf{w}})^2 = 0
+\frac{1}{\sigma^3}\sum_{n=1}^{N} (t_{n} - \mathbf{x}^{\mathsf{T}}\widehat{\mathbf{w}})^2 = 0
 \end{equation}
 Rearranging the equation we have
 \begin{equation}
-\hat{\sigma^2} = \frac{1}{N}\sum_{n=1}^{N} (t_n - \mathbf{x}^{\mathsf{T}}\hat{\mathbf{w}})
+\widehat{\sigma^2} = \frac{1}{N}\sum_{n=1}^{N} (t_n - \mathbf{x}^{\mathsf{T}}\widehat{\mathbf{w}})
 \end{equation}
 or
 \begin{equation}
-\hat{\sigma^2} = \frac{1}{N} = \frac{1}{N}\left(
-\mathbf{t}^{\mathsf{T}}\mathbf{t} - \mathbf{t}^{\mathsf{T}}\mathbf{X}\hat{\mathbf{w}}
+\widehat{\sigma^2} = \frac{1}{N} = \frac{1}{N}\left(
+\mathbf{t}^{\mathsf{T}}\mathbf{t} - \mathbf{t}^{\mathsf{T}}\mathbf{X}\widehat{\mathbf{w}}
 \right)
 \end{equation}
 
@@ -234,8 +234,8 @@ Hessian matrix:
 
 \begin{equation}
 \frac{\partial^2\log L}{\partial \sigma^2} = \frac{N}{\sigma^2} -
-\frac{3}{\sigma^4}(\mathbf{t} - \mathbf{X}\hat{\mathbf{w}})^{\mathsf{T}}
-(\mathbf{t} - \mathbf{X}\hat{\mathbf{w}})
+\frac{3}{\sigma^4}(\mathbf{t} - \mathbf{X}\widehat{\mathbf{w}})^{\mathsf{T}}
+(\mathbf{t} - \mathbf{X}\widehat{\mathbf{w}})
 \end{equation}
 
 The more complex model is overfitting - we have given the model too
@@ -246,9 +246,9 @@ of prior distributions on the parameter values.
 
 Uncertainty in estimates
 
-The value of $\hat{\mathbf{w}}$ is strongly influenced by the particular noise values in the data.
-It would be useful to know how much uncertainty there was in $\hat{\mathbf{w}}$.
-In other words, is this $\hat{\mathbf{w}}$ is unique in explaining the data well or are there
+The value of $\widehat{\mathbf{w}}$ is strongly influenced by the particular noise values in the data.
+It would be useful to know how much uncertainty there was in $\widehat{\mathbf{w}}$.
+In other words, is this $\widehat{\mathbf{w}}$ is unique in explaining the data well or are there
 many that could do almost as well?
 \begin{equation}
 t_{n} = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{n} + \epsilon_{n}
@@ -267,15 +267,15 @@ It is more convenient to work with multivariate Gaussian
 p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2) = \mathcal{N}(\mathbf{X}\mathbf{w},\sigma^2\mathbf{I})
 \end{equation}
 
-Now, $\hat{\mathbf{w}}$ is an estimate of the true parameter value $\mathbf{w}$.
+Now, $\widehat{\mathbf{w}}$ is an estimate of the true parameter value $\mathbf{w}$.
 
-Computing the expectation of $\hat{\mathbf{w}}$ w.r.t the generating distribution will tell us
-what we expect $\hat{\mathbf{w}}$ to be on average, and using
-$\hat{\mathbf{w}} = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{t}$,
+Computing the expectation of $\widehat{\mathbf{w}}$ w.r.t the generating distribution will tell us
+what we expect $\widehat{\mathbf{w}}$ to be on average, and using
+$\widehat{\mathbf{w}} = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{t}$,
 we have
 \begin{align*}
-\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\hat{\mathbf{w}}\} & =
-\int \hat{\mathbf{w}} p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)\,\mathrm{d}\mathbf{t} \\
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\widehat{\mathbf{w}}\} & =
+\int \widehat{\mathbf{w}} p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)\,\mathrm{d}\mathbf{t} \\
 & = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} \\
 & = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} 
 \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\mathbf{t}\} \\
@@ -294,10 +294,10 @@ into this expression:
 Covariance matrix
 
 \begin{equation}
-\mathrm{cov}\{\hat{\mathbf{w}}\} = \sigma^2 (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1} =
+\mathrm{cov}\{\widehat{\mathbf{w}}\} = \sigma^2 (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1} =
 -\left( \frac{\partial\log L}{\partial\mathbf{w}\partial\mathbf{w}^{\mathsf{T}}} \right)^{-1}
 \end{equation}
-The certainty or uncertainty in the parameters as described by $\mathrm{cov}(\hat{\mathbf{h})}$
+The certainty or uncertainty in the parameters as described by $\mathrm{cov}(\widehat{\mathbf{h})}$
 is directly linked to the second derivative of the log likelihood.
 
 Fisher information matrix:
@@ -323,9 +323,9 @@ a particular parameter (diagonal elements) of pairs of parameters (off-diagonal 
 If our data is very noisy, the information content is lower.
 
 If the information content is high, the data can inform very accurate parameter
-estimaete and the covariance of $\hat{\mathbf{w}}$ will be low.
+estimaete and the covariance of $\widehat{\mathbf{w}}$ will be low.
 \begin{equation*}
-\mathrm{cov}\{\hat{\mathbf{w}}\} = \mathcal{I}^{-1}
+\mathrm{cov}\{\widehat{\mathbf{w}}\} = \mathcal{I}^{-1}
 \end{equation*}
 If the information content is low, the covariance will be high.
 
@@ -335,28 +335,28 @@ Comparison with empirical values
 
 % Use package bm for boldsymbol \bm
 
-If we use $\hat{\mathbf{w}}_{s}$ to describe the parameters obtained from the $s$-th
+If we use $\widehat{\mathbf{w}}_{s}$ to describe the parameters obtained from the $s$-th
 dataset, the empirical covariance matrix can be computed as
 \begin{equation*}
-\widehat{ \mathrm{cov} \{ \hat{\mathbf{w}} \} } = \frac{1}{S} \sum_{s=1}^{S}
-\left( \hat{\mathbf{w}}_{s} - \hat{\boldsymbol{\mu}} \right)
-\left( \hat{\mathbf{w}}_{s} - \hat{\boldsymbol{\mu}} \right)^{\mathsf{T}}
+\widehat{ \mathrm{cov} \{ \widehat{\mathbf{w}} \} } = \frac{1}{S} \sum_{s=1}^{S}
+\left( \widehat{\mathbf{w}}_{s} - \widehat{\boldsymbol{\mu}} \right)
+\left( \widehat{\mathbf{w}}_{s} - \widehat{\boldsymbol{\mu}} \right)^{\mathsf{T}}
 \end{equation*}
 where
 \begin{equation*}
-\hat{\boldsymbol{\mu}} = \frac{1}{S} \sum_{s=1}^{S} \hat{\mathbf{w}}_{s}
+\widehat{\boldsymbol{\mu}} = \frac{1}{S} \sum_{s=1}^{S} \widehat{\mathbf{w}}_{s}
 \end{equation*}
 
 Variability in predictions
 
 \begin{equation}
-t_{\mathrm{new}} = \hat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}
+t_{\mathrm{new}} = \widehat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}
 \end{equation}
 
 Expectation value:
 \begin{align*}
 \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{t_{\mathrm{new}}\} & =
-\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\hat{\mathbf{w}}\}^{\mathbf{T}}
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\widehat{\mathbf{w}}\}^{\mathbf{T}}
 \mathbf{x}_{\mathrm{new}} \\
 & = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}
 \end{align*}
@@ -368,17 +368,17 @@ Expectation value:
 (\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{t_{\mathrm{new}}\})^{2}
 \end{equation}
 
-Substitute $t_{\mathrm{new}} = \hat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}$:
+Substitute $t_{\mathrm{new}} = \widehat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}$:
 \begin{align*}
 \mathrm{var}\{t_{\mathrm{new}}\} & =
 \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\left\{
-\left(\hat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}\right)^2
-\right\} - \left(\hat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}\right)^2 \\
+\left(\widehat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}\right)^2
+\right\} - \left(\widehat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}\right)^2 \\
 & = \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\left\{
-\mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \hat{\mathbf{w}}
-\hat{\mathbf{w}}^{\mathsf{T}} \mathbf{x}_{\mathrm{new}}
-\right\} - \mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \hat{\mathbf{w}}
-\hat{\mathbf{w}}^{\mathsf{T}} \mathbf{x}_{\mathrm{new}}
+\mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \widehat{\mathbf{w}}
+\widehat{\mathbf{w}}^{\mathsf{T}} \mathbf{x}_{\mathrm{new}}
+\right\} - \mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \widehat{\mathbf{w}}
+\widehat{\mathbf{w}}^{\mathsf{T}} \mathbf{x}_{\mathrm{new}}
 \end{align*}
 
 Summarize:
@@ -386,7 +386,7 @@ Summarize:
 t_{\mathrm{new}} = \mathbf{x}_{\mathrm{new}}^{\mathsf{T}}
 (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}
 \mathbf{X}^{\mathsf{T}}\mathbf{t} = 
-\mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \hat{\mathbf{w}}
+\mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \widehat{\mathbf{w}}
 \end{equation}
 
 \begin{equation}
