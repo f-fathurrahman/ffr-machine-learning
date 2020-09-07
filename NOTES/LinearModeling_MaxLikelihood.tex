@@ -295,9 +295,182 @@ Covariance matrix
 
 \begin{equation}
 \mathrm{cov}\{\hat{\mathbf{w}}\} = \sigma^2 (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1} =
--\left( \frac{\partial\log L}{\partial\mathbf{w}\partial\mathbf{w}} \right)^{-1}
+-\left( \frac{\partial\log L}{\partial\mathbf{w}\partial\mathbf{w}^{\mathsf{T}}} \right)^{-1}
+\end{equation}
+The certainty or uncertainty in the parameters as described by $\mathrm{cov}(\hat{\mathbf{h})}$
+is directly linked to the second derivative of the log likelihood.
+
+Fisher information matrix:
+\begin{equation}
+\mathcal{I} = \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
+\left\{ -\frac{\partial^2\log p(\mathbf{x}|\mathbf{X},\mathbf{w},\sigma^2)}{\partial\mathbf{w}\partial\mathbf{w}^{\mathsf{T}}}
+\right\}
 \end{equation}
 
+\begin{equation}
+\mathcal{I} = \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
+\left\{ \frac{1}{\sigma^2} \mathbf{X}^{\mathsf{T}}\mathbf{X}
+\right\}
+\end{equation}
+
+\begin{equation}
+\mathcal{I} = \frac{1}{\sigma^2} \mathbf{X}^{\mathsf{T}}\mathbf{X}
+\end{equation}
+
+The elements of $\mathcal{I}$ tell us how much information (the more negative the
+information value is, the more information is present) the data provides about
+a particular parameter (diagonal elements) of pairs of parameters (off-diagonal elements).
+If our data is very noisy, the information content is lower.
+
+If the information content is high, the data can inform very accurate parameter
+estimaete and the covariance of $\hat{\mathbf{w}}$ will be low.
+\begin{equation*}
+\mathrm{cov}\{\hat{\mathbf{w}}\} = \mathcal{I}^{-1}
+\end{equation*}
+If the information content is low, the covariance will be high.
+
+Example true function $t = 3x - 2$.
+
+Comparison with empirical values
+
+% Use package bm for boldsymbol \bm
+
+If we use $\hat{\mathbf{w}}_{s}$ to describe the parameters obtained from the $s$-th
+dataset, the empirical covariance matrix can be computed as
+\begin{equation*}
+\widehat{ \mathrm{cov} \{ \hat{\mathbf{w}} \} } = \frac{1}{S} \sum_{s=1}^{S}
+\left( \hat{\mathbf{w}}_{s} - \hat{\boldsymbol{\mu}} \right)
+\left( \hat{\mathbf{w}}_{s} - \hat{\boldsymbol{\mu}} \right)^{\mathsf{T}}
+\end{equation*}
+where
+\begin{equation*}
+\hat{\boldsymbol{\mu}} = \frac{1}{S} \sum_{s=1}^{S} \hat{\mathbf{w}}_{s}
+\end{equation*}
+
+Variability in predictions
+
+\begin{equation}
+t_{\mathrm{new}} = \hat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}
+\end{equation}
+
+Expectation value:
+\begin{align*}
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{t_{\mathrm{new}}\} & =
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\hat{\mathbf{w}}\}^{\mathbf{T}}
+\mathbf{x}_{\mathrm{new}} \\
+& = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}
+\end{align*}
+
+
+\begin{equation}
+\sigma^2_{\mathrm{new}} = \mathrm{var}\{t_{\mathrm{new}}\} =
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{t^{2}_{\mathrm{new}}\} -
+(\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{t_{\mathrm{new}}\})^{2}
+\end{equation}
+
+Substitute $t_{\mathrm{new}} = \hat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}$:
+\begin{align*}
+\mathrm{var}\{t_{\mathrm{new}}\} & =
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\left\{
+\left(\hat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}\right)^2
+\right\} - \left(\hat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}\right)^2 \\
+& = \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\left\{
+\mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \hat{\mathbf{w}}
+\hat{\mathbf{w}}^{\mathsf{T}} \mathbf{x}_{\mathrm{new}}
+\right\} - \mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \hat{\mathbf{w}}
+\hat{\mathbf{w}}^{\mathsf{T}} \mathbf{x}_{\mathrm{new}}
+\end{align*}
+
+Summarize:
+\begin{equation}
+t_{\mathrm{new}} = \mathbf{x}_{\mathrm{new}}^{\mathsf{T}}
+(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}
+\mathbf{X}^{\mathsf{T}}\mathbf{t} = 
+\mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \hat{\mathbf{w}}
+\end{equation}
+
+\begin{equation}
+\sigma^2_{\mathrm{new}} = \sigma^{2} \mathbf{x}^{\mathsf{T}}_{\mathrm{new}}
+(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1} \mathbf{x}_{\mathrm{new}}
+\end{equation}
+
+$\sigma^2$ is the true variance of the dataset noise. In its place, we can use our
+estimate, $\widehat{\sigma^2}$.
+
+Estimate of the noise variance
+\begin{equation}
+\widehat{\sigma^2} = \frac{1}{N}
+\left( \mathbf{t}^{\mathsf{T}}\mathbf{t} - 
+\mathbf{t}^{\mathsf{T}}\mathbf{X}\widehat{\mathbf{w}}
+\right)
+\end{equation}
+
+
+\begin{align*}
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
+\left\{\widehat{\sigma^2}\right\} & =
+\frac{1}{N} \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
+\left\{
+\mathbf{t}^{\mathsf{T}}\mathbf{t} - 
+\mathbf{t}^{\mathsf{T}}\mathbf{X}\widehat{\mathbf{w}}
+\right\} \\
+& = \frac{1}{N}\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
+\left\{
+\mathbf{t}^{\mathsf{T}}\mathbf{t} - 
+\mathbf{t}^{\mathsf{T}}\mathbf{X} (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}
+\mathbf{X}^{\mathsf{T}}\mathbf{t}
+\right\} \\
+& = \frac{1}{N}\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
+\left\{ \mathbf{t}^{\mathsf{T}}\mathbf{t} \right\} -
+\frac{1}{N}\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
+\left\{
+\mathbf{t}^{\mathsf{T}}\mathbf{X} (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}
+\mathbf{X}^{\mathsf{T}}\mathbf{t}
+\right\}
+\end{align*}
+
+When $\mathbf{t}$ is a Gaussian random variable, expectations of the form
+$\mathbf{t}^{\mathsf{T}}\mathbf{A}\mathbf{t}$
+\begin{align*}
+\mathbf{t} & \sim \mathcal{N}(\boldsymbol{\mu},\boldsymbol{\Sigma}) \\
+\mathbf{E}_{p(\mathbf{t})}\left\{
+\mathbf{t}^{\mathsf{T}}\mathbf{A}\mathbf{t}
+\right\} & = \mathrm{Tr}(\mathbf{A}\boldsymbol{\Sigma}) + \boldsymbol{\mu}^{\mathsf{T}}
+\mathbf{A}\boldsymbol{\mu}
+\end{align*}
+
+\begin{align*}
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
+\left\{\widehat{\sigma^2}\right\} & = \frac{1}{N}
+\left(
+\mathrm{Tr}(\sigma^2\mathbf{I}_{N}) + \mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}
+\mathbf{X}\mathbf{w}
+\right) \\
+& - \frac{1}{N}\left(
+\mathrm{Tr}(\sigma^2\mathbf{X}(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}})
+\right) +
+\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}
+\mathbf{X}(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}
+\end{align*}
+
+
+\begin{align*}
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
+\left\{\widehat{\sigma^2}\right\} & = \sigma^2 +
+\frac{1}{N}\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}
+\mathbf{X}\mathbf{w} -
+\frac{\sigma^2}{N}
+\mathrm{Tr}( \mathbf{X} (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} )
+- \frac{1}{N}\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}} \\
+& = \sigma^2 -
+\frac{\sigma^2}{N}
+\mathrm{Tr}( \mathbf{X} (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} ) \\
+& = \sigma^2 \left(
+1 - \frac{1}{N}\mathrm{Tr}( (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{X} )
+\right) \\
+& = \sigma^2 \left( 1 - \frac{1}{N}\mathrm{Tr}(\mathbf{I}_{D}) \right) \\
+& = \sigma^2 \left( 1 - \frac{D}{N} \right)
+\end{align*}
 
 \bibliographystyle{unsrt}
 \bibliography{BIBLIO}
