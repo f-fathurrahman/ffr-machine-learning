@@ -193,7 +193,7 @@ It the events are dependent, we cannot decompose the joint probability as produc
 individual probabilities. However, if we can create conditional distributions, we can
 decompose the joint probability using the following definitions
 \begin{equation}
-P(X=y,X=x) = P(X=y|X=x) P(X=x)
+P(Y=y,X=x) = P(Y=y|X=x) P(X=x)
 \end{equation}
 or
 \begin{equation}
@@ -280,12 +280,12 @@ Besides mean, another common expectation value that we will encounter is the var
 Variance is a measure of how variable the random variable is and is defined as the expected
 square deviation from the mean.
 \begin{equation}
-\mathrm{var}\{X\} = \mathbf{E}_{P(x)}\left\{ \left(X - \mathbf{E}_{P(x)}\right)^2 \right\}
+\mathrm{var}\{X\} = \mathbf{E}_{P(x)}\left\{ \left(X - \mathbf{E}_{P(x)}\{X\}\right)^2 \right\}
 \end{equation}
 Expand the terms in bracket:
 \begin{align*}
 \mathrm{var}\{X\} & = \mathbf{E}_{P(x)}\left\{
-X^2 - 2X\mathbf{E}_{P(x)}\{X\} + \mathbf{E}_{P(x)}^2
+X^2 - 2X\mathbf{E}_{P(x)}\{X\} + \mathbf{E}_{P(x)}\{X\}^2
 \right\} \\
 & = \mathbf{E}_{P(x)}\{X^2\} - 2\mathbf{E}_{P(x)}\{X\}\mathbf{E}_{P(x)}\{X\} +
 \mathbf{E}_{P(x)}\{X\}^2
@@ -458,7 +458,7 @@ over the range of values that the random variable can take:
 For many cases, this integration cannot be performed analytically. In this case, we can
 approximate it using simple summation
 \begin{equation}
-\mathbf{E}_{p(x)}\{f(x)\} \approx \frac{1}{S}\sum_{s=1}^{S} f(x_s)
+\mathbf{E}_{p(x)}\{f(x)\} \approx \frac{1}{S}\sum_{s=1}^{S} f(x_s) P(x_s)
 \end{equation}
 
 
@@ -479,6 +479,7 @@ So we have
 \begin{equation*}
 r = \frac{1}{b - a}
 \end{equation*}
+
 
 \subsection{Beta density function}
 
@@ -507,21 +508,32 @@ Gaussian density function also can be written in shorthand notation as
 p(y|\mu,\sigma^2) = \mathcal{N}(\mu, \sigma^2)
 \end{equation}
 
+In Python Numpy we can use \txtinline{np.random.randn}
+to draw sample from standard normal distribution, with $\mu=1$
+and $\sigma=1$.
+For random samples from $\mathcal{N}(\mu, \sigma^2)$ we can use
+\begin{pythoncode}
+sigma * np.random.randn(...) + mu
+\end{pythoncode}
+
 
 \subsection{Multivariate Gaussian}
 
 The Gaussian density function also can be generalized for continous vectors.
 \begin{equation}
-p(\mathbf{x}) = \frac{1}{(2\pi)^{D/2}|\Sigma|^{1/2}}
+p(\mathbf{x}) = \frac{1}{(2\pi)^{D/2}|\boldsymbol{\Sigma}|^{1/2}}
 \exp\left\{-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu})^{\mathsf{T}}
-\Sigma^{-1}
+\boldsymbol{\Sigma^{-1}}
 (\mathbf{x}-\boldsymbol{\mu})
 \right\}
 \end{equation}
 
+In Python, we can use \pyinline{numpy.random.multivariate_normal}
+to draw samples from multivariate normal distribution.
 
-\section{Thinking generatively}
-Model
+
+\section{Likelihood}
+We will take into account error in our data by considering the following model.
 \begin{equation}
 t_{n} = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{n} + \epsilon_{n}
 \end{equation}
@@ -531,19 +543,27 @@ We assume that these values are independent:
 \begin{equation}
 p(\epsilon_{1},\epsilon_{2},\ldots,\epsilon_{N}) = \prod_{n=1}^{N} p(\epsilon_{n})
 \end{equation}
-We additionally assume the form pf $p(\epsilon_{n})$ is that of Gaussian
+We additionally assume the form of $p(\epsilon_{n})$ is that of Gaussian
 distribution with zero mean and variance $\sigma^2$.
+
+The model now consists of two components:
+\begin{enumerate}
+\item Deterministic component: $\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}$, sometimes referred to
+as a trend or drift.
+\item Random component: $\epsilon_{n}$, sometimes referred to as noise.
+\end{enumerate}
 
 Our model is of the following form:
 \begin{equation}
 t_{n} = f(\mathbf{x}_{n}; \mathbf{w}) + \epsilon_{n}, \,\, \epsilon_{n} \sim \mathcal{N}(0,\sigma^2)
 \end{equation}
-
+We need to find the optimal value of $\mathbf{w}$, $\widehat{\mathbf{w}}$, such that this model describes
+our data as best as possible.
 The loss measured the difference between the observed
 values of t and those predicted by the model. The effect of adding a random variable
 to the model is that the output of the model, $t$, is now itself a random variable. In
 other words, there is no single value of $t_n$ for a particular $x_n$.
-As such, we cannot use the loss as a means of optimizing $\mathbf{w}$
+As such, we cannot use the loss as a means of to find $\mathbf{w}$
 and $\sigma_{2}$
 
 Adding a constant $\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}$ to a
@@ -560,6 +580,36 @@ p(t_{n}|\mathbf{x},\mathbf{w},\sigma^2) =
 \mathcal{N}(\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n},\sigma^2)
 \end{equation}
 
+Note the conditioning on the left hand side. The density of $t_n$ depends on particular
+value  of $\mathbf{x}_{n}$ and $\mathbf{w}$ and also $\sigma^2$ (the variance).
+As an example, we will plot the likelihood function from one data point of
+\txtinline{olympic100m} dataset. We will chose the data for year 1980 and evaluate
+the likelihood using $\mathbf{w}$ obtained from minimizing loss function and
+assuming that $\sigma^2=0.05$.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=1.5]{images_priv/Rogers_Fig_2_10.pdf}
+\end{center}
+\end{figure}
+
+Recall that, for a continuous random variable, $t$, $p(t)$ cannot be
+interpreted as a probability. The height of the curve at a particular value of $t$ can be
+interpreted as how likely it is that we would observe that particular $t$ for $x = 1980$.
+The most likely winning time in 1980 would be 10.02 seconds (for a Gaussian, the
+most likely (highest) point corresponds to the mean). Also shown on the plot, are
+three example times – A, B and C. Of these, B is the most likely and C the least
+likely.
+
+The actual winning time in the 1980 Olympics is C (10.25 seconds).
+The density $p(t_{n} | \mathbf{x}_n , \mathbf{w}, \sigma^2)$
+evaluated at t n = 10.25 is an important quantity, known as the likelihood
+of the nth data point. We cannot change $t_n = 10.25$ (this is our data) but
+we can change $\mathbf{w}$ and $\sigma^2$ to try and move the density so as to make
+it as high as possible at $t = 10.25$. The idea of finding parameters that maximize
+the likelihood in this way is a key concept in Machine Learning.
+
+\subsection{Dataset likelihood}
 
 In general we are not interested in the likelihood of single data point but that of
 all of the data. If we have $N$ data points we have the following joint conditional
@@ -578,16 +628,23 @@ The assumption that the noise at each data point is independent, i.e.
 \begin{equation*}
 p(\epsilon_{1}, \ldots, \epsilon_{N}) = \prod_{n} p(\epsilon_{n})
 \end{equation*}
-enables us to factorise this density into something more manageable. In
-particular, this joint conditional density can be factorised into $N$ separate terms,
+enables us to factorize this density into something more manageable. In
+particular, this joint conditional density can be factorized into $N$ separate terms,
 one for each data object:
 \begin{equation}
 L = p(\mathbf{t} | \mathbf{X},\mathbf{w},\sigma^2)
-= \prod_{n=1}^{N} p(\mathbf{t} | \mathbf{x}_{n},\mathbf{w},\sigma^2)
+= \prod_{n=1}^{N} p(t_{n} | \mathbf{x}_{n},\mathbf{w},\sigma^2)
 = \prod_{n=1}^{N} \mathcal{N}(\mathbf{w}^{T}\mathbf{x}_{n},\sigma^2)
 \end{equation}
 
-Maximixing likelihood
+For analytical reasons, we will maximise the natural logarithm of the likelihood.
+We will follow the Machine Learning convention of using $\log(y)$ to denote the
+natural logarithm of y, often denoted elsewhere as $\mathrm{ln}(y)$).
+We can do this because the estimated arguments $\widehat{\mathbf{w}}$
+and $\widehat{\sigma^2}$ that maximize the log-likelihood will also maximize
+the likelihood.
+
+We will start by writing the log-likelihood as
 \begin{align*}
 \log L & = \log \prod_{n=1}^{N} \mathcal{N}(\mathbf{w}^{T}\mathbf{x}_{n},\sigma^2) \\
 & = \sum_{n=1} \log \left( \frac{1}{\sqrt{2\pi\sigma^2}}
@@ -618,20 +675,25 @@ First derivative w.r.t $\mathbf{w}$:
 \end{align*}
 we have used
 $\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n} = \mathbf{x}_{n}^{\mathsf{T}}\mathbf{w}$
-
-We also note that ...
-
-so we have
+%
+Using matrix-vector notation
+\begin{align*}
+\sum_{n=1}^{N} \mathbf{x}_{n} t_{n} & = \mathbf{X}^{\mathsf{T}}\mathbf{t} \\
+\sum_{n=1}^{N} \mathbf{x}_{n} \mathbf{x}_{n}^{\mathsf{T}}\mathbf{w} & = 
+\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}
+\end{align*}
+we can write the derivative as
 \begin{equation}
 \frac{\partial\log L}{\partial w} = \frac{1}{\sigma^2}\left(
 \mathbf{X}^{\mathsf{T}}\mathbf{t} - \mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w} = \mathbf{0}
 \right)
 \end{equation}
-
-solving this equation we finally have
+solving this equation we can find the optimal value $\widehat{\mathbf{w}}$
 \begin{equation}
+\highlighteq{
 \widehat{\mathbf{w}} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X}\right)^{-1}
 \mathbf{X}^{\mathsf{T}}\mathbf{t}
+}
 \end{equation}
 
 This is the maximum likelihood solution for $\mathbf{w}$ and this solution is exactly
@@ -647,40 +709,44 @@ assuming that $\mathbf{w} = \widehat{\mathbf{w}}$:
 \end{equation}
 Rearranging the equation we have
 \begin{equation}
-\widehat{\sigma^2} = \frac{1}{N}\sum_{n=1}^{N} (t_n - \mathbf{x}^{\mathsf{T}}\widehat{\mathbf{w}})
+\highlighteq{
+\widehat{\sigma^2} = \frac{1}{N}\sum_{n=1}^{N} (t_n - \mathbf{x}^{\mathsf{T}}\widehat{\mathbf{w}})^2
+}
 \end{equation}
-or
+This expression can be simplified to
 \begin{equation}
-\widehat{\sigma^2} = \frac{1}{N} = \frac{1}{N}\left(
+\highlighteq{
+\widehat{\sigma^2} = \frac{1}{N}\left(
 \mathbf{t}^{\mathsf{T}}\mathbf{t} - \mathbf{t}^{\mathsf{T}}\mathbf{X}\widehat{\mathbf{w}}
 \right)
+}
 \end{equation}
 
-Test program output
+Using \txtinline{olympic100m} data we can obtain these parameters as
 \begin{textcode}
 w = [36.416455902505334, -0.013330885710962845]
 σ2 = 0.05030711047565789
 \end{textcode}
 
-Hessian matrix:
-\begin{equation}
-\frac{\partial^2 \log L}{\partial\mathbf{w}\partial\mathbf{w}^{\mathsf{T}}} =
--\frac{1}{\sigma^2}\mathbf{X}^{\mathsf{T}}\mathbf{X}
-\end{equation}
+\subsection{Maximum likelihood favors complex models}
 
+Plugging the expression for $\widehat{\sigma^2}$ into the log-likelihood
+expression gives use the value of log-likelihood at the maximum:
 \begin{equation}
-\frac{\partial^2\log L}{\partial \sigma^2} = \frac{N}{\sigma^2} -
-\frac{3}{\sigma^4}(\mathbf{t} - \mathbf{X}\widehat{\mathbf{w}})^{\mathsf{T}}
-(\mathbf{t} - \mathbf{X}\widehat{\mathbf{w}})
+\log L = -\frac{N}{2}(1 + \log 2\pi) - \frac{N}{2}\log\widehat{\sigma^2}
 \end{equation}
+This tells us that the maximum value of $L$ will keep increasing as
+we decrease $\widehat{\sigma^2}$.
 
 The more complex model is overfitting - we have given the model too
 much freedom and it is attempting to make sense out of what is essentially noise.
-We showed how regularisation could be used to penalise overcomplex
+We showed how regularization could be used to penalise overcomplex
 parameter values. The same can be done with probabilistic models through the use
 of prior distributions on the parameter values.
 
-Uncertainty in estimates
+\section{Effect of noise on parameter estimates}
+
+\subsection{Uncertainty in estimates}
 
 The value of $\widehat{\mathbf{w}}$ is strongly influenced by the particular noise values in the data.
 It would be useful to know how much uncertainty there was in $\widehat{\mathbf{w}}$.
@@ -704,7 +770,6 @@ p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2) = \mathcal{N}(\mathbf{X}\mathbf{w},
 \end{equation}
 
 Now, $\widehat{\mathbf{w}}$ is an estimate of the true parameter value $\mathbf{w}$.
-
 Computing the expectation of $\widehat{\mathbf{w}}$ w.r.t the generating distribution will tell us
 what we expect $\widehat{\mathbf{w}}$ to be on average, and using
 $\widehat{\mathbf{w}} = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{t}$,
@@ -715,61 +780,41 @@ we have
 & = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} \\
 & = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} 
 \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\mathbf{t}\} \\
-& = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}
+& = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w} \\
 & = \mathbf{w}
 \end{align*}
 where we have used the fact that the expected value of a normally distributed random
 variable is equal to its mean
 $\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\mathbf{t}\} =
 \mathbf{X}\mathbf{w}$.
+This result tells us that the expected value of our approximation
+$\widehat{\mathbf{w}}$ is the true parameter value. This means that our estimat
+for $\mathbf{w}$ is unbiased - it is not, on average, too big or too small.
 
 
-into this expression:
-
-
-Covariance matrix
-
+Potential variability in the estimate of $\widehat{\mathbf{w}}$ is encapsulated
+in its \emph{covariance matrix}. It can be showed that:
 \begin{equation}
 \mathrm{cov}\{\widehat{\mathbf{w}}\} = \sigma^2 (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1} =
 -\left( \frac{\partial\log L}{\partial\mathbf{w}\partial\mathbf{w}^{\mathsf{T}}} \right)^{-1}
 \end{equation}
-The certainty or uncertainty in the parameters as described by $\mathrm{cov}(\widehat{\mathbf{h})}$
+The certainty or uncertainty in the parameters as described by $\mathrm{cov}(\widehat{\mathbf{w})}$
 is directly linked to the second derivative of the log likelihood.
 
-Fisher information matrix:
-\begin{equation}
-\mathcal{I} = \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
-\left\{ -\frac{\partial^2\log p(\mathbf{x}|\mathbf{X},\mathbf{w},\sigma^2)}{\partial\mathbf{w}\partial\mathbf{w}^{\mathsf{T}}}
-\right\}
-\end{equation}
+Covariance matrix provides us with two useful pieces of information.
+The diagonal elements (the variances of the individual elements in
+$\widehat{\mathbf{w}}$) tell us how much variability we might expect in the individual
+parameters.
+The off-diagonal elements tell us how the parameters covary – if the values are
+high and positive, it tells us that increasing one will require an increase in the other
+to maintain a good model. Large negative values tell us the opposite – increasing
+one will cause a decrease in the other. Values close to zero tell us that the param
+eters are not dependent on one another.
 
-\begin{equation}
-\mathcal{I} = \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
-\left\{ \frac{1}{\sigma^2} \mathbf{X}^{\mathsf{T}}\mathbf{X}
-\right\}
-\end{equation}
 
-\begin{equation}
-\mathcal{I} = \frac{1}{\sigma^2} \mathbf{X}^{\mathsf{T}}\mathbf{X}
-\end{equation}
+\subsection{Comparison with empirical values}
 
-The elements of $\mathcal{I}$ tell us how much information (the more negative the
-information value is, the more information is present) the data provides about
-a particular parameter (diagonal elements) of pairs of parameters (off-diagonal elements).
-If our data is very noisy, the information content is lower.
-
-If the information content is high, the data can inform very accurate parameter
-estimaete and the covariance of $\widehat{\mathbf{w}}$ will be low.
-\begin{equation*}
-\mathrm{cov}\{\widehat{\mathbf{w}}\} = \mathcal{I}^{-1}
-\end{equation*}
-If the information content is low, the covariance will be high.
-
-Example true function $t = 3x - 2$.
-
-Comparison with empirical values
-
-% Use package bm for boldsymbol \bm
+[using numerical experiments]
 
 If we use $\widehat{\mathbf{w}}_{s}$ to describe the parameters obtained from the $s$-th
 dataset, the empirical covariance matrix can be computed as
@@ -783,57 +828,33 @@ where
 \widehat{\boldsymbol{\mu}} = \frac{1}{S} \sum_{s=1}^{S} \widehat{\mathbf{w}}_{s}
 \end{equation*}
 
-Variability in predictions
+\section{Variability in predictions}
 
+\subsection{Making predictions}
+
+To predict $t_{\mathrm{new}}$, we multiply $\mathbf{x}_{\mathrm{new}}$
+by the best set of model parameters, $\widehat{\mathbf{w}}$
 \begin{equation}
-t_{\mathrm{new}} = \widehat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}
-\end{equation}
-
-Expectation value:
-\begin{align*}
-\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{t_{\mathrm{new}}\} & =
-\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{\widehat{\mathbf{w}}\}^{\mathbf{T}}
-\mathbf{x}_{\mathrm{new}} \\
-& = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}
-\end{align*}
-
-
-\begin{equation}
-\sigma^2_{\mathrm{new}} = \mathrm{var}\{t_{\mathrm{new}}\} =
-\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{t^{2}_{\mathrm{new}}\} -
-(\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\{t_{\mathrm{new}}\})^{2}
-\end{equation}
-
-Substitute $t_{\mathrm{new}} = \widehat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}$:
-\begin{align*}
-\mathrm{var}\{t_{\mathrm{new}}\} & =
-\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\left\{
-\left(\widehat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}\right)^2
-\right\} - \left(\widehat{\mathbf{w}}^{\mathsf{T}}\mathbf{x}_{\mathrm{new}}\right)^2 \\
-& = \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}\left\{
-\mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \widehat{\mathbf{w}}
-\widehat{\mathbf{w}}^{\mathsf{T}} \mathbf{x}_{\mathrm{new}}
-\right\} - \mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \widehat{\mathbf{w}}
-\widehat{\mathbf{w}}^{\mathsf{T}} \mathbf{x}_{\mathrm{new}}
-\end{align*}
-
-Summarize:
-\begin{equation}
+\highlighteq{
 t_{\mathrm{new}} = \mathbf{x}_{\mathrm{new}}^{\mathsf{T}}
 (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}
 \mathbf{X}^{\mathsf{T}}\mathbf{t} = 
 \mathbf{x}_{\mathrm{new}}^{\mathsf{T}} \widehat{\mathbf{w}}
+}
 \end{equation}
-
+with variance:
 \begin{equation}
+\highlighteq{
 \sigma^2_{\mathrm{new}} = \sigma^{2} \mathbf{x}^{\mathsf{T}}_{\mathrm{new}}
 (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1} \mathbf{x}_{\mathrm{new}}
+}
 \end{equation}
-
 $\sigma^2$ is the true variance of the dataset noise. In its place, we can use our
 estimate, $\widehat{\sigma^2}$.
 
-Estimate of the noise variance
+\subsection{Estimate of the noise variance}
+
+Recall our estimate to variance:
 \begin{equation}
 \widehat{\sigma^2} = \frac{1}{N}
 \left( \mathbf{t}^{\mathsf{T}}\mathbf{t} - 
@@ -841,72 +862,24 @@ Estimate of the noise variance
 \right)
 \end{equation}
 
-
-\begin{align*}
+Computing expectations of this expression with respect to $p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)$
+we obtain:
+\begin{equation}
+\highlighteq{
 \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
-\left\{\widehat{\sigma^2}\right\} & =
-\frac{1}{N} \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
-\left\{
-\mathbf{t}^{\mathsf{T}}\mathbf{t} - 
-\mathbf{t}^{\mathsf{T}}\mathbf{X}\widehat{\mathbf{w}}
-\right\} \\
-& = \frac{1}{N}\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
-\left\{
-\mathbf{t}^{\mathsf{T}}\mathbf{t} - 
-\mathbf{t}^{\mathsf{T}}\mathbf{X} (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}
-\mathbf{X}^{\mathsf{T}}\mathbf{t}
-\right\} \\
-& = \frac{1}{N}\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
-\left\{ \mathbf{t}^{\mathsf{T}}\mathbf{t} \right\} -
-\frac{1}{N}\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
-\left\{
-\mathbf{t}^{\mathsf{T}}\mathbf{X} (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}
-\mathbf{X}^{\mathsf{T}}\mathbf{t}
-\right\}
-\end{align*}
-
-When $\mathbf{t}$ is a Gaussian random variable, expectations of the form
-$\mathbf{t}^{\mathsf{T}}\mathbf{A}\mathbf{t}$
-\begin{align*}
-\mathbf{t} & \sim \mathcal{N}(\boldsymbol{\mu},\boldsymbol{\Sigma}) \\
-\mathbf{E}_{p(\mathbf{t})}\left\{
-\mathbf{t}^{\mathsf{T}}\mathbf{A}\mathbf{t}
-\right\} & = \mathrm{Tr}(\mathbf{A}\boldsymbol{\Sigma}) + \boldsymbol{\mu}^{\mathsf{T}}
-\mathbf{A}\boldsymbol{\mu}
-\end{align*}
-
-\begin{align*}
+\left\{\widehat{\sigma^2}\right\} =
+\sigma^2 \left( 1 - \frac{D}{N} \right)
+}
+\end{equation}
+where $D$ is the number of columns in $\mathbf{X}$. Assuming that $D < N$
+(i.e. the number of attributes we measure for each data
+point is smaller than the number of data points), then our estimate of the variance
+will, on average, be lower than the true variance:
+\begin{equation}
 \mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
-\left\{\widehat{\sigma^2}\right\} & = \frac{1}{N}
-\left(
-\mathrm{Tr}(\sigma^2\mathbf{I}_{N}) + \mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}
-\mathbf{X}\mathbf{w}
-\right) \\
-& - \frac{1}{N}\left(
-\mathrm{Tr}(\sigma^2\mathbf{X}(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}})
-\right) +
-\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}
-\mathbf{X}(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}
-\end{align*}
-
-
-\begin{align*}
-\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^2)}
-\left\{\widehat{\sigma^2}\right\} & = \sigma^2 +
-\frac{1}{N}\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}
-\mathbf{X}\mathbf{w} -
-\frac{\sigma^2}{N}
-\mathrm{Tr}( \mathbf{X} (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} )
-- \frac{1}{N}\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}} \\
-& = \sigma^2 -
-\frac{\sigma^2}{N}
-\mathrm{Tr}( \mathbf{X} (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}} ) \\
-& = \sigma^2 \left(
-1 - \frac{1}{N}\mathrm{Tr}( (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{X} )
-\right) \\
-& = \sigma^2 \left( 1 - \frac{1}{N}\mathrm{Tr}(\mathbf{I}_{D}) \right) \\
-& = \sigma^2 \left( 1 - \frac{D}{N} \right)
-\end{align*}
+\left\{\widehat{\sigma^2}\right\} < \sigma^2
+\end{equation}
+Unlike $\widehat{\mathbf{w}}$ this estimator is biased.
 
 \bibliographystyle{unsrt}
 \bibliography{BIBLIO}

@@ -43,7 +43,7 @@ function main()
     plt.plot(Nsizes, σ2_true*(1.0 .- 2.0./Nsizes), label="theoretical") # expectation value
     plt.legend()
     plt.grid(true)
-    plt.savefig("IMG_w_variation.pdf")
+    plt.savefig("IMG_ex_w_variation.pdf")
 
 end
 

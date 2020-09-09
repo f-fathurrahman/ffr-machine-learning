@@ -14,9 +14,9 @@ function main(Norder)
     N = 100 # Number of training points
 
     x = sort( 10.0*rand(N) .- 5 )
-    t = 5*x.^3 .- x.^2 .+ x
-    σ2_true = 300.0
-    t = t + randn(N)*sqrt(σ2_true)
+    t = 5*x.^3 .- x.^2 .+ x # true model
+    σ2_true = 300.0         # true noise parameter
+    t = t + randn(N)*sqrt(σ2_true) # μ of noise is 0
 
     #plt.clf()
     #plt.plot(x, t, marker="o", linestyle="None", label="training data")
@@ -42,7 +42,7 @@ function main(Norder)
         end
     end
     # Calculate estimate of w
-    w = inv(X' * X) * X' * t
+    w = inv(X' * X) * X' * t # model parameter
     # Calculate estimate of σ2
     σ2 = (t'*t - t'*X*w)/Ndata
 
@@ -55,7 +55,7 @@ function main(Norder)
             X_test[i,n+1] = x_test[i]^n
         end
     end
-    μ_test = X_test*w
+    μ_test = X_test*w # t_new
     σ2_test = zeros(NdataTest)
     XtXinv = inv(X'*X)
     for i in 1:NdataTest

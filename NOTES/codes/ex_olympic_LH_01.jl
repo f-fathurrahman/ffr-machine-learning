@@ -30,7 +30,7 @@ function main()
     plt.grid(true)
     plt.xlabel("\$t\$ (seconds)")
     plt.ylabel("\$p(t|x)\$")
-    plt.savefig("IMG_example_LLH.pdf")
+    plt.savefig("IMG_ex_olympic100_LLH.pdf")
 end
 
 main()
