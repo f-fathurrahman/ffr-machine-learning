@@ -1,0 +1,210 @@
+%\documentclass[a4paper,11pt]{article} % print setting
+\documentclass[a4paper,11pt]{article} % screen setting
+
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+%\usepackage{cmbright}
+%\renewcommand{\familydefault}{\sfdefault}
+
+%\usepackage{fontspec}
+\usepackage[libertine]{newtxmath}
+\usepackage[no-math]{fontspec}
+\setmainfont{Linux Libertine O}
+%\setmonofont{DejaVu Sans Mono}
+\setmonofont{JuliaMono-Regular}
+
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{minted}
+
+\newminted{julia}{breaklines,fontsize=\footnotesize}
+\newminted{python}{breaklines,fontsize=\footnotesize}
+
+\newminted{bash}{breaklines,fontsize=\footnotesize}
+\newminted{text}{breaklines,fontsize=\footnotesize}
+
+\newcommand{\txtinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{text}{#1}}
+\newcommand{\jlinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{julia}{#1}}
+\newcommand{\pyinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{python}{#1}}
+
+\newmintedfile[juliafile]{julia}{breaklines,fontsize=\footnotesize}
+\newmintedfile[pythonfile]{python}{breaklines,fontsize=\footnotesize}
+
+\definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
+\usepackage{mdframed}
+\BeforeBeginEnvironment{minted}{
+    \begin{mdframed}[backgroundcolor=mintedbg,%
+        topline=false,bottomline=false,%
+        leftline=false,rightline=false]
+}
+\AfterEndEnvironment{minted}{\end{mdframed}}
+
+
+\usepackage{setspace}
+
+\onehalfspacing
+
+\usepackage{appendix}
+
+
+\newcommand{\highlighteq}[1]{\colorbox{blue!25}{$\displaystyle#1$}}
+\newcommand{\highlight}[1]{\colorbox{red!25}{#1}}
+
+
+
+\begin{document}
+
+
+\title{Linear Modeling - Bayesian Approach\\
+TF4063}
+\author{Fadjar Fathurrahman}
+\date{}
+\maketitle
+
+The material in this note is based on \cite{Rogers2017}.
+
+\section{Bayesian approach to Olympic 100m data}
+
+Model:
+\begin{equation}
+t_{n} = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{n} + \epsilon_{n}
+\end{equation}
+where $\mathbf{w} = \left[ w_{0}, \ldots, w_{K} \right]^{\mathsf{T}}$
+$\mathbf{x}_{n} = \left[ 1, x_{n}, x^{2}_{n}, \ldots, x_{n}^{K} \right]$.
+Combining all inputs into a single matrix
+$\mathbf{X} = \left[ \mathbf{x}_{1}, \ldots, \mathbf{x}_{N} \right]$
+we can write:
+\begin{equation}
+\mathbf{t} = \mathbf{Xw} + \boldsymbol{\epsilon}
+\end{equation}
+Assume that we know the true value of $\sigma^2$.
+
+Bayes' rule:
+\begin{align}
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2, \Delta) & = 
+\frac{p(\mathbf{t}|\mathbf{w},\mathbf{X},\sigma^2,\Delta) p(\mathbf{w} | \Delta)}%
+{p(\mathbf{t} | \mathbf{X},\sigma^2,\Delta)} \\
+& = \frac{p(\mathbf{t}|\mathbf{w},\mathbf{X},\sigma^2) p(\mathbf{w} | \Delta)}%
+{p(\mathbf{t} | \mathbf{X},\sigma^2,\Delta)}
+\end{align}
+where $\Delta$ corresponds to some set of parameters required to define the prior
+over $\mathbf{w}$ that will be defined more precisely later.
+
+Expanding the marginal likelihood:
+\begin{equation}
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2, \Delta) = 
+\frac{p(\mathbf{t}|\mathbf{w},\mathbf{X},\sigma^2) p(\mathbf{w} | \Delta)}%
+{\int p(\mathbf{t} | \mathbf{X},\sigma^2) p(\mathbf{w}|\Delta)\,\mathrm{d}\mathbf{w}}
+\end{equation}
+
+We are interested in making predictions which will involve taking an expectation
+w.r.t this posterior density.
+For a set of attributes $\mathbf{x}_{\mathrm{new}}$ corresponding to a new Olympic
+year, the density over the associated winning time $t_{\mathrm{new}}$ is given
+by
+\begin{equation}
+p(t_{\mathrm{new}} | \mathbf{x}_{\mathrm{new}},\mathbf{X}, \mathbf{t}, \sigma^2,\Delta) =
+\int p(t_{\mathrm{new}} | \mathbf{x}_{\mathrm{new}}, \mathbf{w}, \sigma^2)
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2, \Delta)\,\mathrm{d}\mathbf{w}
+\end{equation}
+
+The likelihood
+\begin{equation}
+p(\mathbf{t} | \mathbf{w}, \mathbf{X}, \sigma^2 ) =
+\mathcal{N}( \mathbf{Xw}, \sigma^2\mathbf{I}_{N} )
+\end{equation}
+
+Prior:
+\begin{equation}
+p(\mathbf{w} | \boldsymbol{\mu}_{0}, \boldsymbol{\Sigma}_{0}) = 
+\mathcal{N}(\boldsymbol{\mu}_{0}, \boldsymbol{\Sigma}_{0})
+\end{equation}
+
+The posterior:
+\begin{equation}
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2) \propto
+p(\mathbf{t} | \mathbf{w}, \mathbf{X}, \sigma^2)
+p(\mathbf{w} | \boldsymbol{\mu}_{0}, \boldsymbol{\Sigma}_{0})
+\end{equation}
+
+Writing the likelihood as
+\begin{equation}
+p(\mathbf{t} | \mathbf{w}, \mathbf{X}, \sigma^2) = 
+\frac{1}{(2\pi)^{N/2} \left|\sigma^2\mathbf{I}\right|^{1/2}}
+\exp\left(
+-\frac{1}{2}(\mathbf{t} - \mathbf{Xw})^{\mathsf{T}}
+(\sigma^2\mathbf{I})^{-1}
+(\mathbf{t} - \mathbf{Xw})
+\right)
+\end{equation}
+
+and the prior as
+\begin{equation}
+p(\mathbf{w} | \boldsymbol{\mu}_{0}, \boldsymbol{\Sigma}_{0}) =
+\frac{1}{(2\pi)^{N/2} \left|\boldsymbol{\Sigma}_{0}\right|^{1/2}}
+\exp\left(
+-\frac{1}{2}(\mathbf{w} - \boldsymbol{\mu}_{0})^{\mathsf{T}}
+\boldsymbol{\Sigma}_{0}^{-1}
+(\mathbf{w} - \boldsymbol{\mu}_{0})
+\right)
+\end{equation}
+
+The posterior
+\begin{equation}
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2) \propto
+\exp\left\{
+-\frac{1}{2} \left(
+\frac{1}{\sigma^2}(\mathbf{t} - \mathbf{Xw})^{\mathsf{T}}
+(\mathbf{t} - \mathbf{Xw}) +
+(\mathbf{w} - \boldsymbol{\mu}_{0})^{\mathsf{T}}
+\boldsymbol{\Sigma}_{0}^{-1}
+(\mathbf{w} - \boldsymbol{\mu}_{0})
+\right)
+\right\}
+\end{equation}
+
+We know that the posterior will be Gaussian. We can remove the constants
+and rearrange an expression for a multivariate Gaussian
+\begin{align}
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2) & =
+\mathcal{N}(\boldsymbol{\mu}_{\mathbf{w}},\boldsymbol{\Sigma}_{\mathbf{w}}) \\
+& = \exp\left(
+-\frac{1}{2}(\mathbf{w} - \boldsymbol{\mu}_{\mathbf{w}})^{\mathsf{T}}
+\boldsymbol{\Sigma}^{-1}_{\mathbf{w}}
+(\mathbf{w} - \boldsymbol{\mu}_{\mathbf{w}})
+\right)
+\end{align}
+
+\begin{equation}
+\boldsymbol{\Sigma}_{\mathbf{w}} = \left(
+\frac{1}{\sigma^2}\mathbf{X}^{\mathsf{T}}\mathbf{X} + \boldsymbol{\Sigma}^{-1}_{0}
+\right)^{-1}
+\end{equation}
+
+
+Similarly:
+\begin{equation}
+\boldsymbol{\mu}_{\mathbf{w}} = \boldsymbol{\Sigma}_{\mathbf{w}}
+\left(
+\frac{1}{\sigma^2}\mathbf{X}^{\mathsf{T}}\mathbf{t} +
+\boldsymbol{\Sigma}_{0}^{-1}\boldsymbol{\mu}_{0}
+\right)
+\end{equation}
+
+\bibliographystyle{unsrt}
+\bibliography{BIBLIO}
+
+\end{document}
