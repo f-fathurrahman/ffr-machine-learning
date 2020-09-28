@@ -6,8 +6,8 @@ def eval_gauss2d(μ, Σ, x, y):
     Sinv = np.linalg.inv(Σ)
     w = np.array([x, y])
     wmu = w - μ
-    C1 = np.matmul(Σ, wmu)
-    C2 = -0.5*np.matmul(wmu.transpose(), C1)
+    C1 = np.matmul(Sinv, wmu)
+    C2 = -0.5*np.dot(wmu, C1)
     return np.exp(C2)/(2*np.pi*np.sqrt(D))
 
 μ = np.array([0.0, 0.1])

@@ -8,17 +8,8 @@ matplotlib.style.use("ggplot")
 
 np.random.seed(1234)
 
-
-def eval_gauss2d(μ, Σ, x, y):
-    D = np.linalg.det(Σ)
-    Sinv = np.linalg.inv(Σ)
-    w = np.array([x, y])
-    wmu = w - μ
-    C1 = np.matmul(Σ, wmu)
-    C2 = -0.5*np.dot(wmu, C1)
-    return np.exp(C2)/(2*np.pi*np.sqrt(D))
-
-def plot_gauss_contour(μ, Σ, xlim, ylim, Nx=101, Ny=101, filesave="IMG_contour.png"):
+# NOTE: plt.clf() and plt.savefig() should be called manually
+def plot_gauss_contour(μ, Σ, xlim, ylim, Nx=101, Ny=101):
     #
     x = np.linspace(xlim[0], xlim[1], Nx)
     y = np.linspace(ylim[0], ylim[1], Ny)
@@ -27,12 +18,10 @@ def plot_gauss_contour(μ, Σ, xlim, ylim, Nx=101, Ny=101, filesave="IMG_contour
     # Evaluate by loop
     for i in range(Nx):
         for j in range(Ny):
-            Z[i,j] = mvn.pdf([ x[i], y[j] ])
-    plt.clf()
+            Z[i,j] = mvn.pdf( [x[i], y[j]])
     plt.contour(x, y, np.transpose(Z), 20)
-    #plt.axis("equal")
-    plt.savefig(filesave, dpi=150)
-
+    plt.xlabel("$w_0$")
+    plt.ylabel("$w_1$")
 
 # x: input/feature vector
 # Norder: polynomial order
@@ -58,10 +47,9 @@ x = data[:,0]
 x = x - x[0]
 x = 0.25*x
 
-# Define the prior
-# $p(\mathbf{w}) = {\cal N}(\mu_0,\Sigma_0)
+# Define the prior distribution
 μ_0 = np.array([0.0, 0.0])
-Σ_0 = np.array([ [100, 0.0], [0.0, 5] ])
+Σ_0 = np.array([ [5.0, 0.0], [0.0, 5.0] ])
 σ2 = 2.0 # Vary this to see the effect on the posterior samples
 
 # Draw some functions from the prior
@@ -85,13 +73,10 @@ plt.xlim(xlim)
 plt.ylim(ylim)
 plt.savefig("IMG_sample_01.pdf")
 
-plot_gauss_contour(μ_0, Σ_0, [9, 13], [-0.2, 0.2],
-    filesave="IMG_contour_0.png")
 
 # Add the data 3 points at a time
 NsamplesTry = np.arange(3,27+1,3)
 for Nsample in NsamplesTry:
-    #for Nsample in [3]:
     #
     Xsub = X[:Nsample,:]
     tsub = t[:Nsample]
@@ -123,5 +108,10 @@ for Nsample in NsamplesTry:
     plt.savefig("IMG_sample_used_" + str(Nsample) + ".pdf")
     plt.savefig("IMG_sample_used_" + str(Nsample) + ".png", dpi=150)
     #
-    plot_gauss_contour(μ_w, Σ_w, [9, 13], [-0.2, 0.2],
-        filesave="IMG_contour_" + str(Nsample) + ".png")
+    # Plot the contour plot
+    #
+    plt.clf()
+    plot_gauss_contour(μ_0, Σ_0, [9, 13], [-0.2, 0.2])
+    plot_gauss_contour(μ_w, Σ_w, [9, 13], [-0.2, 0.2])
+    plt.savefig("IMG_contour_" + str(Nsample) + ".png", dpi=150)
+
