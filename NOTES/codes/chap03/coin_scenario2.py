@@ -59,7 +59,6 @@ for i in range(len(toss_data)):
     filesave = "IMG_coin_02_toss_data_{:04d}.png".format(i+1)
     plt.savefig(filesave, dpi=150)
 
-
 # Incorporate another 10 data
 plt.clf()
 plt.plot(r, betapdf(r, post_α, post_β), linestyle='--', label="Posterior after 10")

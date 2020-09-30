@@ -30,6 +30,13 @@ x = np.sort(x)
 t = 5*x**3 - x**2 + x
 t = t + np.random.randn(N)*np.sqrt(σ2_true)
 
+# Only use some set of data
+idx_use = np.logical_or( x < 0.0, x > 2.0 )
+x = x[idx_use]
+t = t[idx_use]
+N = len(t)
+
+
 plt.clf()
 plt.plot(x, t, marker="o", linestyle="None", label="data")
 plt.legend()

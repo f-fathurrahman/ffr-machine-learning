@@ -1,8 +1,7 @@
-%\documentclass[a4paper,11pt]{article} % print setting
 \documentclass[a4paper,11pt]{article} % screen setting
 
 \usepackage[a4paper]{geometry}
-\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=7.5cm}
 
 \setlength{\parskip}{\smallskipamount}
 \setlength{\parindent}{0pt}
@@ -78,7 +77,7 @@ The material in this note is based on \cite{Rogers2017}.
 
 \section{Bayesian approach to Olympic 100m data}
 
-Model:
+Let's revisit our linear model:
 \begin{equation}
 t_{n} = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{n} + \epsilon_{n}
 \end{equation}
@@ -90,9 +89,17 @@ we can write:
 \begin{equation}
 \mathbf{t} = \mathbf{Xw} + \boldsymbol{\epsilon}
 \end{equation}
-Assume that we know the true value of $\sigma^2$.
 
-Bayes' rule:
+As opposed to the maximum likelihood approach that we have used before,
+we will now treat the model parameters, i.e. $\mathbf{w}$, as random variables.
+To simplify the analysis, however, we will assume that we know the true value
+of $\sigma^2$.
+
+The quantity that will be focusing on is
+\begin{equation}
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2, \Delta)
+\end{equation}
+which can be calculated using Bayes' rule
 \begin{align}
 p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2, \Delta) & = 
 \frac{p(\mathbf{t}|\mathbf{w},\mathbf{X},\sigma^2,\Delta) p(\mathbf{w} | \Delta)}%
@@ -121,63 +128,32 @@ p(t_{\mathrm{new}} | \mathbf{x}_{\mathrm{new}},\mathbf{X}, \mathbf{t}, \sigma^2,
 p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2, \Delta)\,\mathrm{d}\mathbf{w}
 \end{equation}
 
-The likelihood
+Now, let's consider the terms involved in the Bayes' rule expression.
+
+\subsection{The likelihood}
+The likelihood $p(\mathbf{t}, \mathbf{X}, \sigma^2)$ is the quantity that we
+maximized previously, i.e.
 \begin{equation}
 p(\mathbf{t} | \mathbf{w}, \mathbf{X}, \sigma^2 ) =
 \mathcal{N}( \mathbf{Xw}, \sigma^2\mathbf{I}_{N} )
 \end{equation}
+The likelihood is $N$-dimensional Gaussian density with mean $\mathbf{Xw}$ and
+variance $\sigma^2\mathbf{I}_{N}$
 
-Prior:
+\subsection{The prior}
+Because we are interested in being able to produce an exact expression for the posterior,
+we will choose the prior as Gaussian:
 \begin{equation}
 p(\mathbf{w} | \boldsymbol{\mu}_{0}, \boldsymbol{\Sigma}_{0}) = 
 \mathcal{N}(\boldsymbol{\mu}_{0}, \boldsymbol{\Sigma}_{0})
 \end{equation}
+where the parameters $\Delta = \{ \boldsymbol{\mu}_{0}, \boldsymbol{\Sigma}_{0}\}$
+will be chosen later.
 
-The posterior:
-\begin{equation}
-p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2) \propto
-p(\mathbf{t} | \mathbf{w}, \mathbf{X}, \sigma^2)
-p(\mathbf{w} | \boldsymbol{\mu}_{0}, \boldsymbol{\Sigma}_{0})
-\end{equation}
-
-Writing the likelihood as
-\begin{equation}
-p(\mathbf{t} | \mathbf{w}, \mathbf{X}, \sigma^2) = 
-\frac{1}{(2\pi)^{N/2} \left|\sigma^2\mathbf{I}\right|^{1/2}}
-\exp\left(
--\frac{1}{2}(\mathbf{t} - \mathbf{Xw})^{\mathsf{T}}
-(\sigma^2\mathbf{I})^{-1}
-(\mathbf{t} - \mathbf{Xw})
-\right)
-\end{equation}
-
-and the prior as
-\begin{equation}
-p(\mathbf{w} | \boldsymbol{\mu}_{0}, \boldsymbol{\Sigma}_{0}) =
-\frac{1}{(2\pi)^{N/2} \left|\boldsymbol{\Sigma}_{0}\right|^{1/2}}
-\exp\left(
--\frac{1}{2}(\mathbf{w} - \boldsymbol{\mu}_{0})^{\mathsf{T}}
-\boldsymbol{\Sigma}_{0}^{-1}
-(\mathbf{w} - \boldsymbol{\mu}_{0})
-\right)
-\end{equation}
-
-The posterior
-\begin{equation}
-p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2) \propto
-\exp\left\{
--\frac{1}{2} \left(
-\frac{1}{\sigma^2}(\mathbf{t} - \mathbf{Xw})^{\mathsf{T}}
-(\mathbf{t} - \mathbf{Xw}) +
-(\mathbf{w} - \boldsymbol{\mu}_{0})^{\mathsf{T}}
-\boldsymbol{\Sigma}_{0}^{-1}
-(\mathbf{w} - \boldsymbol{\mu}_{0})
-\right)
-\right\}
-\end{equation}
-
-We know that the posterior will be Gaussian. We can remove the constants
-and rearrange an expression for a multivariate Gaussian
+\subsection{The posterior}
+Because the likelihood and the posterior are Gaussians, the posterior will also be
+a (multivariate) Gaussian.
+It can be shown that the posterior is
 \begin{align}
 p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2) & =
 \mathcal{N}(\boldsymbol{\mu}_{\mathbf{w}},\boldsymbol{\Sigma}_{\mathbf{w}}) \\
@@ -187,15 +163,13 @@ p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2) & =
 (\mathbf{w} - \boldsymbol{\mu}_{\mathbf{w}})
 \right)
 \end{align}
-
+with covariance matrix:
 \begin{equation}
 \boldsymbol{\Sigma}_{\mathbf{w}} = \left(
 \frac{1}{\sigma^2}\mathbf{X}^{\mathsf{T}}\mathbf{X} + \boldsymbol{\Sigma}^{-1}_{0}
 \right)^{-1}
 \end{equation}
-
-
-Similarly:
+and mean vector:
 \begin{equation}
 \boldsymbol{\mu}_{\mathbf{w}} = \boldsymbol{\Sigma}_{\mathbf{w}}
 \left(
@@ -203,6 +177,31 @@ Similarly:
 \boldsymbol{\Sigma}_{0}^{-1}\boldsymbol{\mu}_{0}
 \right)
 \end{equation}
+
+Given the new observation $\mathbf{x}_{\mathrm{new}}$, we can make
+predicition as expectation
+\begin{equation*}
+p(t_{\mathbf{new}} | \mathbf{x}_{\mathrm{new}}, \mathbf{X}, \mathbf{t}, \sigma^2) =
+\int p(t_{\mathbf{new}} | \mathbf{x}_{\mathrm{new}}, \mathbf{w}, \sigma^2)
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}, \sigma^2)\,\mathrm{d}\mathbf{w}
+\end{equation*}
+By our model this is defined as the product of $\mathbf{x}_{\mathrm{new}}$
+and $\mathbf{w}$ with some additive Gaussian noise:
+\begin{equation*}
+p(t_{\mathbf{new}} | \mathbf{x}_{\mathrm{new}}, \mathbf{X}, \mathbf{t}, \sigma^2) =
+\mathcal{N}(\mathbf{x}_{\mathrm{new}}^{\mathsf{T}}\mathbf{w}, \sigma^2)
+\end{equation*}
+Because this expression and the posterior are both Gaussian, the result of the
+integral is another Gaussian. In general, if
+$p(\mathbf{w}|\boldsymbol{\mu},\boldsymbol{\Sigma}) =
+\mathcal{N}(\boldsymbol{\mu},\boldsymbol{\Sigma})$, then the expectation
+is another Gaussian density
+\begin{equation}
+\mathcal{N}(\mathbf{x}_{\mathrm{new}}\boldsymbol{\mu}_{\mathbf{w}},
+\mathbf{x}_{\mathrm{new}}^{\mathsf{T}}\boldsymbol{\Sigma}_{\mathbf{w}}
+\mathbf{x}_{\mathrm{new}})
+\end{equation}
+
 
 \bibliographystyle{unsrt}
 \bibliography{BIBLIO}

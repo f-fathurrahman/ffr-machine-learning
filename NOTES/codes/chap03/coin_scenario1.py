@@ -6,15 +6,17 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.style.use("ggplot")
 
+# Load data
 mat_data = scipy.io.loadmat("../../../DATA/coin_data.mat")
-
+# Change to 1d array
 toss_data = mat_data["toss_data"].flatten()
 toss_data2 = mat_data["toss_data2"].flatten()
 big_data = mat_data["big_data"].flatten()
+# Data 1 dan 0
 
 # Plot the prior density
-α = 1.0;
-β = 1.0;
+α = 1.0
+β = 1.0
 
 print("Prior parameters: α: %g, β: %g" % (α, β))
 
@@ -40,7 +42,7 @@ for i in range(len(toss_data)):
     plt.clf()
     #mydist = scipy.stats.beta(post_α, post_β)
     plt.plot(r, betapdf(r, post_α, post_β), linestyle="--", label="Prev posterior")
-    #
+    # Update α and β of the posterior
     post_α = post_α + toss_data[i]
     post_β = post_β + 1.0 - toss_data[i]
     print("Data: %3d α = %f, β = %f" % (i+1, post_α, post_β))

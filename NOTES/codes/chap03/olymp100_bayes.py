@@ -50,7 +50,7 @@ x = 0.25*x
 # Define the prior distribution
 μ_0 = np.array([0.0, 0.0])
 Σ_0 = np.array([ [5.0, 0.0], [0.0, 5.0] ])
-σ2 = 2.0 # Vary this to see the effect on the posterior samples
+σ2 = 0.1 # Vary this to see the effect on the posterior samples
 
 # Draw some functions from the prior
 W = np.random.multivariate_normal(μ_0, Σ_0, 10)
