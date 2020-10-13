@@ -1,0 +1,109 @@
+\documentclass[a4paper,11pt]{article} % screen setting
+
+\usepackage[a4paper]{geometry}
+%\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=7.5cm}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+%\usepackage{cmbright}
+%\renewcommand{\familydefault}{\sfdefault}
+
+%\usepackage{fontspec}
+\usepackage[libertine]{newtxmath}
+\usepackage[no-math]{fontspec}
+\setmainfont{Linux Libertine O}
+%\setmonofont{DejaVu Sans Mono}
+\setmonofont{JuliaMono-Regular}
+
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{minted}
+
+\newminted{julia}{breaklines,fontsize=\footnotesize}
+\newminted{python}{breaklines,fontsize=\footnotesize}
+
+\newminted{bash}{breaklines,fontsize=\footnotesize}
+\newminted{text}{breaklines,fontsize=\footnotesize}
+
+\newcommand{\txtinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{text}{#1}}
+\newcommand{\jlinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{julia}{#1}}
+\newcommand{\pyinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{python}{#1}}
+
+\newmintedfile[juliafile]{julia}{breaklines,fontsize=\footnotesize}
+\newmintedfile[pythonfile]{python}{breaklines,fontsize=\footnotesize}
+
+\definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
+\usepackage{mdframed}
+\BeforeBeginEnvironment{minted}{
+    \begin{mdframed}[backgroundcolor=mintedbg,%
+        topline=false,bottomline=false,%
+        leftline=false,rightline=false]
+}
+\AfterEndEnvironment{minted}{\end{mdframed}}
+
+
+\usepackage{setspace}
+
+\onehalfspacing
+
+\usepackage{appendix}
+
+
+\newcommand{\highlighteq}[1]{\colorbox{blue!25}{$\displaystyle#1$}}
+\newcommand{\highlight}[1]{\colorbox{red!25}{#1}}
+
+
+\begin{document}
+
+
+\title{Ujian Tengah Semester \\
+TF4063 Sains Data dan Rekayasa}
+\author{}
+\date{14 Oktober 2020}
+\maketitle
+
+\begin{enumerate}
+%
+\item Jelaskan mengenai tiga cara pendekatan berikut untuk menentukan parameter model
+pada mesin pembelajar:
+  \begin{itemize}
+  \item \textit{loss function minimization}
+  \item \textit{maximum likelihood}
+  \item \textit{Bayesian approach}
+  \end{itemize}
+%
+\item (Kode Python) Buatlah data sintetik dengan menggunakan polinom: $f(x)=5x^3 - x^2 + x$ dan
+diberikan noise Gaussian dengan $\mu=0$ dan $\sigma^2=300$. Ambil 100 nilai $x$
+dari distribusi acak seragam dalam rentang $-5 < x < 5$. Gunakan hanya data dengan
+$x < 0$ dan $x > 2$, artinya data yang berada pada $0 \geq x \geq 2$ akan dibuang.
+Gunakan pendekatan \textit{maximum likelihood} untuk melakukan pemodelan pada data
+ini dengan menggunakan polinom dengan orde 1 sampai dengan 8. Plot hasil yang Anda
+peroleh beserta error bar yang terkait. Lengkapi jawaban Anda dengan kode Python
+dan persamaan terkait yang digunakan (tidak perlu penurunan). Hasil yang Anda dapatkan
+akan mereproduksi Gambar 2.17 pada buku Girolami-Rogers.
+%
+\item Jelaskan mengenai empat distribusi probabilitas yang terlibat
+pada aturan Bayes (dalam kaitannya
+dengan penentuan parameter model)
+\begin{align}
+p(\mathbf{w} | \mathbf{t}) = 
+\frac{p(\mathbf{t}|\mathbf{w}) p(\mathbf{w})}{p(\mathbf{t})}
+\end{align}
+%
+\item Jelaskan secara singkat tiga cara (aproksimasi) yang dapat dilakukan
+untuk menentukan parameter model dengan pendekatan Bayesian jika distribusi
+yang terlibat bukan konjugat.
+%
+\end{enumerate}
+
+\end{document}
