@@ -1,0 +1,337 @@
+\documentclass[english,10pt,aspectratio=169,fleqn]{beamer}
+
+\usepackage{amsmath} % load this before unicode-math
+\usepackage{amssymb}
+\usepackage{mathabx}
+%\usepackage{unicode-math}
+
+\usepackage{fontspec}
+\setmonofont{DejaVu Sans Mono}
+%\setmathfont{STIXMath}
+%\setmathfont{TeX Gyre Termes Math}
+
+\usefonttheme[onlymath]{serif}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+%\setbeamersize{text margin left=5pt, text margin right=5pt}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+
+\usepackage{minted}
+\newminted{julia}{breaklines,fontsize=\scriptsize,texcomments=true}
+\newminted{python}{breaklines,fontsize=\scriptsize,texcomments=true}
+\newminted{bash}{breaklines,fontsize=\scriptsize,texcomments=true}
+\newminted{text}{breaklines,fontsize=\scriptsize,texcomments=true}
+
+\newcommand{\txtinline}[1]{\mintinline[fontsize=\scriptsize]{text}{#1}}
+\newcommand{\jlinline}[1]{\mintinline[fontsize=\scriptsize]{julia}{#1}}
+
+\definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
+\usepackage{mdframed}
+
+%\BeforeBeginEnvironment{minted}{\begin{mdframed}[backgroundcolor=mintedbg]}
+%\AfterEndEnvironment{minted}{\end{mdframed}}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\makeatletter
+
+ \newcommand\makebeamertitle{\frame{\maketitle}}%
+ % (ERT) argument for the TOC
+ \AtBeginDocument{%
+   \let\origtableofcontents=\tableofcontents
+   \def\tableofcontents{\@ifnextchar[{\origtableofcontents}{\gobbletableofcontents}}
+   \def\gobbletableofcontents#1{\origtableofcontents}
+ }
+
+\makeatother
+
+\usepackage{babel}
+
+\begin{document}
+
+
+\title{Bayesian Inference (Overview to Homework)}
+\subtitle{TF4063}
+\author{Fadjar Fathurrahman}
+\institute{
+Program Studi Teknik Fisika\\
+Institut Teknologi Bandung
+}
+\date{}
+
+
+\frame{\titlepage}
+
+
+\begin{frame} % ---------------------------------------------------------------
+\frametitle{An example of nonconjugate models: binary response}
+
+\begin{columns}
+
+\begin{column}{0.5\textwidth}
+{\centering
+\includegraphics[scale=1.0]{images_priv/Rogers_Fig_4_1.pdf}
+\par}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item Data has two attributes: $x_1$ and $x_2$.
+\item Target only has two possible values: circle (0) or square (1).
+\item This is a binary classification problem.
+\end{itemize}
+\end{column}
+
+\end{columns}
+
+\end{frame} % -----------------------------------------------------------------
+
+
+
+\begin{frame} % ---------------------------------------------------------------
+\frametitle{Model}
+
+The following representation will be used for our data
+\begin{equation*}
+\mathbf{x}_{n} = \begin{bmatrix}
+x_{n1} \\
+x_{n2}
+\end{bmatrix},\,\,
+\mathbf{w} = \begin{bmatrix}
+w_{1} \\
+w_{2}
+\end{bmatrix},\,\,
+\mathbf{X} = \begin{bmatrix}
+x_{1}^{\mathsf{T}} \\
+x_{1}^{\mathsf{T}} \\
+\vdots \\
+x_{N}^{\mathsf{T}}
+\end{bmatrix}
+\end{equation*}
+%
+Our model (with parameters $\mathbf{w}$) will allow us to predict $t_{\mathrm{new}}$
+for some new observation $\mathbf{x}_{\mathrm{new}}$.
+
+We need to compute the posterior density over the parameters of the model.
+According to Bayes' rule, this is calculated as
+\begin{equation*}
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}) =
+\frac{p(\mathbf{t}|\mathbf{X},\mathbf{w}) p(\mathbf{w})}%
+{p(\mathbf{t}|\mathbf{X})}
+\end{equation*}
+%
+Marginal likelihood
+\begin{equation*}
+p(\mathbf{t}|\mathbf{X}) = \int p(\mathbf{t} | \mathbf{X}, \mathbf{w})
+p(\mathbf{w})\,\mathrm{d}\mathbf{w}
+\end{equation*}
+
+\end{frame}
+
+
+\begin{frame} % ----------------------------------------------
+\frametitle{Prior and likelihood}
+
+We will use Gaussian density for the prior.
+\begin{equation*}
+p(\mathbf{w} | \sigma^2) = \mathcal{N}(\mathbf{0},\sigma^2\mathbf{I})
+\end{equation*}
+
+Assuming that the elements of $\mathbf{t}$ are conditionally independent,
+the likelihood can be written as
+\begin{equation*}
+p(\mathbf{t} | \mathbf{X}, \mathbf{w}) = \prod_{n=1}^{N}
+p(t_{n} | \mathbf{x}_{n}, \mathbf{w})
+\end{equation*}
+where $t_{n}$ are a binary variable indicating the class (0 or 1) of the $n$-th
+object.
+
+$t_{n}$ will be modeled using binary random variable, $T_{n}$ which is characterized
+by the probability that the class is 1 (the probability of belonging to class 0 is
+1 minus the probability of belonging to class 1). Therefore, we can write each of
+the $n$ likelihood terms as a probability.
+\begin{equation*}
+p(\mathbf{t} | \mathbf{X}, \mathbf{w}) = \prod_{n=1}^{N}
+P(T_{n}=t_{n} | \mathbf{x}_{n}, \mathbf{w})
+\end{equation*}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Likelihood}
+
+Our task now is to choose a function of $\mathbf{x}_{n}$ and $\mathbf{w}$
+that produces a probability.
+
+A popular technique is to take a simple linear
+function, such as
+$f(\mathbf{x}_{n};\mathbf{w}) = \mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}$,
+and then pass the result through a second function that squashes its output
+to ensure it produces a valid probability.
+
+One example of such squashing function is the \textit{sigmoid} function.
+The probability of getting $T_{n}=1$ thus can be written as
+\begin{equation*}
+P(T_{n}=1 | \mathbf{x}_{n},\mathbf{w}) =
+\frac{1}{1 + \exp(-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n})}
+\end{equation*}
+The probability of getting $T_{n}=0$ can be computed from
+\begin{align*}
+P(T_{n}=0 | \mathbf{x}_{n},\mathbf{w}) & = 1 - P(T_{n}=1 | \mathbf{x}_{n},\mathbf{w})
+ = 1 - \frac{1}{1 + \exp(-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n})} \\
+& = \frac{\exp(-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n})}%
+{1 + \exp(-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n})}
+\end{align*}
+
+\end{frame}
+
+
+\begin{frame} % --------------------------------------------------------------
+\frametitle{Likelihood}
+
+We can combine the two probabilities to produce a single expression
+\begin{equation*}
+P(T_{n}=t_{n} | \mathbf{x}_{n}, \mathbf{w}) = 
+P(T_{n}=1 | \mathbf{x}_{n}, \mathbf{w})^{t_{n}}
+P(T_{n}=0 | \mathbf{x}_{n}, \mathbf{w})^{1-t_{n}}
+\end{equation*}
+where the observed data $t_{n}$ switches the relevant term on and
+the other off.
+
+Substituting this to the expression for the likelihood, we obtain:
+\begin{equation*}
+P(\mathbf{t} | \mathbf{X}, \mathbf{w}) = \prod_{n=1}^{N}
+\left( \frac{1}{1 + \exp(-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n})} \right)^{t_{n}}
+\left( \frac{\exp(-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n})}%
+{1 + \exp(-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n})} \right)^{1-t_{n}}
+\end{equation*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Posterior}
+
+Once we have the posterior density, $p(\mathbf{w}|\mathbf{X},\mathbf{t},\sigma^2)$,
+we can predict the response (class) of the new objects by taking an expectation w.r.t
+this density.
+\begin{equation*}
+P(t_{\mathrm{new}}=1 | \mathbf{x}_{new},\mathbf{X},\mathbf{t}) =
+\mathbf{E}_{p(\mathbf{w}|\mathbf{X},\mathbf{t},\sigma^2)}
+\left\{
+\frac{1}{1 + \exp(-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n})}
+\right\}
+\end{equation*}
+
+In practice, this is not straigtforward. The posterior is not of any standard
+form. To evaluate the posterior at a particular $\mathbf{w}$, we need to
+evaluate both the numerator and denominator.
+\begin{equation*}
+p(\mathbf{w} | \mathbf{t}, \mathbf{X}) =
+\frac{p(\mathbf{t}|\mathbf{X},\mathbf{w}) p(\mathbf{w})}%
+{p(\mathbf{t}|\mathbf{X})}
+\end{equation*}
+
+The denominator is the problem, as we cannot analytically perform the integration
+required to compute the marginal likelihood:
+\begin{equation*}
+Z^{-1} = p(\mathbf{t},\mathbf{X},\sigma^2) = 
+\int p(\mathbf{t}|\mathbf{X},\mathbf{w}) p(\mathbf{w}|\sigma^2)\,\mathrm{d}\mathbf{w}
+\end{equation*}
+
+\end{frame}
+
+
+\begin{frame} % ---------------------------------------------------------------
+\frametitle{Posterior}
+
+We have a function $g(\mathbf{w}; \mathbf{X},\mathbf{t},\sigma^2) \equiv
+p(\mathbf{t} | \mathbf{X},\mathbf{w}) p(\mathbf{w}|\sigma^2)$
+that we know is proportional to the posterior $p(\mathbf{w} | \mathbf{t}, \mathbf{X}, 
+\sigma^2) = Z g(\mathbf{w}; \mathbf{X},\mathbf{t},\sigma^2)$
+but we do not know the constant of proportionality $Z$.
+
+We are left with three options:
+\begin{itemize}
+\item Find the single value of $\mathbf{w}$ that corresponds to the highest
+value of the posterior.
+\item Approximate the posterior with other density that we can compute analytically.
+\item Sample directly from the posterior, knowing only
+$g(\mathbf{w}; \mathbf{X},\mathbf{t},\sigma^2)$
+\end{itemize}
+
+The first option is not very Bayesian – we will have to make predictions for new
+objects based on a single value of w and not a density. It is, however, easy to do and
+this makes it a popular technique.
+
+The second option leaves us with a density that
+is easy to work with (we can choose any density we like) but if the chosen density
+is very different from the posterior, our model will not be very reliable.
+
+The final
+option allows us to sample from the posterior (and hence get good approximations
+to any expectations that we might require) but can be difficult.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Result: 1st option}
+
+Find the maximum of $g(\mathbf{w},\mathbf{X},\mathbf{t})$ or
+$\log(g(\mathbf{w},\mathbf{X},\mathbf{t}))$.
+
+{\centering
+\includegraphics[scale=1.0]{images_priv/Rogers_Fig_4_4_b.pdf}
+\par}
+
+\end{frame}
+
+
+\begin{frame} % ---------------------------------------------------------------
+\frametitle{Result: 2nd option}
+
+Approximate the posterior with a Gaussian.
+
+{\centering
+\includegraphics[scale=1.0]{images_priv/Rogers_Fig_4_7_b.pdf}
+\par}
+\end{frame}
+
+
+\begin{frame} % ---------------------------------------------------------------
+\frametitle{Result: 3rd option}
+  
+Using Metropolis-Hastings sampling algorithm.
+  
+{\centering
+\includegraphics[scale=1.0]{images_priv/Rogers_Fig_4_12_e.pdf}
+\par}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Homework}
+
+\begin{itemize}
+\item Create Jupyter Notebook with documentation (narration)
+or scripts (Python) with report (in PDF format)
+to solve the binary classification problem
+described before using the three schemes described in Chap. 4 of Rogers and Girolami.
+\item Optional: test your programs using other dataset (for binary classification).
+Example:\\
+{\footnotesize\url{https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html}}
+\item Deadline: 21st Oct 2020.
+\item The homework can be done individually or collectively (in a group of two).
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}
+
