@@ -1,7 +1,7 @@
 import numpy as np
 
 n = 5
-m = 3
+m = 10
 
 X = np.random.rand(n,m)
 print("X = ")

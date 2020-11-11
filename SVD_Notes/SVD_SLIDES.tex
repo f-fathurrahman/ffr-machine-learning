@@ -73,16 +73,16 @@ Institut Teknologi Bandung
 \frametitle{SVD}
 
 A large data set $\mathbf{X} \in \mathbb{C}^{n \times m}$:
-\begin{equation}
+\begin{equation*}
 \mathbf{X} = \begin{bmatrix}
 \mathbf{x}_{1} & \mathbf{x}_{2} & \cdots & \mathbf{x}_{m} \\
 \end{bmatrix}
-\end{equation}
+\end{equation*}
 
 SVD is a unique matrix decomposition that is defined by:
-\begin{equation}
+\begin{equation*}
 \mathbf{X} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^{*}
-\end{equation}
+\end{equation*}
 where $\mathbf{U} \in \mathbb{C}^{n \times n}$ and
 $\mathbf{V} \in \mathbb{C}^{m \times m}$ are unitary matrices with orthonormal
 columns, and $\boldsymbol{\Sigma} \in \mathbb{R}^{n \times m}$ is a matrix with
@@ -91,7 +91,56 @@ real, nonnegative entries on the diagonal and zeros off the diagonal.
 \end{frame} % -----------------------------------------------------------------
 
 
+\begin{frame}[plain]
 
+\includegraphics[scale=0.8]{images_priv/Brunton_Fig_1_1.pdf}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Matrix approximation}
+
+SVD provides an optimal low-rank approximation to a matrix $\mathbf{X}$.
+
+The rank of a matrix is defined as (a) the maximum number of
+linearly independent column vectors in the matrix or
+(b) the maximum number of linearly independent row vectors in the matrix
+
+\begin{equation*}
+\tilde{\mathbf{X}} = \sum_{k=1}^{r} \sigma_{k} \mathbf{u}_{k} \mathbf{v}^{*}_{k}
+= \sigma_{1} \mathbf{u}_{1} \mathbf{v}^{*}_{1} +
+\sigma_{2} \mathbf{u}_{2} \mathbf{v}^{*}_{2} + \cdots
+\sigma_{r} \mathbf{u}_{r} \mathbf{v}_{r}
+\end{equation*}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+
+\includegraphics[scale=0.8]{images_priv/Brunton_Fig_1_2.pdf}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Example: Approximating an image}
+
+Gray scale image
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{}
+
+Linear system of equations:
+\begin{equation*}
+\mathbf{A}\mathbf{x} = \mathbf{b}
+\end{equation*}
+
+\end{frame}
 
 
 
