@@ -1,0 +1,97 @@
+%\documentclass[a4paper,11pt]{article} % print setting
+\documentclass[a4paper,11pt]{article} % screen setting
+
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=1.5cm}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+%\usepackage{cmbright}
+%\renewcommand{\familydefault}{\sfdefault}
+
+%\usepackage{fontspec}
+\usepackage[libertine]{newtxmath}
+\usepackage[no-math]{fontspec}
+\setmainfont{Linux Libertine O}
+%\setmonofont{DejaVu Sans Mono}
+\setmonofont{JuliaMono-Regular}
+
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{minted}
+
+\newminted{julia}{breaklines,fontsize=\footnotesize}
+\newminted{python}{breaklines,fontsize=\footnotesize}
+
+\newminted{bash}{breaklines,fontsize=\footnotesize}
+\newminted{text}{breaklines,fontsize=\footnotesize}
+
+\newcommand{\txtinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{text}{#1}}
+\newcommand{\jlinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{julia}{#1}}
+\newcommand{\pyinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{python}{#1}}
+
+\newmintedfile[juliafile]{julia}{breaklines,fontsize=\footnotesize}
+\newmintedfile[pythonfile]{python}{breaklines,fontsize=\footnotesize}
+
+\definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
+\usepackage{mdframed}
+\BeforeBeginEnvironment{minted}{
+    \begin{mdframed}[backgroundcolor=mintedbg,%
+        topline=false,bottomline=false,%
+        leftline=false,rightline=false]
+}
+\AfterEndEnvironment{minted}{\end{mdframed}}
+
+
+\usepackage{setspace}
+
+\onehalfspacing
+
+\usepackage{appendix}
+
+
+\newcommand{\highlighteq}[1]{\colorbox{blue!25}{$\displaystyle#1$}}
+\newcommand{\highlight}[1]{\colorbox{red!25}{#1}}
+
+
+\begin{document}
+
+
+\title{Neural Network\\
+TF4063}
+\author{Fadjar Fathurrahman}
+\date{}
+\maketitle
+
+\section{Percetor learning algorithm}
+
+\begin{itemize}
+\item Initialization: set all of the weights $w_{ij}$ to small (positive and negative) random numbers.
+\item Training loop: for $N_{it}$ iterations or until all of the outputs are correct
+  \begin{itemize}
+  \item for eacth input vector: compute the activation of each neuron $j$ using activation
+  function $g$:
+  \begin{equation}
+  y_{i} = g\left( \sum_{i=0}^{m} w_{ij} x_{i} \right) =
+  \begin{cases}
+  1 & \text{if } \sum_{i=0}^{m} w_{ij} x_{i} > 0 \\
+  0 & \text{if } \sum_{i=0}^{m} w_{ij} x_{i} \leq 0 \\
+  \end{cases}
+  \end{equation}
+  \end{itemize}
+\end{itemize}
+
+\bibliographystyle{unsrt}
+\bibliography{BIBLIO}
+
+\end{document}
