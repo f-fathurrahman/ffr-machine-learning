@@ -13,7 +13,7 @@
 %\usepackage{fontspec}
 \usepackage[libertine]{newtxmath}
 \usepackage[no-math]{fontspec}
-%\setmainfont{Linux Libertine O}
+\setmainfont{Linux Libertine O}
 %\setmonofont{DejaVu Sans Mono}
 \setmonofont{JuliaMono-Regular}
 
@@ -118,7 +118,7 @@ We can find the parameters $(w_{0},w_{1})$ by using minimization procedures:
 \arg\min_{w_{0},w_{1}} \frac{1}{N} \sum_{n=1}^{N} \mathcal{L}_{n}
 \end{equation}
 
-For our particular case of Eq. \eqref{eq:loss_function_01}, we can found this analitically,
+For our particular case of Eq. \eqref{eq:loss_function_01}, we can found this analytically,
 i.e. calculating the first derivatives of $\mathcal{L}$ with respect to $w_0$ and $w_1$, equating
 them to zero, and solve the resulting equations for $w_0$ and $w_1$.
 For more general cases, we can use various numerical optimization procedures such as
