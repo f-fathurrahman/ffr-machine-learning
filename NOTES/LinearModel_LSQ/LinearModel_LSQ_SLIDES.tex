@@ -17,122 +17,156 @@ Institut Teknologi Bandung
 
 \frame{\titlepage}
 
-\begin{frame} %----------------------------------------------------------------
+\begin{frame} %------------------------
 
 The material in this note is based on Rogers2017.
 
-\end{frame} %------------------------------------------------------------------
+\end{frame} %--------------------------
 
 
-\begin{frame} % ---------------------------------------------------------------
-\frametitle{Simpe Linear Model}
+\begin{frame} % -----------------------
+\frametitle{Example dataset: {\tt olympic100m}}
+\begin{columns}
+  \begin{column}{0.4\textwidth}
+  Let's start by studying a with a simple dataset.
+  \end{column}
+  \begin{column}{0.6\textwidth}
+  {\centering
+  \includegraphics[width=\textwidth]{codes_py/IMG_data_olympic100m.pdf}
+  \par}
+  \end{column}
+\end{columns}
+\end{frame} % -------------------------
+
+
+\begin{frame} % -----------------------
+\frametitle{Simple Linear Model}
 
 \begin{columns}
   %
   \begin{column}{0.5\textwidth}
-  Given pair of data $(x,t)$ where $x$ are inputs dan $t$
-  are targets, a linear model with parameter $(w_0, w_1)$ can
-  be written as:
-  \begin{equation}
+  Linear model:
+  \begin{equation*}
   t = f(x; w_0, w_1) = w_0 + w_1 x
   \label{eq:model_linear_01}
-  \end{equation}
-  We want to find model parameters $w_0$ and $w_1$ which are best
-  for describing our data.
+  \end{equation*}
   \end{column}
-%
-  \begin{column}{0.5\textwidth}
-  For $n$-th data we can write
-  \begin{equation}
-  \mathcal{L}_n \equiv \left( t_n - f(x_n; w_0, w_1) \right)^2
-  \end{equation}
   %
-  By averaging contributions from all data:
-  \begin{equation}
-  \mathcal{L} = \frac{1}{N} \sum_{n=1}^{N} \mathcal{L}_n =
+  \begin{column}{0.5\textwidth}
+  Loss function:
+  \begin{equation*}
+  \mathcal{L} =
   \frac{1}{N} \sum_{n=1}^{N} \left( t_n - f(x_n; w_0, w_1) \right)^2
   \label{eq:loss_function_01}
-  \end{equation}
-  We will call this quantity as \highlight{loss function}
+  \end{equation*}
   \end{column}
-%
+  %
 \end{columns}
 
 \end{frame} % -----------------------------------------------------------------
 
 
 \begin{frame} % ---------------------------------------------------------------
-\frametitle{Simple Linear Model}
+\frametitle{Finding the parameters}
 
-We can find the parameters $(w_{0},w_{1})$ by using minimization procedures:
-\begin{equation}
+Find the parameters $(w_{0},w_{1})$ by using minimization procedures:
+\begin{equation*}
 \arg\min_{w_{0},w_{1}} \frac{1}{N} \sum_{n=1}^{N} \mathcal{L}_{n}
-\end{equation}
+\end{equation*}
 
 For our particular case of Eq. \eqref{eq:loss_function_01}, we can found this analytically,
 i.e. calculating the first derivatives of $\mathcal{L}$ with respect to $w_0$ and $w_1$, equating
 them to zero, and solve the resulting equations for $w_0$ and $w_1$.
+
 For more general cases, we can use various numerical optimization procedures such as
 gradient descent methods.
+
+\end{frame} % -----------------------------------------------------------------
+
+
+\begin{frame} % ----------------------------
+\frametitle{Finding the parameters}
 
 We begin by writing our loss function as:
 \begin{align*}
 \mathcal{L} & = \frac{1}{N} \sum_{n=1}^{N} \left( t_n - (w_0 + w_1 x_{n}) \right)^2 \\
 & = \frac{1}{N} \sum_{n=1}^{N} \left( w_1^2 x_n^2 + 2w_{1}x_{n}(w_0 - t_n) + w_0^2 - 2w_0 t_n + t_n^2 \right)
 \end{align*}
-\end{frame} % -----------------------------------------------------------------
+
+Now we find the first derivatives of $\mathcal{L}$ with respect to
+$w_0$, $w_1$ and equating them to zero.
+\begin{align*}
+\frac{\partial\mathcal{L}}{\partial w_1} & = 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n^2 \right) +
+\frac{2}{N} \left( \sum_{n=1}^{N} x_{n} (w_0 - t_n) \right) = 0 \\
+\frac{\partial \mathcal{L}}{\partial w_0} & = 2w_0 + 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n \right) -
+\frac{2}{N} \left( \sum_{n=1}^{N} t_n \right) = 0
+\end{align*}
+
+\end{frame} % ---------------------------------------
 
 
-\begin{frame}
-  Now we find the first derivatives of $\mathcal{L}$ with respect to
-  $w_0$, $w_1$ and equating them to zero.
-  \begin{align*}
-  \frac{\partial\mathcal{L}}{\partial w_1} & = 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n^2 \right) +
-  \frac{2}{N} \left( \sum_{n=1}^{N} x_{n} (w_0 - t_n) \right) = 0 \\
-  \frac{\partial \mathcal{L}}{\partial w_0} & = 2w_0 + 2w_1 \frac{1}{N} \left( \sum_{n=1}^{N} x_n \right) -
-  \frac{2}{N} \left( \sum_{n=1}^{N} t_n \right) = 0
-  \end{align*}
-  We obtain
-  \begin{align}
-  \begin{split}
-  w_{1} & = \frac{\overline{xt} - \overline{x}\overline{t}}{\overline{x^2} - \overline{x}^2} \\
-  w_{0} & = \overline{t} - w_{1} \overline{x}
-  \end{split}
-  \label{eq:w0_w1_simple}
-  \end{align}
-  where symbols with overline denotes their average value, for examples
-  \begin{align*}
-  \overline{x} & = \frac{1}{N} \sum_{n=1}^{N} x_{n} \\
-  \overline{t} & = \frac{1}{N} \sum_{n=1}^{N} t_{n}
-  \end{align*}
-\end{frame}
+\begin{frame} % -------------------------------------
+\frametitle{Finding the parameters}
+
+We obtain
+\begin{align*}
+\begin{split}
+w_{1} & = \frac{\overline{xt} - \overline{x}\overline{t}}{\overline{x^2} - \overline{x}^2} \\
+w_{0} & = \overline{t} - w_{1} \overline{x}
+\end{split}
+\label{eq:w0_w1_simple}
+\end{align*}
+where symbols with overline denotes their average value, for examples
+\begin{align*}
+\overline{x} & = \frac{1}{N} \sum_{n=1}^{N} x_{n} \\
+\overline{t} & = \frac{1}{N} \sum_{n=1}^{N} t_{n}
+\end{align*}
+
+\end{frame} % ---------------------------------
 
 
 \begin{frame} % -------------------------------
+\frametitle{Application to {\tt olympic100m}}
 
+XXX
+
+\end{frame} % ---------------------------------
+
+
+\begin{frame} % -------------------------------
+\frametitle{Linear model: matrix-vector notation}
+
+\begin{columns}
+
+\begin{column}{0.5\textwidth}
+Input and parameter vectors:
 \begin{equation*}
-\mathbf{x}_{n} = \begin{bmatrix}
+\mathbf{x}_{n} \equiv \begin{bmatrix}
 1 \\
 x_{n}
 \end{bmatrix}
 ,\,\,\,%
-\mathbf{w} = \begin{bmatrix}
+\mathbf{w} \equiv \begin{bmatrix}
 w_{0} \\
 w_{1}
 \end{bmatrix}
 \end{equation*}
-
-\begin{equation}
+%
+Linear model:
+\begin{equation*}
 f(x_n; w_0, w_1) = \mathbf{w}^{\mathsf{T}} \mathbf{x}_{n}
 \label{eq:model_linear_02}
-\end{equation}
-  
+\end{equation*}
+%
+Loss function:
 \begin{equation}
 \mathcal{L} = \frac{1}{N} \sum_{n=1}^{N} \left( t_{n} - \mathbf{w}^{\mathsf{T}}
 \mathbf{x}_{n} \right)^2
 \label{eq:loss_function_02}
 \end{equation}
-
+\end{column}
+\begin{column}{0.5\textwidth}
+Design matrix:
 \begin{equation*}
 \mathbf{X} = \begin{bmatrix}
 \mathbf{x}^{\mathsf{T}}_{1} \\
@@ -148,57 +182,82 @@ f(x_n; w_0, w_1) = \mathbf{w}^{\mathsf{T}} \mathbf{x}_{n}
 \end{bmatrix}
 \end{equation*}
   
-\begin{equation}
+\begin{equation*}
 \mathbf{t} = \begin{bmatrix}
 t_1 \\
 t_2 \\
 \vdots \\
 t_N
 \end{bmatrix}
-\end{equation}
+\end{equation*}
+\end{column}
+\end{columns}
 
-\begin{equation}
-\mathcal{L} = \frac{1}{N} \left( \mathbf{t} - \mathbf{Xw} \right)^{\mathsf{T}}
-\left( \mathbf{t} - \mathbf{Xw} \right)
-\end{equation}
-
-$\dfrac{\partial \mathcal{L}}{\partial \mathbf{w}} = 0$
-  
-\begin{align}
-\mathcal{L} & = \frac{1}{N} \left(
-\mathbf{t}^{\mathsf{T}} \mathbf{t} +
-\left(\mathbf{Xw}\right)^{\mathsf{T}} \mathbf{Xw} -
-\mathbf{t}\mathbf{Xw} -
-\left(\mathbf{Xw}\right)^{\mathsf{T}} \mathbf{t}
-\right) \\
-& = \frac{1}{N} \left(
-\mathbf{w}^{\mathsf{T}} \mathbf{X}^{\mathsf{T}} \mathbf{X} \mathbf{w} -
-2 \mathbf{w}^{\mathsf{T}} \mathbf{X}^{\mathsf{T}}\mathbf{t} +
-\mathbf{t}^{\mathsf{T}} \mathbf{t}
-\right)
-\end{align}
+\end{frame}
 
 
-\begin{equation}
-\frac{\partial \mathcal{L}}{\partial \mathbf{w}} =
-\frac{2}{N} \left( \mathbf{X}^{\mathsf{T}} \mathbf{Xw} - \mathbf{X}^{\mathsf{T}}\mathbf{t} \right) = 0
-\end{equation}
+\begin{frame} % -----------------------------
+\frametitle{Finding the parameters}
 
-\begin{equation}
-\mathbf{X}^{\mathsf{T}} \mathbf{Xw} = \mathbf{X}^{\mathsf{T}} \mathbf{t}
-\end{equation}
-
-\begin{equation}
-\highlighteq{
-\mathbf{w} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X} \right)^{-1} \mathbf{X}^{\mathsf{T}} \mathbf{t}
-}
-\label{eq:w_vektor}
-\end{equation}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+  \begin{equation*}
+  \mathcal{L} = \frac{1}{N} \left( \mathbf{t} - \mathbf{Xw} \right)^{\mathsf{T}}
+  \left( \mathbf{t} - \mathbf{Xw} \right)
+  \end{equation*}
+  %
+  \begin{equation*}
+  \dfrac{\partial \mathcal{L}}{\partial \mathbf{w}} = 0
+  \end{equation*}
+  %
+  \begin{align*}
+  \mathcal{L} & = \frac{1}{N} \left(
+  \mathbf{t}^{\mathsf{T}} \mathbf{t} +
+  \left(\mathbf{Xw}\right)^{\mathsf{T}} \mathbf{Xw} -
+  \mathbf{t}\mathbf{Xw} -
+  \left(\mathbf{Xw}\right)^{\mathsf{T}} \mathbf{t}
+  \right) \\
+  & = \frac{1}{N} \left(
+  \mathbf{w}^{\mathsf{T}} \mathbf{X}^{\mathsf{T}} \mathbf{X} \mathbf{w} -
+  2 \mathbf{w}^{\mathsf{T}} \mathbf{X}^{\mathsf{T}}\mathbf{t} +
+  \mathbf{t}^{\mathsf{T}} \mathbf{t}
+  \right)
+  \end{align*}
+  \end{column}
+  %
+  \begin{column}{0.5\textwidth}
+  \begin{equation*}
+  \frac{\partial \mathcal{L}}{\partial \mathbf{w}} =
+  \frac{2}{N} \left( \mathbf{X}^{\mathsf{T}} \mathbf{Xw} - \mathbf{X}^{\mathsf{T}}\mathbf{t} \right) = 0
+  \end{equation*}
+  %
+  \begin{equation*}
+  \mathbf{X}^{\mathsf{T}} \mathbf{Xw} = \mathbf{X}^{\mathsf{T}} \mathbf{t}
+  \end{equation*}
+  %
+  \begin{equation*}
+  \highlighteq{
+  \mathbf{w} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X} \right)^{-1} \mathbf{X}^{\mathsf{T}} \mathbf{t}
+  }
+  \label{eq:w_vektor}
+  \end{equation*}
+  \end{column}
+\end{columns}
 \end{frame} % ---------------------------------
 
 
+\begin{frame}[fragile] % -------------------------------
+\frametitle{Application to {\tt olympic100m} (using matrix-vector notation)}
 
-\begin{frame} % ---------------------------------------------------------------
+\begin{pythoncode}
+def hello():
+  pass
+\end{pythoncode}
+
+\end{frame}
+
+
+\begin{frame} % -------------------------------
 \frametitle{Example slide}
 \begin{columns}
   \begin{column}{0.5\textwidth}
@@ -208,7 +267,7 @@ $\dfrac{\partial \mathcal{L}}{\partial \mathbf{w}} = 0$
   Column 2
   \end{column}
 \end{columns}
-\end{frame} % -----------------------------------------------------------------
+\end{frame}
 
 
 

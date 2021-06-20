@@ -23,7 +23,7 @@
 \usepackage{xcolor}
 
 \usepackage{amsmath}
-\usepackage{amssymb}
+%\usepackage{amssymb}
 
 \usepackage{graphicx}
 \usepackage{float}
@@ -200,7 +200,7 @@ linear equation Eq. \eqref{eq:model_linear_01}. The result is shown in
 Fig. \ref{fig:linreg_01}.
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.75]{codes/IMG_linreg_simple.pdf}
+\includegraphics[scale=0.75]{codes_jl/IMG_linreg_simple.pdf}
 \end{center}
 \caption{Result of linear regression for \txtinline{olympic100m}.}
 \label{fig:linreg_01}
@@ -333,7 +333,7 @@ w = [36.416455902505334, -0.013330885710962845]
 We can use more "complex" models than \eqref{eq:model_linear_02}. For example
 the quadratic equation:
 \begin{equation}
-f(x; w_{0}, w_{1}, w_{2}) = w_{0} +w_{1}x + w_{2}x^{2}
+f(x; w_{0}, w_{1}, w_{2}) = w_{0} + w_{1}x + w_{2}x^{2}
 \label{eq:quadratic_eq}
 \end{equation}
 Note that the model is still linear in parameter, so this model is also a linear model.
@@ -389,7 +389,7 @@ In the following figure we show the result of fitting \txtinline{olympic100m} da
 to 3rd order polynomial.
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.75]{codes/IMG_linreg_polynom_3.pdf}
+\includegraphics[scale=0.75]{codes_jl/IMG_linreg_polynom_3.pdf}
 \end{center}
 \caption{3rd order polynomial fit to \txtinline{olympic100m} data.}
 \end{figure}
@@ -415,7 +415,7 @@ best model. However, this is not a good idea.
 The result of 8-th order fit is shown in Figure \ref{fig:8th_order_fit}.
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.75]{codes/IMG_linreg_polynom_8.pdf}
+\includegraphics[scale=0.75]{codes_jl/IMG_linreg_polynom_8.pdf}
 \end{center}
 \caption{8-th order polynomial fit to \txtinline{olympic100m} data.}
 \label{fig:8th_order_fit}
@@ -587,7 +587,7 @@ Fitting 5-th order polynomial to this data and using various values for regulari
 parameter $\lambda$, we obtain the following result.
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.75]{codes/IMG_linreg_regularized_01.pdf}
+\includegraphics[scale=0.75]{codes_jl/IMG_linreg_regularized_01.pdf}
 \end{center}
 \end{figure}
 Best value for $\lambda$ can be obtained by using validation data as we have done before.
