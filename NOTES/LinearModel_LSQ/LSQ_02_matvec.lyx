@@ -1,0 +1,221 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{babel}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language american
+\language_package default
+\inputencoding iso8859-15
+\fontencoding T1
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+We will rewrite our previous problem in matrix and vector notation.
+ This will give us more flexibility and enable us to generalize to more
+ complex situations.
+ We start by defining inputs and model parameters as vectors.
+\begin_inset Formula 
+\[
+\mathbf{x}_{n}=\begin{bmatrix}1\\
+x_{n}
+\end{bmatrix},\,\,\,%\mathbf{w}=\begin{bmatrix}w_{0}\\
+w_{1}
+\end{bmatrix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using this definition, we can write our previous linear model in Eq.
+ model_linear_01 as:
+\begin_inset Formula 
+\[
+f(x_{n};w_{0},w_{1})=\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}
+\]
+
+\end_inset
+
+The expression for loss function, Eq.
+ loss_function_01, becomes 
+\begin_inset Formula 
+\[
+\mathcal{L}=\frac{1}{N}\sum_{n=1}^{N}\left(t_{n}-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}\right)^{2}
+\]
+
+\end_inset
+
+We now arrange several input vector into a matrix:
+\begin_inset Formula 
+\[
+\mathbf{X}=\begin{bmatrix}\mathbf{x}_{1}^{\mathsf{T}}\\
+\mathbf{x}_{2}^{\mathsf{T}}\\
+\vdots\\
+\mathbf{x}_{N}^{\mathsf{T}}
+\end{bmatrix}=\begin{bmatrix}1 & x_{1}\\
+1 & x_{2}\\
+\vdots & \vdots\\
+1 & x_{N}
+\end{bmatrix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As with inputs, we now define target vectors as
+\begin_inset Formula 
+\[
+\mathbf{t}=\begin{bmatrix}t_{1}\\
+t_{2}\\
+\vdots\\
+t_{N}
+\end{bmatrix}
+\]
+
+\end_inset
+
+With this definition we can write the loss function as 
+\begin_inset Formula 
+\[
+\mathcal{L}=\frac{1}{N}\left(\mathbf{t}-\mathbf{Xw}\right)^{\mathsf{T}}\left(\mathbf{t}-\mathbf{Xw}\right)
+\]
+
+\end_inset
+
+To find the best value of 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ we can follow similar procedure that we have used in the previous part.
+ We need to find the solution of 
+\begin_inset Formula $\dfrac{\partial\mathcal{L}}{\partial\mathbf{w}}=0$
+\end_inset
+
+.
+\begin_inset Formula 
+\[
+\begin{align*}\mathcal{L} & =\frac{1}{N}\left(\mathbf{t}^{\mathsf{T}}\mathbf{t}+\left(\mathbf{Xw}\right)^{\mathsf{T}}\mathbf{Xw}-\mathbf{t}\mathbf{Xw}-\left(\mathbf{Xw}\right)^{\mathsf{T}}\mathbf{t}\right)\\
+ & =\frac{1}{N}\left(\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}-2\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}\mathbf{t}+\mathbf{t}^{\mathsf{T}}\mathbf{t}\right)
+\end{align*}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Equating these to zeros we have 
+\begin_inset Formula 
+\[
+\frac{\partial\mathcal{L}}{\partial\mathbf{w}}=\frac{2}{N}\left(\mathbf{X}^{\mathsf{T}}\mathbf{Xw}-\mathbf{X}^{\mathsf{T}}\mathbf{t}\right)=0
+\]
+
+\end_inset
+
+So we have
+\begin_inset Formula 
+\[
+\mathbf{X}^{\mathsf{T}}\mathbf{Xw}=\mathbf{X}^{\mathsf{T}}\mathbf{t}
+\]
+
+\end_inset
+
+or 
+\begin_inset Formula 
+\[
+\mathbf{\widehat{w}}=\left(\mathbf{X}^{\mathsf{T}}\mathbf{X}\right)^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{t}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following snippet describes how Eq.
+ w_vektor is implemented.
+\end_layout
+
+\end_body
+\end_document

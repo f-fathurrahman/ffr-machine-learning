@@ -85,38 +85,14 @@
 \begin_body
 
 \begin_layout Standard
-Generalization to more complex models
+Regularization
 \end_layout
 
 \begin_layout Standard
-We can use more "complex" models than model_linear_02.
- For example the quadratic equation:
+Modified loss function:
 \begin_inset Formula 
 \[
-f(x;w_{0},w_{1},w_{2})=w_{0}+w_{1}x+w_{2}x^{2}
-\]
-
-\end_inset
-
-Note that the model is still linear in parameter, so this model is also
- a linear model.
- Using matrix and vector notation, we can fit the data to this equation
- simply by adding one column to the matrix 
-\begin_inset Formula $\mathbf{X}$
-\end_inset
-
-: 
-\begin_inset Formula 
-\[
-\mathbf{X}=\begin{bmatrix}\mathbf{x}_{1}^{\mathsf{T}}\\
-\mathbf{x}_{2}^{\mathsf{T}}\\
-\vdots\\
-\mathbf{x}_{N}^{\mathsf{T}}
-\end{bmatrix}=\begin{bmatrix}1 & x_{1} & x_{1}^{2}\\
-1 & x_{2} & x_{2}^{2}\\
-\vdots & \vdots & \vdots\\
-1 & x_{N} & x_{N}^{2}
-\end{bmatrix}
+\mathcal{L}'=\mathcal{L}+\lambda\mathbf{w}^{\mathrm{\mathsf{T}}}\mathbf{w}
 \]
 
 \end_inset
@@ -125,39 +101,64 @@ Note that the model is still linear in parameter, so this model is also
 \end_layout
 
 \begin_layout Standard
-s
+The parameter 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ controls the trade-off between penalizing not fitting the data well and
+ overly complex models.
+\begin_inset Formula 
+\[
+\mathcal{L}'=\frac{1}{N}\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}-\frac{2}{N}\mathbf{w}^{\mathsf{T}}\mathbf{X}^{\mathsf{T}}\mathbf{t}+\frac{1}{N}\mathbf{t}^{\mathsf{T}}\mathbf{t}+\lambda\mathbf{w}^{\mathsf{T}}\mathbf{w}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-s
+Taking partial derivatives w.r.t 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+, we obtain:
+\begin_inset Formula 
+\[
+\frac{\partial\mathcal{L}}{\partial\mathbf{w}}=\frac{2}{N}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}-\frac{2}{N}\mathbf{X}^{\mathsf{T}}\mathbf{t}+2\lambda\mathbf{w}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-s
+Equating to zero:
 \end_layout
 
 \begin_layout Standard
-s
+\begin_inset Formula 
+\begin{align*}
+\frac{2}{N}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}-\frac{2}{N}\mathbf{X}^{\mathsf{T}}\mathbf{t}+2\lambda\mathbf{w} & =0\\
+\left(\mathbf{X}^{\mathsf{T}}\mathbf{X}+N\lambda\mathbf{I}\right)\mathbf{w} & =\mathbf{X}^{\mathsf{T}}\mathbf{t}
+\end{align*}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-s
-\end_layout
+The regularized least-squares solution is given by:
+\begin_inset Formula 
+\[
+\widehat{w}=\left(\mathbf{X}^{\mathsf{T}}\mathbf{X}+N\lambda\mathbf{I}\right)^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{t}
+\]
 
-\begin_layout Standard
-s
-\end_layout
+\end_inset
 
-\begin_layout Standard
-s
-\end_layout
 
-\begin_layout Standard
-s
-\end_layout
-
-\begin_layout Standard
-s
 \end_layout
 
 \end_body
