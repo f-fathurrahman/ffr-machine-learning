@@ -1,0 +1,1576 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{babel}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language american
+\language_package default
+\inputencoding iso8859-15
+\fontencoding T1
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+Random variables and probability
+\end_layout
+
+\begin_layout Standard
+Random variables
+\end_layout
+
+\begin_layout Standard
+Random variables can be described as variables whose values depend on outcomes
+ of random events.
+ There are two kinds of random variables: discrete and continuous random
+ variables.
+ Discrete random variables are used for random events for which we can systemati
+cally list (or count) all possible outcomes.
+ Continuous random variables are used when we can not list all possible
+ outcomes.
+ It is a common convention to use upper-case letters to describe random
+ variables and lower-case ones for possible values that the random variable
+ can take.
+\end_layout
+
+\begin_layout Standard
+A discrete random variable could be used to describe, for examples:
+\end_layout
+
+\begin_layout Itemize
+a coin toss: possible outcomes are head or tail.
+\end_layout
+
+\begin_layout Itemize
+rolling of a die: possible outcomes are 1,2,3,4,5 or 6.
+\end_layout
+
+\begin_layout Standard
+A continous random variable could be used to describe, for examples:
+\end_layout
+
+\begin_layout Itemize
+outcome of a 100m race
+\end_layout
+
+\begin_layout Itemize
+height of a human
+\end_layout
+
+\begin_layout Itemize
+mass of a pebble
+\end_layout
+
+\begin_layout Standard
+The collection of possible outcomes is known as the sample space.
+\end_layout
+
+\begin_layout Standard
+Probability and distributions
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $Y$
+\end_inset
+
+ be a random variable that represents the toss of a coin.
+ If the coin lands heads, 
+\begin_inset Formula $Y=1$
+\end_inset
+
+ and if tails, 
+\begin_inset Formula $Y=0$
+\end_inset
+
+.
+ To model this event (the coin toss), we need to be able to quantify how
+ likely either outcome is.
+ For discrete random variables, we do this by defining 
+\emph on
+probabilities
+\emph default
+ of different outcomes.
+\end_layout
+
+\begin_layout Standard
+Two important rules governing probabilities:
+\end_layout
+
+\begin_layout Itemize
+Probabilities must be greater than or equal to 0 and less than of equal
+ to 1:
+\begin_inset Formula 
+\[
+0\leq P(Y=y)\leq1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The sum of the probabilities of each possible individual outcome must be
+ equal to 1:
+\begin_inset Formula 
+\[
+\sum_{y}P(Y=y)=1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For a coin we have:
+\begin_inset Formula 
+\[
+P(Y=1)+P(Y=0)=1
+\]
+
+\end_inset
+
+For a fair coin we have:
+\begin_inset Formula 
+\[
+P(Y=1)=P(Y=0)=0.5
+\]
+
+\end_inset
+
+We will sometimes use the following shorthand
+\begin_inset Formula 
+\[
+P(Y=y)=P(y)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The set of all possible outcomes (all of the 
+\begin_inset Formula $y$
+\end_inset
+
+s) and their probabilities, 
+\begin_inset Formula $P(y)$
+\end_inset
+
+, is known as probability distribution.
+ It tell us how the total probability is distributed over all possible outcomes.
+\end_layout
+
+\begin_layout Standard
+Adding probabilities
+\end_layout
+
+\begin_layout Standard
+Let $Y$ be a random variable for modeling outcome of rolling of a fair die.
+ For exmple we want to know the probability of the result being lower than
+ 4.
+ The outcomes that are lower than 4 are 1, 2, and 3, which means that we
+ need to be able to calculate the probability that the die lands 1 or 2
+ or 3.
+ We can calculate this by using the additive law of probability: 
+\backslash
+begin{equation*} P(Y < 4) = P(Y=1) + P(Y=2) + P(Y=3) 
+\backslash
+end{equation*}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Conditional probabilities}
+\end_layout
+
+\begin_layout Standard
+Often one event will affect the outcome of another.
+ We can use conditional probabilities to express the probability that $Y$
+ takes a particular value given that $X$ has taken a particular value.
+ This can be expressed as 
+\backslash
+begin{equation} P(Y=y | X=x) 
+\backslash
+end{equation} or using shorthand notation $P(y|x)$.
+ This notation also can be read as the probability that $Y$ has the outcome
+ of $y$ given that $X$ has the outcome $x$.
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Joint probabilities}
+\end_layout
+
+\begin_layout Standard
+Given two (or more) random variables, we want to know the probability that
+ they each take a particular value.
+ For example the probability that $Y$ has the outcome $y$ and $X$ has the
+ outcome $x$ is written as 
+\backslash
+begin{equation} P(Y=y,X=y) 
+\backslash
+end{equation} or in shorthand notation $p(x,y)$.
+ How we deal with these joint distributions depends on whether or not the
+ random variables are dependent.
+ If the events are independent we have 
+\backslash
+begin{equation} P(y_1,y_2,
+\backslash
+ldots,y_j) = 
+\backslash
+prod_{j=1}^{J} P(y_j) 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+It the events are dependent, we cannot decompose the joint probability as
+ products of individual probabilities.
+ However, if we can create conditional distributions, we can decompose the
+ joint probability using the following definitions 
+\backslash
+begin{equation} P(Y=y,X=x) = P(Y=y|X=x) P(X=x) 
+\backslash
+end{equation} or 
+\backslash
+begin{equation} P(Y=y,X=x) = P(X=x|Y=y) P(Y=y) 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Marginalization}
+\end_layout
+
+\begin_layout Standard
+Given joint probability $P(Y=y,X=x)$ we can obtain $P(Y=y)$ by marginalizing
+ out $X$ from the joint distribution.
+ This can be done by summing the joint probabilities over all possible values
+ of $X$: 
+\backslash
+begin{equation} P(Y=y) = 
+\backslash
+sum_{x} P(Y=y,X=x) 
+\backslash
+end{equation} More generally we have 
+\backslash
+begin{equation} P(Y_j=y_j) = P(y_j) = 
+\backslash
+sum_{y_1,
+\backslash
+ldots,y_{j-1},y_{j+1},
+\backslash
+ldots,y_{J}} P(y_1,y_2,
+\backslash
+ldots,y_{J}) 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Bayes' rule}
+\end_layout
+
+\begin_layout Standard
+Bayes' rule can be used for reversing conditioning of probability.
+ 
+\backslash
+begin{equation} P(x|y) = 
+\backslash
+frac{P(y|x) P(x)}{P(y)} 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Expectations}
+\end_layout
+
+\begin_layout Standard
+An expectation tells us what value we would expect some function $f(X)$
+ of a random variable $X$ to take and is defined (for discrete random variables)
+ as 
+\backslash
+begin{equation} 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{f(X)
+\backslash
+} = 
+\backslash
+sum_{x} f(x)
+\backslash
+,P(x) 
+\backslash
+end{equation} A common expectation that we will encounter is the mean, which
+ is the expectation of $f(X) = X$: 
+\backslash
+begin{equation} 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+} = 
+\backslash
+sum_{x} x
+\backslash
+,P(x) 
+\backslash
+end{equation} For a fair die, for example, $P(x)=1/6$, we have 
+\backslash
+begin{equation} 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+} = 
+\backslash
+sum_{x} x 
+\backslash
+frac{1}{6} = 
+\backslash
+frac{1}{6} + 
+\backslash
+frac{2}{6} + 
+\backslash
+ldots + 
+\backslash
+frac{6}{6} = 
+\backslash
+frac{21}{6} = 3.5 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+Another example, for a die, the expected value of $f(X)=X^2$ is 
+\backslash
+begin{equation} 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X^2
+\backslash
+} = 
+\backslash
+sum_{x} x^2
+\backslash
+frac{1}{6} = 
+\backslash
+frac{1}{6} + 
+\backslash
+frac{4}{6} + 
+\backslash
+cdots + 
+\backslash
+frac{36}{6} = 
+\backslash
+frac{91}{6} 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+The expected value of a function $X$ is not in general the function evaluated
+ at the expected value of $X$.
+ Mathematically 
+\backslash
+begin{equation} 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{f(X)
+\backslash
+} 
+\backslash
+neq f(
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+}),
+\backslash
+,
+\backslash
+,
+\backslash
+text{(generally)} 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+One situation where the two are equal is when the function is just a constant
+ multiplied by $X$.
+ For example, $f(X) = aX$ 
+\backslash
+begin{align*} 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{f(X)
+\backslash
+} & = 
+\backslash
+sum_{x} ax P(x) 
+\backslash
+
+\backslash
+ & = a
+\backslash
+sum_{x} x P(x) 
+\backslash
+
+\backslash
+ & = a
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+} 
+\backslash
+
+\backslash
+ & = f
+\backslash
+left(
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+}
+\backslash
+right) 
+\backslash
+end{align*}
+\end_layout
+
+\begin_layout Standard
+Another important case is when the function is simply a constant, $f(X)=a$.
+ In this case, the expectation disappears due to the fact that the distribution
+ has to sum to 1 over all possible outcomes 
+\backslash
+begin{align*} 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{f(X)
+\backslash
+} & = 
+\backslash
+sum_{x} aP(x) 
+\backslash
+
+\backslash
+ & = a 
+\backslash
+sum_{x} P(x) 
+\backslash
+
+\backslash
+ & = a 
+\backslash
+end{align*}
+\end_layout
+
+\begin_layout Standard
+Expectation of a sum of different functions is equal to a sum of the individual
+ expectations: 
+\backslash
+begin{align*} 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{ f(X) + g(X) 
+\backslash
+} & = 
+\backslash
+sum_{x} (f(x) + g(x)) P(x) 
+\backslash
+
+\backslash
+ & = 
+\backslash
+sum_{x} f(x) P(x) + 
+\backslash
+sum_{x} g(x) P(x) 
+\backslash
+
+\backslash
+ & = 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{ f(X) 
+\backslash
+} + 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{ g(X) 
+\backslash
+} 
+\backslash
+end{align*}
+\end_layout
+
+\begin_layout Standard
+Besides mean, another common expectation value that we will encounter is
+ the variance.
+ Variance is a measure of how variable the random variable is and is defined
+ as the expected square deviation from the mean.
+ 
+\backslash
+begin{equation} 
+\backslash
+mathrm{var}
+\backslash
+{X
+\backslash
+} = 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+left
+\backslash
+{ 
+\backslash
+left(X - 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+}
+\backslash
+right)^2 
+\backslash
+right
+\backslash
+} 
+\backslash
+end{equation} Expand the terms in bracket: 
+\backslash
+begin{align*} 
+\backslash
+mathrm{var}
+\backslash
+{X
+\backslash
+} & = 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+left
+\backslash
+{ X^2 - 2X
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+} + 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+}^2 
+\backslash
+right
+\backslash
+} 
+\backslash
+
+\backslash
+ & = 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X^2
+\backslash
+} - 2
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+}
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+} + 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+}^2 
+\backslash
+end{align*} Collecting together the $
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+}^2$ terms gives 
+\backslash
+begin{equation} 
+\backslash
+mathrm{var}
+\backslash
+{X
+\backslash
+} = 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X^2
+\backslash
+} - 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{X
+\backslash
+}^2 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+textbf{Vector random variables}
+\end_layout
+
+\begin_layout Standard
+Probability distributions over vectors is nothing more than a shorthand
+ way of defining large joint distributions.
+ For example the values that could be taken on by random variables $X_{1},
+ X_{2}, 
+\backslash
+ldots, X_{N}$ can be expressed as the vector $
+\backslash
+mathbf{x} = [x_{1}, x_{2}, 
+\backslash
+ldots, x_{N}]^{
+\backslash
+mathsf{T}}$.
+ Using this shorthand: 
+\backslash
+begin{equation} p(
+\backslash
+mathbf{x}) = p(x_1,x_2,
+\backslash
+ldots,x_N) = P(X_1=x_1, X_2=x_2, 
+\backslash
+ldots, X_N=x_N) 
+\backslash
+end{equation} Even though $
+\backslash
+mathbf{x}$ is a vector, $p(
+\backslash
+mathbf{x})$ is a scalar quantity.
+\end_layout
+
+\begin_layout Standard
+Expectations are computed for vector random variables in the same way.
+ 
+\backslash
+begin{equation} 
+\backslash
+mathbf{E}_{P(x)}
+\backslash
+{f(
+\backslash
+mathbf{x})
+\backslash
+} = 
+\backslash
+sum_{
+\backslash
+mathbf{x}} f(
+\backslash
+mathbf{x}) P(
+\backslash
+mathbf{x}) 
+\backslash
+end{equation} where the sum is over all possible values of the vector $
+\backslash
+mathbf{x}$.
+\end_layout
+
+\begin_layout Standard
+The mean vector is defined as 
+\backslash
+begin{equation} 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})} = 
+\backslash
+sum_{
+\backslash
+mathbf{x}} 
+\backslash
+mathbf{x}
+\backslash
+,P(
+\backslash
+mathbf{x}) 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+When dealing with vectors, the concept of variance is generalized to a covarianc
+e matrix.
+ This is defined as 
+\backslash
+begin{equation} 
+\backslash
+mathrm{cov}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+} = 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+left
+\backslash
+{ 
+\backslash
+left( 
+\backslash
+mathbf{x} - 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}{
+\backslash
+mathbf{x}} 
+\backslash
+right) 
+\backslash
+left( 
+\backslash
+mathbf{x} - 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}{
+\backslash
+mathbf{x}} 
+\backslash
+right)^{
+\backslash
+mathsf{T}} 
+\backslash
+right
+\backslash
+} 
+\backslash
+end{equation} If $
+\backslash
+mathbf{x}$ is a vector of length $D$, then $
+\backslash
+mathrm{cov}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+}$ is a $D 
+\backslash
+times D$ matrix.
+ The diagonal elements correspond to the variance of the individual elements
+ of $
+\backslash
+mathbf{x}$.
+\end_layout
+
+\begin_layout Standard
+The off-diagonal elements tell us to what extent different elements of $
+\backslash
+mathbf{x}$ co-vary, that is, how dependent they are on one another.
+\end_layout
+
+\begin_layout Standard
+A high positive value between, say, elements $x_d$ and $x_e$ suggest that
+ if $x_d$ increases, so does $x_e$.
+ A high negative value suggests that they are related but move in opposite
+ directions.
+ A value of or close to zero suggest that there is no relationship between
+ them.
+\end_layout
+
+\begin_layout Standard
+The covariance for vector random variables also can be written as 
+\backslash
+begin{align*} 
+\backslash
+mathrm{cov}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+} & = 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+left
+\backslash
+{ 
+\backslash
+left( 
+\backslash
+mathbf{x} - 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+} 
+\backslash
+right) 
+\backslash
+left( 
+\backslash
+mathbf{x} - 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+} 
+\backslash
+right)^{
+\backslash
+mathsf{T}} 
+\backslash
+right
+\backslash
+} 
+\backslash
+
+\backslash
+ & = 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+left
+\backslash
+{ 
+\backslash
+mathbf{xx}^{
+\backslash
+mathsf{T}} - 2
+\backslash
+mathbf{x} 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+}^{
+\backslash
+mathsf{T}} - 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+} 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+}^{
+\backslash
+mathsf{T}} 
+\backslash
+right
+\backslash
+} 
+\backslash
+end{align*} % We finally obtain 
+\backslash
+begin{equation} 
+\backslash
+mathrm{cov}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+} = 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+left
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+mathbf{x}^{
+\backslash
+mathsf{T}} 
+\backslash
+right
+\backslash
+} - 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+{
+\backslash
+mathbf{x}
+\backslash
+} 
+\backslash
+mathbf{E}_{P(
+\backslash
+mathbf{x})}
+\backslash
+{
+\backslash
+mathbf{x}^{
+\backslash
+mathsf{T}}
+\backslash
+} 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+section{Popular discrete distributions}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Bernoulli distribution}
+\end_layout
+
+\begin_layout Standard
+For a random variable $X$ that can take two values, 0 or 1 (a binary random
+ variable), where the probability that it takes the value 1 is defined as
+ $q$, the Bernoulli distribution is 
+\backslash
+begin{equation} P(X=x) = q^{x} (1 - q)^{1-x} 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Binomial distribution}
+\end_layout
+
+\begin_layout Standard
+The binomial distribution extends the Bernoulli distribution to define the
+ probability of observing a certain number of heads in a total of $N$ tosses.
+ More generally, we might think of events that have two outcomes (success
+ or failure).
+ If we have $N$ such events, the binomial random variable $Y$ can take the
+ values from 0 (no success) to $N$ ($N$ success).
+ The probability of observing a particular number of successes is given
+ by: 
+\backslash
+begin{equation} P(Y=y) = P(y) = 
+\backslash
+begin{pmatrix}N 
+\backslash
+
+\backslash
+ y
+\backslash
+end{pmatrix} q^{y} (1-q)^{N-y} 
+\backslash
+end{equation} where: 
+\backslash
+begin{equation} 
+\backslash
+begin{pmatrix}N 
+\backslash
+
+\backslash
+ y 
+\backslash
+end{pmatrix} = 
+\backslash
+frac{N!}{y!(N-y)!} 
+\backslash
+end{equation} is a mathematical shorthand for the number of ways in which
+ $y$ distinct objects can be chosen from a set of $N$ objects.
+\end_layout
+
+\begin_layout Standard
+The Bernoulli distribution is a special case of the binomial distribution
+ when $N=1$.
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Multinomial distribution} Multinomial distribution is a generalizatio
+n of binomial distribution to vector random variables.
+ 
+\backslash
+begin{equation} P(Y=
+\backslash
+mathbf{y}) = P(
+\backslash
+mathbf{y}) = 
+\backslash
+frac{N!}{
+\backslash
+prod_{j}y_{j}!}
+\backslash
+prod_{j} q_{j}^{y_{j}} 
+\backslash
+end{equation} $q_{j}$ are the parameters of the multinomial distribution
+ 
+\backslash
+begin{equation*} 
+\backslash
+sum_{j} q_{j} = 1 
+\backslash
+end{equation*}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+section{Continuous random variables - density functions}
+\end_layout
+
+\begin_layout Standard
+When working with continuous random variables, we need a continuous analogue
+ to the probability distribution.
+ This is provided by a probability density function (pdf) or simply 
+\backslash
+emph{density}, also denoted $p(x)$.
+ To compute the probability that $X$ lies in a particular range, we compute
+ the definite integral of $p(x)$ with respect $x$ over this range 
+\backslash
+begin{equation*} P(x_1 
+\backslash
+leq X 
+\backslash
+leq x_2) = 
+\backslash
+int_{x_1}^{x_2} p(x)
+\backslash
+,
+\backslash
+mathrm{d}x 
+\backslash
+end{equation*}
+\end_layout
+
+\begin_layout Standard
+If a random variable $X$ only takes values in the range $x_1 
+\backslash
+leq X 
+\backslash
+leq x_2$ we have 
+\backslash
+begin{equation} 
+\backslash
+int_{x_1}^{x_2} p(x)
+\backslash
+,
+\backslash
+mathrm{d}x = 1,
+\backslash
+,
+\backslash
+,
+\backslash
+text{where } x_1 
+\backslash
+leq X 
+\backslash
+leq x_2 
+\backslash
+end{equation} We also have 
+\backslash
+begin{equation} p(x) 
+\backslash
+geq 0 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+Note that there is no upper bound on the value of pdf because it is not
+ a probability and can be higher than 1 for a particular value of $x$.
+\end_layout
+
+\begin_layout Standard
+We also can define joint pdf over several continuous random variables.
+ For example $p(x,y)$ the joint density of two random variables $X$ and
+ $Y$ and $p(
+\backslash
+mathbf{w})$ is the density of a vector $
+\backslash
+mathbf{w}$ which could be thought of as the joint density of $p(w_0, w_1,
+ 
+\backslash
+ldots)$ random variables representing each element in the vector.
+ Although we cannot compute $P(X=x,Y=y)$ we can compute 
+\backslash
+begin{equation} P(x_1 
+\backslash
+leq X 
+\backslash
+leq x_2, y_1 
+\backslash
+leq Y 
+\backslash
+leq y_2) = 
+\backslash
+int_{x=x_1}^{x=x_2} 
+\backslash
+int_{y=y_1}^{y=y_2} p(x,y)
+\backslash
+,
+\backslash
+mathrm{d}x
+\backslash
+,
+\backslash
+mathrm{d}y 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+The same applies for conditional distributions, although the conditioning
+ is done on exact value (as this event is assume to have happened or known).
+ For example we can compute 
+\backslash
+begin{equation*} P(x_1 
+\backslash
+leq X 
+\backslash
+leq x_2 | Y = y) = 
+\backslash
+int_{x=x_1}^{x=x_{2}} p(x|Y=y)
+\backslash
+,
+\backslash
+mathrm{d}x 
+\backslash
+end{equation*}
+\end_layout
+
+\begin_layout Standard
+For marginalization, we can use integration instead of summation.
+ For example the pdf $p(y)$ can be computed from $p(y,x)$ as follows: 
+\backslash
+begin{equation*} p(y) = 
+\backslash
+int_{x=x_1}^{x=x_2} p(y,x)
+\backslash
+,
+\backslash
+mathrm{d}x 
+\backslash
+end{equation*} where $x_1 
+\backslash
+leq X 
+\backslash
+leq x_2$ described the sample space of $X$.
+\end_layout
+
+\begin_layout Standard
+Expectations with respect to continous random variables are performed by
+ integrating over the range of values that the random variable can take:
+ 
+\backslash
+begin{equation} 
+\backslash
+mathbf{E}_{p(x)}
+\backslash
+{f(x)
+\backslash
+} = 
+\backslash
+int f(x) p(x)
+\backslash
+,
+\backslash
+mathrm{d}x 
+\backslash
+end{equation} For many cases, this integration cannot be performed analytically.
+ In this case, we can approximate it using simple summation 
+\backslash
+begin{equation} 
+\backslash
+mathbf{E}_{p(x)}
+\backslash
+{f(x)
+\backslash
+} 
+\backslash
+approx 
+\backslash
+frac{1}{S}
+\backslash
+sum_{s=1}^{S} f(x_s) P(x_s) 
+\backslash
+end{equation}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+section{Popular continuous density function}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Uniform density function} 
+\backslash
+begin{equation} p(y) = 
+\backslash
+begin{cases} r & 
+\backslash
+text{for } a 
+\backslash
+leq y 
+\backslash
+leq b 
+\backslash
+
+\backslash
+ 0 & 
+\backslash
+text{otherwise} 
+\backslash
+end{cases} 
+\backslash
+end{equation} Given $a$ and $b$, the value of $r$ can be calculated from
+ the condition 
+\backslash
+begin{equation*} P(a 
+\backslash
+leq Y 
+\backslash
+leq b) = 
+\backslash
+int_{y=a}^{y=b} p(y)
+\backslash
+,
+\backslash
+mathrm{d}y = 1 
+\backslash
+end{equation*} So we have 
+\backslash
+begin{equation*} r = 
+\backslash
+frac{1}{b - a} 
+\backslash
+end{equation*}
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Beta density function}
+\end_layout
+
+\begin_layout Standard
+Beta density function can be used for continuous random variables that are
+ restricted to between 0 and 1.
+ The beta density function is defined as 
+\backslash
+begin{equation} p(r) = 
+\backslash
+frac{
+\backslash
+Gamma(
+\backslash
+alpha + 
+\backslash
+beta)}{
+\backslash
+Gamma(
+\backslash
+alpha)
+\backslash
+Gamma(
+\backslash
+beta)} r^{
+\backslash
+alpha-1} (1 - r)^{
+\backslash
+beta - 1} 
+\backslash
+end{equation} where $
+\backslash
+alpha$ and $
+\backslash
+beta$ are positive parameters that control the shape of the density function.
+ $
+\backslash
+Gamma(z)$ is known as the gamma function.
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+subsection{Gaussian or normal density function}
+\end_layout
+
+\begin_layout Standard
+Gaussian random variables are used in many continuous applications.
+ It is useful because it can be manipulated easily in several situations.
+ Gaussian density function is defined over a sample space that includes
+ all real numbers.
+ It is usually defined as 
+\backslash
+begin{equation} p(y|
+\backslash
+mu,
+\backslash
+sigma^2) = 
+\backslash
+frac{1}{
+\backslash
+sigma
+\backslash
+sqrt{2
+\backslash
+pi}}
+\backslash
+exp
+\backslash
+left
+\backslash
+{ -
+\backslash
+frac{1}{2
+\backslash
+sigma^2}(y - 
+\backslash
+mu)^2 
+\backslash
+right
+\backslash
+} 
+\backslash
+end{equation} where the conditioning is done over two variables: the mean
+ 
+\begin_inset Formula $\mu$
+\end_inset
+
+ and variance 
+\begin_inset Formula $\sigma^{2}$
+\end_inset
+
+.
+ Gaussian density function also can be written in shorthand notation as
+\begin_inset Formula 
+\[
+p(y|\mu,\sigma^{2})=\mathcal{N}(\mu,\sigma^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In Python Numpy we can use np.random.randn to draw sample from standard normal
+ distribution, with 
+\begin_inset Formula $\mu=1$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma=1$
+\end_inset
+
+.
+ For random samples from 
+\begin_inset Formula $\mathcal{N}(\mu,\sigma^{2})$
+\end_inset
+
+ we can use
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sigma * np.random.randn(...) + mu
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Multivariate Gaussian
+\end_layout
+
+\begin_layout Standard
+The Gaussian density function also can be generalized for continous vectors.
+\begin_inset Formula 
+\[
+p(\mathbf{x})=\frac{1}{(2\pi)^{D/2}|\boldsymbol{\Sigma}|^{1/2}}\exp\left\{ -\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu})^{\mathsf{T}}\boldsymbol{\Sigma^{-1}}(\mathbf{x}-\boldsymbol{\mu})\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In Python, we can use numpy.random.multivariate_normal to draw samples from
+ multivariate normal distribution.
+\end_layout
+
+\end_body
+\end_document

@@ -1,0 +1,944 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{babel}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language american
+\language_package default
+\inputencoding iso8859-15
+\fontencoding T1
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+We will take into account error in our data by considering the following
+ model.
+\begin_inset Formula 
+\[
+t_{n}=\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}+\epsilon_{n}
+\]
+
+\end_inset
+
+wheren 
+\begin_inset Formula $\epsilon_{n}$
+\end_inset
+
+ is a continuous random variable.
+ We do not just have one random variable, but one for each observed data.
+\end_layout
+
+\begin_layout Standard
+We assume that these values are independent: 
+\begin_inset Formula 
+\[
+p(\epsilon_{1},\epsilon_{2},\ldots,\epsilon_{N})=\prod_{n=1}^{N}p(\epsilon_{n})
+\]
+
+\end_inset
+
+We additionally assume the form of 
+\begin_inset Formula $p(\epsilon_{n})$
+\end_inset
+
+ is that of Gaussian distribution with zero mean and variance 
+\begin_inset Formula $\sigma^{2}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The model now consists of two components:
+\end_layout
+
+\begin_layout Itemize
+Deterministic component: 
+\begin_inset Formula $\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}$
+\end_inset
+
+, sometimes referred to as a 
+\emph on
+trend
+\emph default
+ or 
+\emph on
+drift
+\emph default
+.
+\end_layout
+
+\begin_layout Itemize
+Random component: 
+\begin_inset Formula $\epsilon_{n}$
+\end_inset
+
+, sometimes referred to as 
+\emph on
+noise
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+Our model is of the following form:
+\begin_inset Formula 
+\begin{align*}
+t_{n} & =f(\mathbf{x}_{n};\mathbf{w})+\epsilon_{n}\\
+\epsilon_{n} & \sim\mathcal{N}(0,\sigma^{2})
+\end{align*}
+
+\end_inset
+
+We need to find the optimal value of 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ which will be denoted by 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+, such that this model describes our data as best as possible.
+ The loss measured the difference between the observed values of 
+\begin_inset Formula $t$
+\end_inset
+
+ and those predicted by the model.
+ The effect of adding a random variable to the model is that the output
+ of the model, 
+\begin_inset Formula $t$
+\end_inset
+
+, is now itself a random variable.
+ In other words, there is no single value of 
+\begin_inset Formula $t_{n}$
+\end_inset
+
+ for a particular 
+\begin_inset Formula $x_{n}$
+\end_inset
+
+ .
+ As such, we cannot use the loss as a means of to find 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma_{2}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Adding a constant 
+\begin_inset Formula $\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}$
+\end_inset
+
+ to a Gaussian random variable is equivalent to another Gaussian random
+ variable with the mean shifted by the same constant:
+\begin_inset Formula 
+\[
+\begin{align*}y & =a+z\\
+p(z) & =\mathcal{N}(\mu,\sigma^{2})\\
+p(y) & =\mathcal{N}(\mu+a,\sigma^{2})
+\end{align*}
+\]
+
+\end_inset
+
+Therefore, the random variable 
+\begin_inset Formula $t_{n}$
+\end_inset
+
+ has the density function: 
+\begin_inset Formula 
+\[
+p(t_{n}|\mathbf{x},\mathbf{w},\sigma^{2})=\mathcal{N}(\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n},\sigma^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note the conditioning on the left hand side.
+ The density of 
+\begin_inset Formula $t_{n}$
+\end_inset
+
+ depends on particular value of 
+\begin_inset Formula $\mathbf{x}_{n}$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ and also 
+\begin_inset Formula $\sigma^{2}$
+\end_inset
+
+ (the variance).
+ As an example, we will plot the likelihood function from one data point
+ of olympic100m dataset.
+ We will chose the data for year 1980 and evaluate the likelihood using
+ 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ obtained from minimizing loss function and assuming that 
+\begin_inset Formula $\sigma^{2}=0.05$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Recall that, for a continuous random variable, 
+\begin_inset Formula $t$
+\end_inset
+
+, 
+\begin_inset Formula $p(t)$
+\end_inset
+
+ cannot be interpreted as a probability.
+ The height of the curve at a particular value of 
+\begin_inset Formula $t$
+\end_inset
+
+ can be interpreted as 
+\emph on
+how likely
+\emph default
+ it is that we would observe that particular 
+\begin_inset Formula $t$
+\end_inset
+
+ for 
+\begin_inset Formula $x=1980$
+\end_inset
+
+.
+ The most likely winning time in 1980 would be 10.02 seconds (for a Gaussian,
+ the most likely (highest) point corresponds to the mean).
+ Also shown on the plot, are three example times – A, B and C.
+ Of these, B is the most likely and C the least likely.
+\end_layout
+
+\begin_layout Standard
+The actual winning time in the 1980 Olympics is C (10.25 seconds).
+\end_layout
+
+\begin_layout Standard
+The density 
+\begin_inset Formula $p(t_{n}|\mathbf{x}_{n},\mathbf{w},\sigma^{2})$
+\end_inset
+
+ evaluated at 
+\begin_inset Formula $t_{n}=10.25$
+\end_inset
+
+ is an important quantity, known as the 
+\emph on
+likelihood
+\emph default
+ of the 
+\begin_inset Formula $n$
+\end_inset
+
+-th data point.
+ We cannot change 
+\begin_inset Formula $t_{n}=10.25$
+\end_inset
+
+ (because this is our data) but we can change 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma^{2}$
+\end_inset
+
+ to try and move the density so as to make it as high as possible at 
+\begin_inset Formula $t=10.25$
+\end_inset
+
+.
+ The idea of finding parameters that maximize the likelihood in this way
+ is a key concept in Machine Learning.
+\end_layout
+
+\begin_layout Standard
+Dataset likelihood
+\end_layout
+
+\begin_layout Standard
+In general we are not interested in the likelihood of single data point
+ but that of all of the data.
+ If we have 
+\begin_inset Formula $N$
+\end_inset
+
+ data points we have the following joint conditional density 
+\begin_inset Formula 
+\[
+p(t_{1},\ldots,t_{N}|\mathbf{x}_{1},\ldots,\mathbf{x}_{N},\mathbf{w},\sigma^{2})
+\]
+
+\end_inset
+
+This is a joint density over all of the responses in our dataset.
+ We will write this compactly as 
+\begin_inset Formula $p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})$
+\end_inset
+
+.
+ Evaluating this density at the observed data points gives a single likelihood
+ value for the whole dataset, which we can optimize by varying 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma^{2}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The assumption that the noise at each data point is independent, i.e.
+\begin_inset Formula 
+\[
+p(\epsilon_{1},\ldots,\epsilon_{N})=\prod_{n}p(\epsilon_{n})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+enables us to factorize this density into something more manageable.
+ In particular, this joint conditional density can be factorized into 
+\begin_inset Formula $N$
+\end_inset
+
+ separate terms, one for each data object: 
+\begin_inset Formula 
+\[
+L=p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})=\prod_{n=1}^{N}p(t_{n}|\mathbf{x}_{n},\mathbf{w},\sigma^{2})=\prod_{n=1}^{N}\mathcal{N}(\mathbf{w}^{T}\mathbf{x}_{n},\sigma^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For analytical reasons, we will maximise the natural logarithm of the likelihood.
+ We will use the convention of using 
+\begin_inset Formula $\log(y)$
+\end_inset
+
+ to denote the natural logarithm of 
+\begin_inset Formula $y$
+\end_inset
+
+ (often denoted elsewhere as 
+\begin_inset Formula $\mathrm{ln}(y)$
+\end_inset
+
+).
+ We can do this because the estimated arguments 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+ and 
+\begin_inset Formula $\widehat{\sigma^{2}}$
+\end_inset
+
+ that maximize the log-likelihood will also maximize the likelihood.
+\end_layout
+
+\begin_layout Standard
+We will start by writing the log-likelihood as:
+\begin_inset Formula 
+\[
+\begin{align*}\log L & =\log\prod_{n=1}^{N}\mathcal{N}(\mathbf{w}^{T}\mathbf{x}_{n},\sigma^{2})\\
+ & =\sum_{n=1}\log\left(\frac{1}{\sqrt{2\pi\sigma^{2}}}\exp\left\{ -\frac{1}{2\sigma^{2}}\left(t_{n}-f(\mathbf{x};\mathbf{w})\right)^{2}\right\} \right)\\
+ & =\sum_{n=1}^{N}\left(-\frac{1}{2}\log(2\pi)-\log\sigma-\frac{1}{2\sigma^{2}}\left(t_{n}-f(\mathbf{x};\mathbf{w})\right)^{2}\right)\\
+ & =-\frac{N}{2}\log2\pi-N\log\sigma-\frac{1}{2\sigma^{2}}\sum_{n=1}^{N}\left(t_{n}-f(\mathbf{x};\mathbf{w})\right)^{2}
+\end{align*}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For our choice of model 
+\begin_inset Formula $f(\mathbf{x}_{n};\mathbf{w})=\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}$
+\end_inset
+
+, we have
+\begin_inset Formula 
+\[
+\log L=-\frac{N}{2}\log2\pi-N\log\sigma-\frac{1}{2\sigma^{2}}\sum_{n=1}^{N}\left(t_{n}-\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}\right)^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+First derivative w.r.t 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+: 
+\begin_inset Formula 
+\[
+\begin{align*}\frac{\partial\log L}{\partial w} & =\frac{1}{\sigma^{2}}\sum_{n=1}^{N}\mathbf{x}_{n}\left(t_{n}-\mathbf{x}_{n}^{\mathsf{T}}\mathbf{w}\right)\\
+ & =\frac{1}{\sigma^{2}}\sum_{n=1}^{N}\mathbf{x}_{n}t_{n}-\mathbf{x}_{n}\mathbf{x}_{n}^{\mathsf{T}}\mathbf{w}=\mathbf{0}
+\end{align*}
+\]
+
+\end_inset
+
+we have used 
+\begin_inset Formula $\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}=\mathbf{x}_{n}^{\mathsf{T}}\mathbf{w}$
+\end_inset
+
+$
+\end_layout
+
+\begin_layout Standard
+Using matrix-vector notation 
+\begin_inset Formula 
+\[
+\begin{align*}\sum_{n=1}^{N}\mathbf{x}_{n}t_{n} & =\mathbf{X}^{\mathsf{T}}\mathbf{t}\\
+\sum_{n=1}^{N}\mathbf{x}_{n}\mathbf{x}_{n}^{\mathsf{T}}\mathbf{w} & =\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}
+\end{align*}
+\]
+
+\end_inset
+
+we can write the derivative as
+\begin_inset Formula 
+\[
+\frac{\partial\log L}{\partial w}=\frac{1}{\sigma^{2}}\left(\mathbf{X}^{\mathsf{T}}\mathbf{t}-\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}=\mathbf{0}\right)
+\]
+
+\end_inset
+
+Solving this equation we can find the optimal value 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\widehat{\mathbf{w}}=\left(\mathbf{X}^{\mathsf{T}}\mathbf{X}\right)^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{t}
+\]
+
+\end_inset
+
+This is the maximum likelihood solution for 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ and this solution is exactly the same as the solution obtained by minimizing
+ the loss function.
+ Minimizing the squared loss is equivalent to the maximum likelihood solution
+ if the noise is assumed to be Gaussian.
+\end_layout
+
+\begin_layout Standard
+To obtain the expression for 
+\begin_inset Formula $\sigma^{2}$
+\end_inset
+
+, we can use the same procedure, assuming that 
+\begin_inset Formula $\mathbf{w}=\widehat{\mathbf{w}}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\frac{\partial\log L}{\partial\sigma}=-\frac{N}{\sigma}+\frac{1}{\sigma^{3}}\sum_{n=1}^{N}(t_{n}-\mathbf{x}^{\mathsf{T}}\widehat{\mathbf{w}})^{2}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Rearranging the equation we have
+\begin_inset Formula 
+\[
+\widehat{\sigma^{2}}=\frac{1}{N}\sum_{n=1}^{N}(t_{n}-\mathbf{x}^{\mathsf{T}}\widehat{\mathbf{w}})^{2}
+\]
+
+\end_inset
+
+This expression can be simplified to
+\begin_inset Formula 
+\[
+\widehat{\sigma^{2}}=\frac{1}{N}\left(\mathbf{t}^{\mathsf{T}}\mathbf{t}-\mathbf{t}^{\mathsf{T}}\mathbf{X}\widehat{\mathbf{w}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Maximum likelihood favors complex models
+\end_layout
+
+\begin_layout Standard
+Plugging the expression for 
+\begin_inset Formula $\widehat{\sigma^{2}}$
+\end_inset
+
+ into the log-likelihood expression gives use the value of log-likelihood
+ at the maximum:
+\begin_inset Formula 
+\[
+\log L=-\frac{N}{2}(1+\log2\pi)-\frac{N}{2}\log\widehat{\sigma^{2}}
+\]
+
+\end_inset
+
+This tells us that the maximum value of 
+\begin_inset Formula $L$
+\end_inset
+
+ will keep increasing as we decrease 
+\begin_inset Formula $\widehat{\sigma^{2}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The more complex model is overfitting - we have given the model too much
+ freedom and it is attempting to make sense out of what is essentially noise.
+ Regularization could be used to penalize overcomplex parameter values.
+ The same can be done with probabilistic models through the 
+\emph on
+use of prior distributions
+\emph default
+ on the parameter values.
+\end_layout
+
+\begin_layout Standard
+Effect of noise on parameter estimates
+\end_layout
+
+\begin_layout Standard
+Uncertainty in estimates
+\end_layout
+
+\begin_layout Standard
+The value of 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+ is strongly influenced by the particular noise values in the data.
+ It would be useful to know how much uncertainty there was in 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In other words, is this 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+ is unique in explaining the data well or are there many that could do almost
+ as well?
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+t_{n}=\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n}+\epsilon_{n}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ represents the true value of the parameters and 
+\begin_inset Formula $\epsilon_{n}$
+\end_inset
+
+ is a random variable that we have defined to be normally distributed.
+ This assumption means that the generating distribution of likelihood is
+ a product of normal densities: 
+\begin_inset Formula 
+\[
+p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})=\prod_{n=1}^{N}p(t_{n}|\mathbf{x}_{n},\mathbf{w},\sigma^{2})=\prod_{n=1}^{N}\mathcal{N}(\mathbf{w}^{\mathsf{T}}\mathbf{x}_{n},\sigma^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is more convenient to work with multivariate Gaussian 
+\begin_inset Formula 
+\[
+p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})=\mathcal{N}(\mathbf{X}\mathbf{w},\sigma^{2}\mathbf{I})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now, 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+ is an estimate of the true parameter value 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+.
+ Computing the expectation of 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+ w.r.t the generating distribution will tell us what we expect 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+ to be on average, and using 
+\begin_inset Formula $\widehat{\mathbf{w}}=(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{t}$
+\end_inset
+
+, we have
+\begin_inset Formula 
+\[
+\begin{align*}\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})}\{\widehat{\mathbf{w}}\} & =\int\widehat{\mathbf{w}}p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})\,\mathrm{d}\mathbf{t}\\
+ & =(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\\
+ & =(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})}\{\mathbf{t}\}\\
+ & =(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{X}\mathbf{w}\\
+ & =\mathbf{w}
+\end{align*}
+\]
+
+\end_inset
+
+where we have used the fact that the expected value of a normally distributed
+ random variable is equal to its mean 
+\begin_inset Formula $\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})}\{\mathbf{t}\}=\mathbf{X}\mathbf{w}$
+\end_inset
+
+.
+ This result tells us that the expected value of our approximation 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+ is the true parameter value.
+ This means that our estimat for 
+\begin_inset Formula $\mathbf{w}$
+\end_inset
+
+ is unbiased - it is not, on average, too big or too small.
+\end_layout
+
+\begin_layout Standard
+Potential variability in the estimate of 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+ is encapsulated in its covariance matrix.
+ It can be showed that:
+\begin_inset Formula 
+\[
+\mathrm{cov}\{\widehat{\mathbf{w}}\}=\sigma^{2}(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}=-\left(\frac{\partial\log L}{\partial\mathbf{w}\partial\mathbf{w}^{\mathsf{T}}}\right)^{-1}
+\]
+
+\end_inset
+
+The certainty or uncertainty in the parameters as described by 
+\begin_inset Formula $\mathrm{cov}(\widehat{\mathbf{w})}$
+\end_inset
+
+ is directly linked to the second derivative of the log likelihood.
+\end_layout
+
+\begin_layout Standard
+Covariance matrix provides us with two useful pieces of information.
+ The diagonal elements (the variances of the individual elements in 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+) tell us how much variability we might expect in the individual parameters.
+ The off-diagonal elements tell us how the parameters covary - if the values
+ are high and positive, it tells us that increasing one will require an
+ increase in the other to maintain a good model.
+ Large negative values tell us the opposite - increasing one will cause
+ a decrease in the other.
+ Values close to zero tell us that the parameters are not dependent on one
+ another.
+\end_layout
+
+\begin_layout Standard
+Comparison with empirical values
+\end_layout
+
+\begin_layout Standard
+[using numerical experiments]
+\end_layout
+
+\begin_layout Standard
+If we use 
+\begin_inset Formula $\widehat{\mathbf{w}}_{s}$
+\end_inset
+
+ to describe the parameters obtained from the 
+\begin_inset Formula $s$
+\end_inset
+
+-th dataset, the empirical covariance matrix can be computed as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\widehat{\mathrm{cov}\{\widehat{\mathbf{w}}\}}=\frac{1}{S}\sum_{s=1}^{S}\left(\widehat{\mathbf{w}}_{s}-\widehat{\boldsymbol{\mu}}\right)\left(\widehat{\mathbf{w}}_{s}-\widehat{\boldsymbol{\mu}}\right)^{\mathsf{T}}
+\]
+
+\end_inset
+
+where
+\begin_inset Formula 
+\[
+\widehat{\boldsymbol{\mu}}=\frac{1}{S}\sum_{s=1}^{S}\widehat{\mathbf{w}}_{s}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Variability in predictions
+\end_layout
+
+\begin_layout Standard
+Making predictions
+\end_layout
+
+\begin_layout Standard
+To predict 
+\begin_inset Formula $t_{\mathrm{new}}$
+\end_inset
+
+, we multiply 
+\begin_inset Formula $\mathbf{x}_{\mathrm{new}}$
+\end_inset
+
+ by the best set of model parameters, 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+t_{\mathrm{new}}=\mathbf{x}_{\mathrm{new}}^{\mathsf{T}}(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\mathbf{t}=\mathbf{x}_{\mathrm{new}}^{\mathsf{T}}\widehat{\mathbf{w}}
+\]
+
+\end_inset
+
+with variance: 
+\begin_inset Formula 
+\[
+\sigma_{\mathrm{new}}^{2}=\sigma^{2}\mathbf{x}_{\mathrm{new}}^{\mathsf{T}}(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{x}_{\mathrm{new}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula $\sigma^{2}$
+\end_inset
+
+ is the true variance of the dataset noise.
+ In its place, we can use our estimate, 
+\begin_inset Formula $\widehat{\sigma^{2}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Estimate of the noise variance
+\end_layout
+
+\begin_layout Standard
+Recall our estimate to variance:
+\begin_inset Formula 
+\[
+\widehat{\sigma^{2}}=\frac{1}{N}\left(\mathbf{t}^{\mathsf{T}}\mathbf{t}-\mathbf{t}^{\mathsf{T}}\mathbf{X}\widehat{\mathbf{w}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Computing expectations of this expression with respect to 
+\begin_inset Formula $p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})$
+\end_inset
+
+ we obtain:
+\begin_inset Formula 
+\[
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})}\left\{ \widehat{\sigma^{2}}\right\} =\sigma^{2}\left(1-\frac{D}{N}\right)
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $D$
+\end_inset
+
+ is the number of columns in 
+\begin_inset Formula $\mathbf{X}$
+\end_inset
+
+.
+ Assuming that 
+\begin_inset Formula $D<N$
+\end_inset
+
+ (i.e.
+ the number of attributes we measure for each data point is smaller than
+ the number of data points), then our estimate of the variance will, on
+ average, be lower than the true variance:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})}\left\{ \widehat{\sigma^{2}}\right\} <\sigma^{2}
+\]
+
+\end_inset
+
+Unlike 
+\begin_inset Formula $\widehat{\mathbf{w}}$
+\end_inset
+
+ this estimator is biased.
+\end_layout
+
+\begin_layout Standard
+s
+\end_layout
+
+\begin_layout Standard
+s
+\end_layout
+
+\begin_layout Standard
+s
+\end_layout
+
+\end_body
+\end_document
