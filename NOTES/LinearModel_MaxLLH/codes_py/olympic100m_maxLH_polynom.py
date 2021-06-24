@@ -7,6 +7,7 @@ plt.rcParams.update({
 )
 
 def maxLH_fit_polyN(x, t, N):
+    Ndata = x.shape[0]
     # Build the input matrix
     X = np.zeros((Ndata,N+1))
     X[:,0] = 1.0
