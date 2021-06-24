@@ -6,7 +6,7 @@ plt.rcParams.update({
     "font.size": 14}
 )
 
-def maxLLH_fit_polyN(x, t, N):
+def maxLH_fit_polyN(x, t, N):
     # Build the input matrix
     X = np.zeros((Ndata,N+1))
     X[:,0] = 1.0
@@ -20,6 +20,17 @@ def maxLLH_fit_polyN(x, t, N):
     σ2 = (t.T @ t - t.T @ X @ w)/Ndata
 
     return w, σ2
+
+def maxLH_predict_polyN(x, w):
+    Ndata = x.shape[0]
+    N = w.shape[0] - 1 # polynomial order
+    # Build X matrix for xgrid
+    X = np.zeros((Ndata,N+1))
+    X[:,0] = 1.0
+    for i in range(1,N+1):
+        X[:,i] = x**i
+    # Evaluate the model
+    return X @ w
 
 # Load the data
 DATAPATH = "../../../DATA/olympic100m.txt"
@@ -41,7 +52,7 @@ plt.plot(x, t, marker="o", linewidth=0, label="data")
 
 for N in [1,2,3,9]:
     print("\nUsing polynomial of order ", N)
-    w, σ2 = maxLLH_fit_polyN(x, t, N)
+    w, σ2 = maxLH_fit_polyN(x, t, N)
     print("Model parameters:")
     print(w)
     print("σ2 = ", σ2)
@@ -49,13 +60,7 @@ for N in [1,2,3,9]:
     NptsPlot = 100
     # make it slightly outside the original datarange
     xgrid = np.linspace(np.min(x), np.max(x), NptsPlot)
-    # Build X matrix for xgrid
-    X = np.zeros((NptsPlot,N+1))
-    X[:,0] = 1.0
-    for i in range(1,N+1):
-        X[:,i] = xgrid**i
-    # Evaluate the model
-    ygrid = X @ w
+    ygrid = maxLH_predict_polyN(xgrid, w)
     plt.plot(xgrid, ygrid, label="order-"+str(N))
 
 plt.grid(True)
