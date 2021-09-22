@@ -1,0 +1,248 @@
+\documentclass[a4paper,11pt]{article} % screen setting
+
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=1.5cm}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+%\usepackage{cmbright}
+%\renewcommand{\familydefault}{\sfdefault}
+
+%\usepackage{fontspec}
+\usepackage[libertine]{newtxmath}
+\usepackage[no-math]{fontspec}
+\setmainfont{Linux Libertine O}
+%\setmonofont{DejaVu Sans Mono}
+\setmonofont{JuliaMono-Regular}
+
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{minted}
+
+\newminted{julia}{breaklines,fontsize=\footnotesize}
+\newminted{python}{breaklines,fontsize=\footnotesize}
+
+\newminted{bash}{breaklines,fontsize=\footnotesize}
+\newminted{text}{breaklines,fontsize=\footnotesize}
+
+\newcommand{\txtinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{text}{#1}}
+\newcommand{\jlinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{julia}{#1}}
+\newcommand{\pyinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{python}{#1}}
+
+\newmintedfile[juliafile]{julia}{breaklines,fontsize=\footnotesize}
+\newmintedfile[pythonfile]{python}{breaklines,fontsize=\footnotesize}
+
+\definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
+\usepackage{mdframed}
+\BeforeBeginEnvironment{minted}{
+    \begin{mdframed}[backgroundcolor=mintedbg,%
+        topline=false,bottomline=false,%
+        leftline=false,rightline=false]
+}
+\AfterEndEnvironment{minted}{\end{mdframed}}
+
+
+\usepackage{setspace}
+
+\onehalfspacing
+
+\usepackage{appendix}
+
+
+\newcommand{\highlighteq}[1]{\colorbox{blue!25}{$\displaystyle#1$}}
+\newcommand{\highlight}[1]{\colorbox{red!25}{#1}}
+
+
+
+\begin{document}
+
+
+\title{PyTorch Tutorial\\
+TF4063}
+\author{Fadjar Fathurrahman}
+\date{}
+\maketitle
+
+\section{Linear regression}
+
+\begin{pythoncode}
+import torch
+import torch.nn as nn
+import numpy as np
+import matplotlib.pyplot as plt
+    
+RANDOM_SEED = 1234
+np.random.seed(RANDOM_SEED)
+torch.manual_seed(RANDOM_SEED)
+    
+def create_dataset(Ndata):
+    w_true = [0.25, 1.1]
+    noise_var = 0.01
+    x_train = -5.0 + 10*np.random.rand(Ndata)
+    y_noise = np.sqrt(noise_var)*np.random.randn(Ndata)
+    y_train = w_true[1]*x_train + w_true[0] + y_noise
+    return x_train, y_train
+
+Ndata = 20
+x_train, y_train = create_dataset(Ndata)
+plt.clf()
+plt.plot(x_train, y_train, linewidth=0, marker="o")
+plt.savefig("IMG_data.pdf")
+
+# Convert data to tensor, we need to reshape it first
+x_train_ = np.reshape(x_train, (Ndata,1))
+y_train_ = np.reshape(y_train, (Ndata,1))
+# Default floating point number in PyTorch is float32
+inputs = torch.tensor(x_train_, dtype=torch.float32)
+targets = torch.tensor(y_train_, dtype=torch.float32)
+
+# Hyper-parameters
+input_size = 1 # only one feature
+output_size = 1 # 
+num_epochs = 200
+learning_rate = 0.1
+
+# Linear regression model
+model = nn.Linear(input_size, output_size)
+    
+# Loss and optimizer
+criterion = nn.MSELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+
+# Train the model
+for epoch in range(num_epochs):
+    # Forward pass
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    # Backward and optimize
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()        
+    if (epoch+1) % 5 == 0:
+        print ('Epoch [{}/{}], Loss: {:.4f}'.format(epoch+1, num_epochs, loss.item()))
+
+print("Parameters")
+for name, param in model.named_parameters():
+    print(name, " ", param.data)
+    
+# Plot the graph
+predicted = model(inputs).detach().numpy()
+plt.plot(x_train, y_train, 'ro', label='Original data')
+plt.plot(x_train, predicted, label='Fitted line')
+plt.legend()
+plt.show()
+    
+# Save the model checkpoint
+torch.save(model.state_dict(), 'model.ckpt')
+\end{pythoncode}
+
+
+\section{Logistic regression}
+
+
+\begin{pythoncode}
+import torch
+import torch.nn as nn
+import torchvision
+import torchvision.transforms as transforms
+import numpy as np
+
+RANDOM_SEED = 1234
+np.random.seed(RANDOM_SEED)
+torch.manual_seed(RANDOM_SEED)
+
+# Hyper-parameters 
+input_size = 28 * 28    # 784
+num_classes = 10
+num_epochs = 5
+batch_size = 100
+learning_rate = 0.001
+
+# MNIST dataset (images and labels)
+train_dataset = torchvision.datasets.MNIST(
+    root='../DATASET', 
+    train=True, 
+    transform=transforms.ToTensor(),
+    download=False
+)
+    
+test_dataset = torchvision.datasets.MNIST(
+    root='../DATASET', 
+    train=False, 
+    transform=transforms.ToTensor()
+)
+
+# Data loader (input pipeline)
+train_loader = torch.utils.data.DataLoader(
+    dataset=train_dataset, 
+    batch_size=batch_size, 
+    shuffle=True
+)
+
+test_loader = torch.utils.data.DataLoader(
+    dataset=test_dataset, 
+    batch_size=batch_size, 
+    shuffle=False
+)
+    
+# Logistic regression model
+model = nn.Linear(input_size, num_classes)
+    
+# Loss and optimizer
+criterion = nn.CrossEntropyLoss()  
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)  
+
+# Train the model
+total_step = len(train_loader)
+for epoch in range(num_epochs):
+
+    # Loop over all data, batch by batch
+    for i, (images, labels) in enumerate(train_loader):
+        # Reshape images to (batch_size, input_size)
+        images = images.reshape(-1, input_size)
+
+        # Forward pass
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+            
+        # Backward and optimize
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+            
+        if (i+1) % 100 == 0:
+            print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}' 
+                   .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
+    
+# Test the model
+# In test phase, we don't need to compute gradients (for memory efficiency)
+with torch.no_grad():
+    correct = 0
+    total = 0
+    for images, labels in test_loader:
+        images = images.reshape(-1, input_size)
+        outputs = model(images)
+        _, predicted = torch.max(outputs.data, 1)
+        total += int(labels.size(0))
+        correct += int((predicted == labels).sum())
+    print('Accuracy of the model on the 10000 test images: {} %'.format(100 * int(correct) / int(total)))
+    
+# Save the model checkpoint
+torch.save(model.state_dict(), 'model.ckpt')    
+\end{pythoncode}
+
+
+\bibliographystyle{unsrt}
+\bibliography{BIBLIO}
+
+\end{document}

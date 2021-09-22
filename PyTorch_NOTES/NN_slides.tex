@@ -1,0 +1,162 @@
+\documentclass[english,10pt,aspectratio=169,fleqn]{beamer}
+
+\usepackage{amsmath} % load this before unicode-math
+\usepackage{amssymb}
+\usepackage{mathabx}
+%\usepackage{unicode-math}
+
+\usepackage{fontspec}
+\setmonofont{DejaVu Sans Mono}
+%\setmathfont{STIXMath}
+%\setmathfont{TeX Gyre Termes Math}
+
+\usefonttheme[onlymath]{serif}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+%\setbeamersize{text margin left=5pt, text margin right=5pt}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+
+\usepackage{minted}
+\newminted{julia}{breaklines,fontsize=\scriptsize,texcomments=true}
+\newminted{python}{breaklines,fontsize=\scriptsize,texcomments=true}
+\newminted{bash}{breaklines,fontsize=\scriptsize,texcomments=true}
+\newminted{text}{breaklines,fontsize=\scriptsize,texcomments=true}
+
+\newcommand{\txtinline}[1]{\mintinline[fontsize=\scriptsize]{text}{#1}}
+\newcommand{\jlinline}[1]{\mintinline[fontsize=\scriptsize]{julia}{#1}}
+
+\definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
+\usepackage{mdframed}
+
+%\BeforeBeginEnvironment{minted}{\begin{mdframed}[backgroundcolor=mintedbg]}
+%\AfterEndEnvironment{minted}{\end{mdframed}}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\makeatletter
+
+ \newcommand\makebeamertitle{\frame{\maketitle}}%
+ % (ERT) argument for the TOC
+ \AtBeginDocument{%
+   \let\origtableofcontents=\tableofcontents
+   \def\tableofcontents{\@ifnextchar[{\origtableofcontents}{\gobbletableofcontents}}
+   \def\gobbletableofcontents#1{\origtableofcontents}
+ }
+
+\makeatother
+
+\usepackage{babel}
+
+\begin{document}
+
+
+\title{Introduction to Neural Network}
+\subtitle{TF4063}
+\author{Fadjar Fathurrahman}
+\institute{
+Program Studi Teknik Fisika\\
+Institut Teknologi Bandung
+}
+\date{}
+
+
+\frame{\titlepage}
+
+
+\begin{frame} % --------------------------------------
+
+The materials are taken from:
+Eli Stevens. Deep Learning with PyTorch, Chapter 6.
+
+\end{frame} % ----------------------------------------
+
+
+\begin{frame}[plain] % -------------------------------
+
+{\centering
+\includegraphics[scale=0.9]{images_priv/Stevens_Fig_6_1.pdf}
+\par}
+
+\end{frame} % ----------------------------------------
+
+
+\begin{frame}
+\frametitle{Neural network}
+
+\begin{itemize}
+\item Neural networks are mathematical entities capable of representing complicated functions
+through a \textbf{composition} of simpler functions.
+\item The initial models of neural networks were inspired by neuroscience. Modern artificial
+neural networks bear only a slight resemblance to the mechanism of neurons in the brain.
+\item The building blocks of these complicated functions is the neuron, which is a linear
+transformation of the input followed by the application of a fixed nonlinear function, referred
+to as activation function:
+\begin{equation*}
+o = f(wx + b)
+\end{equation*}
+where $x$: input, $o$: output, $w$: weight, $b$: bias. The input and output can be scalar or
+vector, weight can be scalar or matrix, and bias can be scalar or vector.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame} % ---------------------------------------
+
+{\centering
+\includegraphics[scale=1.0]{images_priv/Stevens_Fig_6_2.pdf}
+\par}
+
+\end{frame}
+
+
+\begin{frame} % ---------------------------------------
+\frametitle{Multilayer network}
+
+\begin{itemize}
+\item A multilayer neural network, is made up of a composition of functions:
+\begin{align*}
+x_{1} & = f(w_0 x + b_0) \\
+x_{2} & = f(w_1 x_1 + b_1) \\
+\cdots & \cdots \\
+y & = f(w_n x_n + b_n)
+\end{align*}
+\item To train the network, we need to choose a loss function and minimize it:
+\begin{itemize}
+\item mean squared error (MSE)
+\item absolute error
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame} % ---------------------------------------
+
+{\centering
+\includegraphics[scale=1.0]{images_priv/Stevens_Fig_6_3a.pdf}
+\includegraphics[scale=1.0]{images_priv/Stevens_Fig_6_3b.pdf}
+\par}
+  
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Python code}
+
+\url{https://github.com/deep-learning-with-pytorch/dlwpt-code}
+
+\url{https://github.com/Apress/beginning-anomaly-detection-using-python-based-dl}
+
+\end{frame}
+
+
+\end{document}
+
