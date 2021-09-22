@@ -1,7 +1,10 @@
 %\documentclass[a4paper,11pt]{article} % print setting
-\documentclass[a4paper,11pt]{article} % screen setting
+%\documentclass[a4paper,12pt]{article} % screen setting
+%\usepackage[a4paper]{geometry}
+%\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
 
-\usepackage[a4paper]{geometry}
+\documentclass[b5paper,12pt]{article} % screen setting
+\usepackage[b5paper]{geometry}
 \geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=1.5cm}
 
 \setlength{\parskip}{\smallskipamount}
@@ -43,8 +46,9 @@
 \newmintedfile[juliafile]{julia}{breaklines,fontsize=\footnotesize}
 \newmintedfile[pythonfile]{python}{breaklines,fontsize=\footnotesize}
 
-\definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
 \usepackage{mdframed}
+
+\definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
 \BeforeBeginEnvironment{minted}{
     \begin{mdframed}[backgroundcolor=mintedbg,%
         topline=false,bottomline=false,%
@@ -63,9 +67,12 @@
 \newcommand{\highlighteq}[1]{\colorbox{blue!25}{$\displaystyle#1$}}
 \newcommand{\highlight}[1]{\colorbox{red!25}{#1}}
 
-
+\usepackage{pagecolor}
 
 \begin{document}
+
+%\pagecolor{green!80!white}
+%\pagecolor{gray!80!white}
 
 
 \title{Linear Modeling - Least Square Approach\\
@@ -75,10 +82,12 @@ TF4063}
 \maketitle
 
 The material in this note is based on \cite{Rogers2017}.
-Most of the code in this note is written in Julia programming language
-\cite{Bezanson2017,juliaorg}.
 We only show only some portion of the code to illustrate the idea described in the
-note.
+note. You can find the original MATLAB codes accompanying the book at:
+
+{\footnotesize
+\url{https://github.com/sdrogers/fcmlcode}
+}
 
 \section{Linear model and its loss function}
 
@@ -105,9 +114,10 @@ By averaging contributions from all data:
 \frac{1}{N} \sum_{n=1}^{N} \left( t_n - f(x_n; w_0, w_1) \right)^2
 \label{eq:loss_function_01}
 \end{equation}
-We will call this quantity as \highlight{loss function}
+We will call this quantity as loss function
 and we want to this quantity to be as small as possible.
-Finding model parameters by minimizing loss functions such as in Eq. \eqref{eq:loss_function_01}
+Finding model parameters by minimizing loss functions such as
+in Eq. \eqref{eq:loss_function_01}
 is known as least square approach to linear regression.
 
 
@@ -119,7 +129,8 @@ We can find the parameters $(w_{0},w_{1})$ by using minimization procedures:
 \end{equation}
 
 For our particular case of Eq. \eqref{eq:loss_function_01}, we can found this analytically,
-i.e. calculating the first derivatives of $\mathcal{L}$ with respect to $w_0$ and $w_1$, equating
+i.e. calculating the first derivatives of $\mathcal{L}$ with
+respect to $w_0$ and $w_1$, equating
 them to zero, and solve the resulting equations for $w_0$ and $w_1$.
 For more general cases, we can use various numerical optimization procedures such as
 gradient descent methods.
@@ -153,7 +164,7 @@ where symbols with overline denotes their average value, for examples
 \overline{t} & = \frac{1}{N} \sum_{n=1}^{N} t_{n}
 \end{align*}
 
-Example
+\textbf{Example}
 
 Now we want to implement least square approach to linear regression based on
 Eq. \ref{eq:w0_w1_simple}. For this purpose, we need a simple data to work on.
@@ -178,21 +189,52 @@ Year & Seconds \\
 \end{table}
 
 
-\begin{juliacode}
-# Load data
-data = readdlm("../../DATA/olympic100m.txt", ',')
-x = data[:,1]
-t = data[:,2]
-xbar = mean(x)
-tbar = mean(t)
-w_1 = (mean(x.*t) - xbar*tbar)/(mean(x.^2) - xbar^2)
-w_0 = tbar- w_1*xbar
-\end{juliacode}
+\begin{pythoncode}
+import numpy as np
+import matplotlib.pyplot as plt
+  
+import matplotlib
+matplotlib.style.use("seaborn-darkgrid")
+  
+# Load the data
+DATAPATH = "olympic100m.txt"
+data = np.loadtxt(DATAPATH, delimiter=",")
+  
+Ndata = len(data) # data.shape[0]
+  
+x = data[:,0]
+t = data[:,1]
+  
+# Calculate parameters
+tbar = np.sum(t)/Ndata # np.average also can be used
+xbar = np.sum(x)/Ndata
+xtbar = np.sum(x*t)/Ndata
+x2bar = np.sum(x**2)/Ndata
+  
+w1 = (xtbar - xbar*tbar)/(x2bar - xbar**2)
+w0 = tbar - w1*xbar
+  
+print("Model parameters:")
+print("w0 = %18.10e" % w0)
+print("w1 = %18.10e" % w1)
+  
+t_pred = w0 + w1*x
+  
+plt.clf()
+plt.plot(x, t, marker="o", linewidth=0, label="data")
+plt.plot(x, t_pred, marker="x", label="linear-fit")
+plt.grid(True)
+plt.legend()
+plt.xlabel("Year")
+plt.ylabel("Time (seconds)")
+plt.savefig("IMG_fit_linear_olympic100_simple.pdf")  
+\end{pythoncode}
 
 We have the following result for the weights (paramaters of the model)
 \begin{textcode}
-w_0 = 36.41645590250286
-w_1 = -0.01333088571096
+Model parameters:
+w0 =   3.6416455903e+01
+w1 =  -1.3330885711e-02
 \end{textcode}
 
 We can visualize the result by plotting the data and the a line described
@@ -200,7 +242,7 @@ linear equation Eq. \eqref{eq:model_linear_01}. The result is shown in
 Fig. \ref{fig:linreg_01}.
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.75]{codes_jl/IMG_linreg_simple.pdf}
+\includegraphics[scale=0.75]{codes_py/IMG_fit_linear_olympic100_simple.pdf}
 \end{center}
 \caption{Result of linear regression for \txtinline{olympic100m}.}
 \label{fig:linreg_01}
@@ -299,32 +341,45 @@ So we have
 \end{equation}
 or
 \begin{equation}
-\highlighteq{
 \mathbf{w} = \left(\mathbf{X}^{\mathsf{T}}\mathbf{X} \right)^{-1} \mathbf{X}^{\mathsf{T}} \mathbf{t}
-}
 \label{eq:w_vektor}
 \end{equation}
 
 The following snippet describes how Eq. \eqref{eq:w_vektor} is implemented.
-\begin{juliacode}
-data = readdlm("../../DATA/olympic100m.txt", ',')
-x = data[:,1]
-t = data[:,2]
-Ndata = size(data,1)
-# Build X matrix
-X = zeros(Ndata,2)
-for i in 1:Ndata
-    X[i,1] = 1.0
-    X[i,2] = x[i]
-end
-# Calculate w
-w = inv(X' * X) * X' * t
-println("w = ", w)
-\end{juliacode}
+\begin{pythoncode}
+# Load the data
+DATAPATH = "olympic100m.txt"
+data = np.loadtxt(DATAPATH, delimiter=",")
+  
+Ndata = len(data) # data.shape[0]
+  
+x = data[:,0]
+t = data[:,1]
+  
+# Build the input matrix
+X = np.zeros((Ndata,2))
+X[:,0] = 1.0
+X[:,1] = data[:,0]
+  
+# Calculate the model parameters
+XtX = X.T @ X
+XtXinv = np.linalg.inv(XtX)
+w = XtXinv @ X.T @ t
+  
+print("Model parameters:")
+print("w0 = %18.10e" % w[0])
+print("w1 = %18.10e" % w[1])
+  
+t_pred = X @ w
 
-Result:
+# Plot the results ...
+\end{pythoncode}
+
+The result should be the same as using Equation \eqref{eq:w0_w1_simple}:
 \begin{textcode}
-w = [36.416455902505334, -0.013330885710962845]
+Model parameters:
+w0 =   3.6416455903e+01
+w1 =  -1.3330885711e-02  
 \end{textcode}
 
 
@@ -354,45 +409,84 @@ adding one column to the matrix $\mathbf{X}$:
 \end{bmatrix}
 \end{equation}
 
+The following snippets shows how to implement this:
+\begin{pythoncode}
+# Build matrix X
+X = np.zeros( (Ndata,3) )
+X[:,0] = 1.0
+X[:,1] = data[:,0]
+X[:,2] = np.power( data[:,0], 2 )
+  
+t = data[:,1] # target
+  
+XtX = X.transpose() @ X
+XtXinv = np.linalg.inv(XtX)
+w = XtXinv @ X.transpose() @ t
+
+print("Model parameters:")
+print("w0 = %18.10e" % w[0])
+print("w1 = %18.10e" % w[1])
+print("w2 = %18.10e" % w[2])
+
+t_pred = X @ w
+\end{pythoncode}
+
 This scheme also applies to higher order polynomials. The following snippet shows
 how to build the matrix $\mathbf{X}$, find the parameters $\mathbf{w}$ and
 also how to make prediction given model parameter and input.
-\begin{juliacode}
-function do_fit(x, t, Norder)
-  @assert Norder >= 1
-  Ndata = size(x,1)
-  # Build X matrix
-  X = zeros(Ndata,Norder+1)
-  for i in 1:Ndata
-    X[i,1] = 1.0
-    for n in 1:Norder
-      X[i,n+1] = x[i]^n
-    end
-  end
-  # Calculate w
-  w = inv(X'*X) * X' * t
-  return w
-end
+\begin{pythoncode}
+def do_fit(x, Npoly):
+  Ndata = len(x)
+  # Npoly is degree of the polynomial
+  X = np.zeros( (Ndata,Npoly+1) )
+  X[:,0] = 1
+  for i in range(1,Npoly+1):
+      X[:,i] = np.power( x, i )
+  XtX = X.transpose() @ X
+  XtXinv = np.linalg.inv(XtX)
+  w = XtXinv @ X.transpose() @ t
+  return X, w
 
-function do_predict(w, x)
-  Ndata = size(x,1)
-  Norder = size(w,1) - 1
-  t = ones(Ndata)*w[1]
-  for n in 1:Norder
-    t[:] = t[:] + w[n+1]*x.^n
-  end
-  return t
-end
-\end{juliacode}
+Npoly = 3
+X, w = do_fit(x, Npoly)
+
+# Define new input from first x to last x where the model will be evaluated
+NptsPlot = 200
+x_eval = np.linspace(x[0], x[-1], NptsPlot)
+# Build X matrix for new input
+X_eval = np.zeros( (NptsPlot,Npoly+1) )
+X_eval[:,0] = 1.0
+for i in range(1,Npoly+1):
+    X_eval[:,i] = np.power( x_eval, i )
+
+# Evaluate the model for the new input  
+t_eval = X_eval @ w
+\end{pythoncode}
 
 In the following figure we show the result of fitting \txtinline{olympic100m} data
 to 3rd order polynomial.
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.75]{codes_jl/IMG_linreg_polynom_3.pdf}
+\includegraphics[scale=0.75]{codes_py/IMG_fit_poly3_olympic100.pdf}
 \end{center}
 \caption{3rd order polynomial fit to \txtinline{olympic100m} data.}
 \end{figure}
+
+Note that we have shifted and scaled the $x$-axis (the input) to avoid
+numerical problems (round-off errors) with high order polynomial.
+The following snippet can be used for this purpose.
+\begin{pythoncode}
+# Load the data
+DATAPATH = "olympic100m.txt"
+data = np.loadtxt(DATAPATH, delimiter=",")
+
+t = data[:,1] # Target
+# Rescale the data to avoid numerical problems with large numbers
+x = data[:,0]
+x = x - x[0] # shift
+x = 0.25*x # scale
+\end{pythoncode}
+
 
 \section{Model selection}
 
@@ -431,45 +525,71 @@ training data while the loss is calculated using validation data.
 As an example, let's say that we want to use the data for year larger
 than 1979 as validation data and otherwiseas training data. The following
 snippet shows how to do this.
-\begin{juliacode}
-# Load data
-data = readdlm("../../DATA/olympic100m.txt", ',')
-x = data[:,1]
-t = data[:,2]
-Ndata = size(data,1)
+\begin{pythoncode}
+def do_fit(x, Npoly):
+    Ndata = len(x)
+    # Npoly is degree of the polynomial
+    X = np.zeros( (Ndata,Npoly+1) )
+    X[:,0] = 1
+    for i in range(1,Npoly+1):
+        X[:,i] = np.power( x, i )
+    XtX = X.transpose() @ X
+    XtXinv = np.linalg.inv(XtX)
+    w = XtXinv @ X.transpose() @ t
+    return X, w
+  
+def do_predict(w, x_eval):
+    Npoly = w.shape[0] - 1
+    Ndata_eval = x_eval.shape[0]
+    # Build X matrix for new input
+    X_eval = np.zeros( (Ndata_eval,Npoly+1) )
+    X_eval[:,0] = 1.0
+    for i in range(1,Npoly+1):
+        X_eval[:,i] = np.power( x_eval, i )
+    # evaluate
+    t_eval = X_eval @ w
+    return t_eval
+  
+# Load the data
+DATAPATH = "olympic100m.txt"
+data = np.loadtxt(DATAPATH, delimiter=",")
+  
+t_full = data[:,1] # Target
+x_full = data[:,0]
 # Data indices for validation and training data
-idx_val = x .> 1979
-idx_train = x .<= 1979
-# Scale x, to prevent numerical problems with large numbers
-x_min = minimum(x)
-x = x .- x_min
-x = x/4
-# Validation data
-x_val = x[idx_val]
-t_val = t[idx_val]
-# Training data
-x_train = x[idx_train]
-t_train = t[idx_train]
-# Train using training data
-w = do_fit(x_train, t_train, Norder)
-# Predict for validation data
-t_pred = do_predict(w, x_val)
-# Evaluate loss for validation data
-NdataVal = size(t_val,1)
-loss = sum( (t_val - t_pred).^2 )/NdataVal
-@printf("Order: %3d Loss: %10.5f\n", Norder, loss)
-\end{juliacode}
+idx_val = x_full > 1979
+idx_train = x_full <= 1979
+#
+x_val = x_full[idx_val]
+t_val = t_full[idx_val]
+#
+x = x_full[idx_train]
+t = t_full[idx_train]
+  
+# Shift and rescale the data to avoid numerical problems with large numbers
+x = x - x_full[0]
+x = 0.25*x
+# also do this for validation input
+x_val = x_val - x_full[0]
+x_val = 0.25*x_val
+  
+for Npoly in range(1,9):
+    X, w = do_fit(x, Npoly)
+    t_val_pred = do_predict(w, x_val)
+    loss = np.sum( (t_val_pred - t_val)**2/len(t_val) )
+    print("Npoly = %2d   loss = %10.5f" % (Npoly, loss))  
+\end{pythoncode}
 
 The result is shown below.
 \begin{textcode}
-Order:   1 Loss:    0.10130
-Order:   2 Loss:    0.16763
-Order:   3 Loss:    1.06188
-Order:   4 Loss:    4.45706
-Order:   5 Loss:    5.51420
-Order:   6 Loss: 1533.43686
-Order:   7 Loss:   61.91361
-Order:   8 Loss: 6023.27708    
+Npoly =  1   loss =    0.10130
+Npoly =  2   loss =    0.16763
+Npoly =  3   loss =    1.06188
+Npoly =  4   loss =    4.45706
+Npoly =  5   loss =    5.51420
+Npoly =  6   loss = 1533.43686
+Npoly =  7   loss =   61.91356
+Npoly =  8   loss = 6023.27314
 \end{textcode}
 From this result, we can say that first order polynomial is the best model.
 
@@ -486,11 +606,11 @@ possible) sized blocks.
 \end{figure}
 
 Each block takes its turn as a
-validation set for a training set comprised of the other $K−1$ blocks. Averaging over
+validation set for a training set comprised of the other $K-1$ blocks. Averaging over
 the resulting $k$ loss values gives us our final loss value.
 
 An extreme case of $K$-fold
-cross-validation is where $K=N$ , the number of observations in our dataset: each
+cross-validation is where $K = N$ , the number of observations in our dataset: each
 data observation is held out in turn and used to test a model trained on the other
 This particular form of cross-validation is also known as Leave-One-Out
 Cross-Validation (LOOCV).
@@ -556,41 +676,57 @@ we obtain
 \end{equation}
 
 We can implement this by simple modification to our code.
-\begin{juliacode}
-function do_fit(x, t, Norder; λ=0.0)
-  @assert Norder >= 1
-  Ndata = size(x,1)
-  # Build X matrix
-  X = zeros(Ndata,Norder+1)
-  for i in 1:Ndata
-    X[i,1] = 1.0
-    for n in 1:Norder
-      X[i,n+1] = x[i]^n
-    end
-  end
-  # Calculate w
-  w = inv( X'*X + Ndata*diagm(λ*ones(Ndata)) ) * X' * t
-  return w
-end
-\end{juliacode}
+\begin{pythoncode}
+def do_fit(x, t, Npoly, λ=0.0):
+    Ndata = len(x)
+    # Npoly is degree of the polynomial
+    X = np.zeros( (Ndata,Npoly+1) )
+    X[:,0] = 1.0
+    for i in range(1,Npoly+1):
+        X[:,i] = np.power( x, i )
+    XtX = X.transpose() @ X + Ndata*λ*np.eye(Ndata)
+    XtXinv = np.linalg.inv(XtX)
+    w = XtXinv @ X.transpose() @ t
+    return X, w
+\end{pythoncode}
 
 As an example we will implement this for synthetic data generated from linear
 function plus noise term.
 \begin{juliacode}
-x_min = 0.0; x_max = 1.0
-x = range(x_min, x_max, step=0.2) # input data
-y = 2*x .- 3 # linear function
-A_noise = 1.0
-t = y + A_noise*randn(size(x,1)) # add noise
+np.random.seed(1234)
+Ntrain = 6 # training data
+x = np.linspace(0.0, 1.0, Ntrain)
+y = 2*x - 3
+NoiseVar = 0.1
+noise = math.sqrt(NoiseVar)*np.random.randn(x.shape[0])
+t = y + noise # add some noise
 \end{juliacode}
+
+
 Fitting 5-th order polynomial to this data and using various values for regularization
 parameter $\lambda$, we obtain the following result.
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.75]{codes_jl/IMG_linreg_regularized_01.pdf}
+\includegraphics[scale=0.75]{codes_py/IMG_reg_fit_poly5_synth.pdf}
 \end{center}
 \end{figure}
 Best value for $\lambda$ can be obtained by using validation data as we have done before.
+
+The following snippet can be used to generate the figure:
+\begin{pythoncode}
+Npoly = 5
+plt.clf()
+plt.plot(x, t, marker="o", label="data")
+x_eval = np.linspace(x[0], x[-1], 100)
+for λ in [0.0, 1e-6, 1e-4, 1e-1]:
+    X, w = do_fit(x, t, Npoly, λ=λ)
+    t_eval = do_predict(w, x_eval)
+    plt.plot(x_eval, t_eval, label="$\\lambda$={:8.1e}".format(λ))
+plt.xlim(-0.05, 1.05)
+plt.ylim(-3.8, -0.4)
+plt.grid()
+plt.legend()
+\end{pythoncode}
 
 \begin{mdframed}
 \textbf{Task 3}
@@ -601,15 +737,18 @@ parameter $\lambda$)
 and describe the procedure that you have used to determine them.
 \end{mdframed}
 
+
 \section{Linear regression in Scikit Learn Python package}
+
 Linear regression in Scikit Learn \cite{scikit-learn} can be done using the
-\pyinline{sklearn.linear_model.LinearRegression} module.
+\pyinline{LinearRegression} class in
+\pyinline{sklearn.linear_model} module.
 Several regularization methods are also applied such as:
 \begin{itemize}
 \item ridge regression
 \item lasso regression
 \end{itemize}
-
+Please consult Scikit Learn documentation for more info.
 
 \bibliographystyle{unsrt}
 \bibliography{BIBLIO}

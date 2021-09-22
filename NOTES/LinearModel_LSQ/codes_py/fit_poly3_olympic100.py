@@ -20,7 +20,7 @@ x = x - x[0]
 x = 0.25*x
 
 def do_fit(x, Npoly):
-    Ndata = len(x)
+    Ndata = len(data)
     # Npoly is degree of the polynomial
     X = np.zeros( (Ndata,Npoly+1) )
     X[:,0] = 1
@@ -32,7 +32,7 @@ def do_fit(x, Npoly):
     return X, w
 
 
-for Npoly in range(1,11):
+for Npoly in [3]:
     X, w = do_fit(x, Npoly)
 
     # Define new input from first x to last x where the model will be evaluated
@@ -56,6 +56,6 @@ for Npoly in range(1,11):
     plt.xlim(-1, 30)
     plt.xlabel("Year (scaled and shifted)")
     plt.ylabel("Time (seconds)")
-    plt.savefig("IMG_fit_poly" + str(Npoly) + "_olympic100.png", dpi=150)
+    plt.savefig("IMG_fit_poly" + str(Npoly) + "_olympic100.pdf")
     
     print("Npoly = %2d is done" % (Npoly))
