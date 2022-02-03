@@ -1,6 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.style.use("seaborn-darkgrid")
 plt.rcParams.update({
@@ -14,26 +14,24 @@ data = np.loadtxt(DATAPATH, delimiter=",")
 
 Ndata = len(data) # data.shape[0]
 
-# Build matrix X
-X = np.zeros( (Ndata,3) )
+x = data[:,0]
+t = data[:,1]
+
+# Build the input matrix
+X = np.zeros((Ndata,2))
 X[:,0] = 1.0
 X[:,1] = data[:,0]
-X[:,2] = np.power( data[:,0], 2 )
 
-t = data[:,1] # target
-
-XtX = X.transpose() @ X
+# Calculate the solution
+XtX = X.T @ X
 XtXinv = np.linalg.inv(XtX)
-w = XtXinv @ X.transpose() @ t
+w = XtXinv @ X.T @ t
 
 print("Model parameters:")
 print("w0 = %18.10e" % w[0])
 print("w1 = %18.10e" % w[1])
-print("w2 = %18.10e" % w[2])
 
 t_pred = X @ w
-
-x = data[:,0]
 
 plt.clf()
 plt.plot(x, t, marker="o", linewidth=0, label="data")
@@ -42,4 +40,4 @@ plt.grid(True)
 plt.legend()
 plt.xlabel("Year")
 plt.ylabel("Time (seconds)")
-plt.savefig("IMG_fit_quadratic_olympic100.pdf")
+plt.savefig("IMG_fit_linear_olympic100.pdf")

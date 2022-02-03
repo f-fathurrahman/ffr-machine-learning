@@ -1,13 +1,14 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib
 
+import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.style.use("seaborn-darkgrid")
 plt.rcParams.update({
     "text.usetex": True,
     "font.size": 14}
 )
+
+from linear_model_polynomial import *
 
 # Load the data
 DATAPATH = "../../../DATA/olympic100m.txt"
@@ -19,21 +20,8 @@ x = data[:,0]
 x = x - x[0]
 x = 0.25*x
 
-def do_fit(x, Npoly):
-    Ndata = len(data)
-    # Npoly is degree of the polynomial
-    X = np.zeros( (Ndata,Npoly+1) )
-    X[:,0] = 1
-    for i in range(1,Npoly+1):
-        X[:,i] = np.power( x, i )
-    XtX = X.transpose() @ X
-    XtXinv = np.linalg.inv(XtX)
-    w = XtXinv @ X.transpose() @ t
-    return X, w
-
-
-for Npoly in [3]:
-    X, w = do_fit(x, Npoly)
+for Npoly in range(1,11):
+    X, w = fit_polynomial(x, t, Npoly)
 
     # Define new input from first x to last x where the model will be evaluated
     NptsPlot = 200
@@ -56,6 +44,6 @@ for Npoly in [3]:
     plt.xlim(-1, 30)
     plt.xlabel("Year (scaled and shifted)")
     plt.ylabel("Time (seconds)")
-    plt.savefig("IMG_fit_poly" + str(Npoly) + "_olympic100.pdf")
+    plt.savefig("IMG_fit_poly" + str(Npoly) + "_olympic100.png", dpi=150)
     
     print("Npoly = %2d is done" % (Npoly))

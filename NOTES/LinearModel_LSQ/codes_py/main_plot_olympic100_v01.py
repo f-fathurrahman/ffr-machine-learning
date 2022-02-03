@@ -1,7 +1,8 @@
 import numpy as np
+
 import matplotlib.pyplot as plt
 import matplotlib
-
+matplotlib.style.use("seaborn-darkgrid")
 plt.rcParams.update({
     "text.usetex": True,
     "font.size": 14}

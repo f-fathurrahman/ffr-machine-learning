@@ -1,7 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib
 
+import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.style.use("seaborn-darkgrid")
 plt.rcParams.update({
@@ -9,29 +8,7 @@ plt.rcParams.update({
     "font.size": 14}
 )
 
-def do_fit(x, t, Npoly):
-    Ndata = len(x)
-    # Npoly is degree of the polynomial
-    X = np.zeros( (Ndata,Npoly+1) )
-    X[:,0] = 1
-    for i in range(1,Npoly+1):
-        X[:,i] = np.power( x, i )
-    XtX = X.transpose() @ X
-    XtXinv = np.linalg.inv(XtX)
-    w = XtXinv @ X.transpose() @ t
-    return X, w
-
-def do_predict(w, x_eval):
-    Npoly = w.shape[0] - 1
-    Ndata_eval = x_eval.shape[0]
-    # Build X matrix for new input
-    X_eval = np.zeros( (Ndata_eval,Npoly+1) )
-    X_eval[:,0] = 1.0
-    for i in range(1,Npoly+1):
-        X_eval[:,i] = np.power( x_eval, i )
-    # evaluate
-    t_eval = X_eval @ w
-    return t_eval
+from linear_model_polynomial import *
 
 # Load the data
 DATAPATH = "../../../DATA/olympic100m.txt"
@@ -57,7 +34,7 @@ x_val = x_val - x_full[0]
 x_val = 0.25*x_val
 
 for Npoly in range(1,9):
-    X, w = do_fit(x, t, Npoly)
-    t_val_pred = do_predict(w, x_val)
+    X, w = fit_polynomial(x, t, Npoly)
+    t_val_pred = predict_polynomial(w, x_val)
     loss = np.sum( (t_val_pred - t_val)**2/len(t_val) )
     print("Npoly = %2d   loss = %10.5f" % (Npoly, loss))  
