@@ -1,0 +1,51 @@
+\input{PREAMBLE}
+
+% -------------------------
+\begin{document}
+
+\title{Statistical Learning}
+%\author{Fadjar Fathurrahman}
+\date{}
+\maketitle
+
+From Kroese
+
+Some important aspects of data science:
+\begin{itemize}
+\item structuring data
+\item visualizing data
+\item mathematical analysis of data (the main challenge)
+\end{itemize}
+
+When the goal is to interpret the model and quantify the uncertainty in the data,
+this analysis is usually referred to as \emph{statistical learning}.
+
+When the emphasis in on making predictions using large-scale data, the it is common
+to speak about machine learning or data mining.
+
+Two major goals for modeling data:
+\begin{itemize}
+\item to accurately predict some future quantity of interest
+\item to discover unusual or interesting patterns in the data
+\end{itemize}
+
+To achieve these goals, one must rely on knowledge from three important pillars
+of the mathematical sciences:
+\begin{itemize}
+\item Function approximation
+\item Optimization
+\item Probability and statistics
+\end{itemize}
+
+
+\section{Supervised and unsupervised learning}
+
+Given an input or feature vector $\mathbf{x}$, predict an output or \emph{response} variable $y$.
+
+The prediction is encoded in a mathematical function $g$, called the prediction function,
+which takes an input $\mathbf{x}$ and outputs a guess $g(\mathbf{x})$ for $y$, denoted by
+$\widehat{y}$.
+
+\input{ex_polynom_reg}
+
+\end{document}

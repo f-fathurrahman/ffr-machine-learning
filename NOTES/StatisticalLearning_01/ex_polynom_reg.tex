@@ -1,0 +1,37 @@
+Example (Polynomial regression)
+
+Input: $u$
+
+Prediction function: $g$
+
+Function space: $\mathcal{H}$
+
+Data points: $(u_{i}, y_{i})$, $i = 1, \ldots, n$
+drawn from iid random points $(U_i, Y_i)$, where $U_{i}$ are uniformly distributed on the invterval
+$(0,1)$ and given $U_i = u_i$, the random variable $Y_{i}$ has a normal 
+distribution with expectation $10 - 140 u_i + 400u_{i}^{2} - 250u_{i}^3$ and variance
+$l^{*} = 25$
+
+Using a squared-error loss, the optimal prediction function
+$h^{*}(u) = \mathbb{E}[ Y | U = u ]$ is:
+\begin{equation*}
+h^{*}(u) = 10 - 140u + 400u^2 - 250u^3
+\end{equation*}
+
+To obtain a good estimate of $h^{*}(u)$ based on the training set
+$\tau = \left\{ (u_{i}, y_{i}), i = 1, \ldots, n \right\}$
+we minimize the outcome of the training loss:
+\begin{equation}
+l_{\tau}(h) = \frac{1}{n} \sum_{i=1}^{n} \left( y_{i} - h(u_i) \right)^2
+\end{equation}
+over a suitable set $\mathcal{H}$ of the candidate functions.
+
+Let's take the set $\mathcal{H}_{p}$ of polynomial functions in $u$
+or order $p - 1$:
+\begin{equation}
+h(u) := \beta_{1} + \beta_{2} u + \beta_{3} u^3 + \cdots + \beta_{p} u^{p-1}
+\end{equation}
+for $p = 1,2,\ldots$ and parameter vector:
+\begin{equation*}
+\boldsymbol{\beta} = \left[ \beta_1, \beta_2, \ldots, \beta_{p} \right]^{\mathsf{T}}
+\end{equation*}
