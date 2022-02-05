@@ -1,87 +1,15 @@
-%\documentclass[a4paper,11pt]{article} % print setting
-%\documentclass[a4paper,12pt]{article} % screen setting
-%\usepackage[a4paper]{geometry}
-%\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
-
-\documentclass[b5paper,12pt]{article} % screen setting
-\usepackage[b5paper]{geometry}
-\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=1.5cm}
-
-\setlength{\parskip}{\smallskipamount}
-\setlength{\parindent}{0pt}
-
-%\usepackage{cmbright}
-%\renewcommand{\familydefault}{\sfdefault}
-
-%\usepackage{fontspec}
-\usepackage[libertine]{newtxmath}
-\usepackage[no-math]{fontspec}
-\setmainfont{Linux Libertine O}
-%\setmonofont{DejaVu Sans Mono}
-\setmonofont{JuliaMono-Regular}
-
-
-\usepackage{hyperref}
-\usepackage{url}
-\usepackage{xcolor}
-
-\usepackage{amsmath}
-%\usepackage{amssymb}
-
-\usepackage{graphicx}
-\usepackage{float}
-
-\usepackage{minted}
-
-\newminted{julia}{breaklines,fontsize=\footnotesize}
-\newminted{python}{breaklines,fontsize=\footnotesize}
-
-\newminted{bash}{breaklines,fontsize=\footnotesize}
-\newminted{text}{breaklines,fontsize=\footnotesize}
-
-\newcommand{\txtinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{text}{#1}}
-\newcommand{\jlinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{julia}{#1}}
-\newcommand{\pyinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{python}{#1}}
-
-\newmintedfile[juliafile]{julia}{breaklines,fontsize=\footnotesize}
-\newmintedfile[pythonfile]{python}{breaklines,fontsize=\footnotesize}
-
-\usepackage{mdframed}
-
-\definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
-\BeforeBeginEnvironment{minted}{
-    \begin{mdframed}[backgroundcolor=mintedbg,%
-        topline=false,bottomline=false,%
-        leftline=false,rightline=false]
-}
-\AfterEndEnvironment{minted}{\end{mdframed}}
-
-
-\usepackage{setspace}
-
-\onehalfspacing
-
-\usepackage{appendix}
-
-
-\newcommand{\highlighteq}[1]{\colorbox{blue!25}{$\displaystyle#1$}}
-\newcommand{\highlight}[1]{\colorbox{red!25}{#1}}
-
-\usepackage{pagecolor}
+\input{PREAMBLE_tufte}
 
 \begin{document}
 
-%\pagecolor{green!80!white}
-%\pagecolor{gray!80!white}
 
-
-\title{Linear Modeling - Least Square Approach\\
+\title{Linear Modeling - Least Square Approach \\
 TF4063}
 \author{Fadjar Fathurrahman}
 \date{}
 \maketitle
 
-The material in this note is based on \cite{Rogers2017}.
+The material in this note is based on this book \citep{Rogers2017}.
 We only show only some portion of the code to illustrate the idea described in the
 note. You can find the original MATLAB codes accompanying the book at:
 
@@ -172,7 +100,7 @@ We choose to work with \txtinline{olympic100m} data which describes
 winning time of men's 100m sprint Olympic Games. You can choose to work with other
 data or synthetic data.
 
-\begin{table}[H]
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|}
 \hline
@@ -240,9 +168,9 @@ w1 =  -1.3330885711e-02
 We can visualize the result by plotting the data and the a line described
 linear equation Eq. \eqref{eq:model_linear_01}. The result is shown in
 Fig. \ref{fig:linreg_01}.
-\begin{figure}[H]
+\begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.75]{codes_py/IMG_fit_linear_olympic100_simple.pdf}
+\includegraphics[scale=0.60]{codes_py/IMG_fit_linear_olympic100_simple.pdf}
 \end{center}
 \caption{Result of linear regression for \txtinline{olympic100m}.}
 \label{fig:linreg_01}
@@ -435,20 +363,20 @@ This scheme also applies to higher order polynomials. The following snippet show
 how to build the matrix $\mathbf{X}$, find the parameters $\mathbf{w}$ and
 also how to make prediction given model parameter and input.
 \begin{pythoncode}
-def do_fit(x, Npoly):
-  Ndata = len(x)
-  # Npoly is degree of the polynomial
-  X = np.zeros( (Ndata,Npoly+1) )
-  X[:,0] = 1
-  for i in range(1,Npoly+1):
-      X[:,i] = np.power( x, i )
-  XtX = X.transpose() @ X
-  XtXinv = np.linalg.inv(XtX)
-  w = XtXinv @ X.transpose() @ t
-  return X, w
+def fit_polynomial(x, t, Npoly):
+    Ndata = len(x)
+    # Npoly is degree of the polynomial
+    X = np.zeros( (Ndata,Npoly+1) )
+    X[:,0] = 1
+    for i in range(1,Npoly+1):
+        X[:,i] = np.power( x, i )
+    XtX = X.transpose() @ X
+    XtXinv = np.linalg.inv(XtX)
+    w = XtXinv @ X.transpose() @ t
+    return X, w
 
 Npoly = 3
-X, w = do_fit(x, Npoly)
+X, w = fit_polynomial(x, t, Npoly)
 
 # Define new input from first x to last x where the model will be evaluated
 NptsPlot = 200
@@ -465,9 +393,9 @@ t_eval = X_eval @ w
 
 In the following figure we show the result of fitting \txtinline{olympic100m} data
 to 3rd order polynomial.
-\begin{figure}[H]
+\begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.75]{codes_py/IMG_fit_poly3_olympic100.pdf}
+\includegraphics[scale=0.60]{codes_py/IMG_fit_poly3_olympic100.pdf}
 \end{center}
 \caption{3rd order polynomial fit to \txtinline{olympic100m} data.}
 \end{figure}
@@ -507,9 +435,9 @@ We note that the loss is decreasing as we increase the polynomial order.
 Using this result, we might decide to choose 8-th order polynomial as the
 best model. However, this is not a good idea.
 The result of 8-th order fit is shown in Figure \ref{fig:8th_order_fit}.
-\begin{figure}[H]
+\begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.75]{codes_jl/IMG_linreg_polynom_8.pdf}
+\includegraphics[scale=0.60]{codes_jl/IMG_linreg_polynom_8.pdf}
 \end{center}
 \caption{8-th order polynomial fit to \txtinline{olympic100m} data.}
 \label{fig:8th_order_fit}
@@ -526,7 +454,7 @@ As an example, let's say that we want to use the data for year larger
 than 1979 as validation data and otherwiseas training data. The following
 snippet shows how to do this.
 \begin{pythoncode}
-def do_fit(x, Npoly):
+def fit_polynomial(x, t, Npoly):
     Ndata = len(x)
     # Npoly is degree of the polynomial
     X = np.zeros( (Ndata,Npoly+1) )
@@ -538,7 +466,7 @@ def do_fit(x, Npoly):
     w = XtXinv @ X.transpose() @ t
     return X, w
   
-def do_predict(w, x_eval):
+def predict_polynomial(w, x_eval):
     Npoly = w.shape[0] - 1
     Ndata_eval = x_eval.shape[0]
     # Build X matrix for new input
@@ -566,7 +494,8 @@ t_val = t_full[idx_val]
 x = x_full[idx_train]
 t = t_full[idx_train]
   
-# Shift and rescale the data to avoid numerical problems with large numbers
+# Shift and rescale the data to avoid numerical
+# problems with large numbers
 x = x - x_full[0]
 x = 0.25*x
 # also do this for validation input
@@ -574,8 +503,8 @@ x_val = x_val - x_full[0]
 x_val = 0.25*x_val
   
 for Npoly in range(1,9):
-    X, w = do_fit(x, Npoly)
-    t_val_pred = do_predict(w, x_val)
+    X, w = fit_polynomial(x, Npoly)
+    t_val_pred = predict_polynomial(w, x_val)
     loss = np.sum( (t_val_pred - t_val)**2/len(t_val) )
     print("Npoly = %2d   loss = %10.5f" % (Npoly, loss))  
 \end{pythoncode}
@@ -599,10 +528,11 @@ A technique called \emph{cross-validation} can be used to mitigate this problem.
 $K$-fold cross-validation splits the data into $K$ equally (or as close to equal as
 possible) sized blocks.
 
-\begin{figure}[H]
+\begin{figure}[h]
 \begin{center}
 \includegraphics[scale=1.0]{../images_priv/Rogers_Fig_1_14.pdf}
 \end{center}
+\caption{Dividing data into train and validation sets for cross validation.}
 \end{figure}
 
 Each block takes its turn as a
@@ -615,26 +545,22 @@ data observation is held out in turn and used to test a model trained on the oth
 This particular form of cross-validation is also known as Leave-One-Out
 Cross-Validation (LOOCV).
 
-\begin{mdframed}
-\textbf{Task 1}
-
+\begin{mdframed}[topline=false,bottomline=false,leftline=true,rightline=false]
+\textbf{Task 1} \\
 Implement LOOCV on \txtinline{olympic100m} dataset. Which polynomial gives the
 minimum loss?
 \end{mdframed}
 
-One drawback of illustrating model selection on a real dataset is that we don’t
-know what the "true" model is and therefore don’t know if our selection techniques
+One drawback of illustrating model selection on a real dataset is that we don't
+know what the "true" model is and therefore don't know if our selection techniques
 are working. We can overcome this by generating a synthetic dataset.
 
-\begin{mdframed}
-\textbf{Task 2}
-
+\begin{mdframed}[topline=false,bottomline=false,leftline=true,rightline=false]
+\textbf{Task 2}\\
 Create a synthetic dataset from, for example generated from 3rd order
 polynomial plus random noise term. Fit polynomial from first to, say 7th order,
 to this data. Plot order vs LOOCV loss. Which polynomial order give the minimum loss?
 \end{mdframed}
-
-
 
 \section{Regularization}
 
@@ -677,7 +603,7 @@ we obtain
 
 We can implement this by simple modification to our code.
 \begin{pythoncode}
-def do_fit(x, t, Npoly, λ=0.0):
+def fit_polynomial_ridge(x, t, Npoly, λ=0.0):
     Ndata = len(x)
     # Npoly is degree of the polynomial
     X = np.zeros( (Ndata,Npoly+1) )
@@ -705,50 +631,50 @@ t = y + noise # add some noise
 
 Fitting 5-th order polynomial to this data and using various values for regularization
 parameter $\lambda$, we obtain the following result.
-\begin{figure}[H]
+\begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.75]{codes_py/IMG_reg_fit_poly5_synth.pdf}
+\includegraphics[scale=0.60]{codes_py/IMG_reg_fit_poly5_synth.pdf}
 \end{center}
 \end{figure}
 Best value for $\lambda$ can be obtained by using validation data as we have done before.
 
 The following snippet can be used to generate the figure:
+\begin{fullwidth}
 \begin{pythoncode}
 Npoly = 5
 plt.clf()
 plt.plot(x, t, marker="o", label="data")
 x_eval = np.linspace(x[0], x[-1], 100)
 for λ in [0.0, 1e-6, 1e-4, 1e-1]:
-    X, w = do_fit(x, t, Npoly, λ=λ)
-    t_eval = do_predict(w, x_eval)
+    X, w = fit_polynomial_ridge(x, t, Npoly, λ=λ)
+    t_eval = predict_polynomial(w, x_eval)
     plt.plot(x_eval, t_eval, label="$\\lambda$={:8.1e}".format(λ))
 plt.xlim(-0.05, 1.05)
 plt.ylim(-3.8, -0.4)
-plt.grid()
+plt.grid(True)
 plt.legend()
 \end{pythoncode}
+\end{fullwidth}
 
-\begin{mdframed}
-\textbf{Task 3}
-
+\begin{mdframed}[topline=false,bottomline=false,leftline=true,rightline=false]
+\textbf{Task 3}\\
 Apply regularized linear regression to olympic100m data or synthetic data or other simple
 dataset of your choice. Determine the best model parameters (along with regularization
 parameter $\lambda$)
 and describe the procedure that you have used to determine them.
 \end{mdframed}
 
-
 \section{Linear regression in Scikit Learn Python package}
 
-Linear regression in Scikit Learn \cite{scikit-learn} can be done using the
-\pyinline{LinearRegression} class in
-\pyinline{sklearn.linear_model} module.
-Several regularization methods are also applied such as:
+Scikit Learn \citep{scikit-learn} provides many algorithms
+for regression problems. For linear models such as discussed
+previously, we can use several classes from \pyinline{linear_model}
+module:
 \begin{itemize}
-\item ridge regression
-\item lasso regression
+\item ordinary linear regression
+\item ridge linear regression
 \end{itemize}
-Please consult Scikit Learn documentation for more info.
+
 
 \bibliographystyle{unsrt}
 \bibliography{BIBLIO}
