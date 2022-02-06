@@ -84,6 +84,10 @@
 
 \begin_body
 
+\begin_layout Subsection*
+Likelihood
+\end_layout
+
 \begin_layout Standard
 We will take into account error in our data by considering the following
  model.
@@ -345,8 +349,8 @@ likelihood
  is a key concept in Machine Learning.
 \end_layout
 
-\begin_layout Standard
-Dataset likelihood
+\begin_layout Subsection*
+Maximum likelihood solution
 \end_layout
 
 \begin_layout Standard
@@ -522,6 +526,10 @@ Solving this equation we can find the optimal value
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 This is the maximum likelihood solution for 
 \begin_inset Formula $\mathbf{w}$
 \end_inset
@@ -572,7 +580,7 @@ This expression can be simplified to
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsection*
 Maximum likelihood favors complex models
 \end_layout
 
@@ -612,11 +620,11 @@ use of prior distributions
  on the parameter values.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsection*
 Effect of noise on parameter estimates
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsubsection*
 Uncertainty in estimates
 \end_layout
 
@@ -733,7 +741,7 @@ where we have used the fact that the expected value of a normally distributed
 \end_inset
 
  is the true parameter value.
- This means that our estimat for 
+ This means that our estimate for 
 \begin_inset Formula $\mathbf{w}$
 \end_inset
 
@@ -778,6 +786,43 @@ Covariance matrix provides us with two useful pieces of information.
 \end_layout
 
 \begin_layout Standard
+Fisher information matrix, 
+\begin_inset Formula $\mathcal{I}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\mathcal{I}=\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})}\left\{ -\frac{\partial^{2}\log p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})}{\partial\mathbf{w}\partial\mathbf{w}^{\mathsf{T}}}\right\} 
+\]
+
+\end_inset
+
+or:
+\begin_inset Formula 
+\[
+\mathcal{I}=\mathbf{E}_{p(\mathbf{t}|\mathbf{X},\mathbf{w},\sigma^{2})}\left\{ \frac{1}{\sigma^{2}}\mathbf{X}^{\mathsf{T}}\mathbf{X}\right\} 
+\]
+
+\end_inset
+
+because the argument of the expectation is a constant (does not depent on
+ 
+\begin_inset Formula $\mathbf{t}$
+\end_inset
+
+):
+\begin_inset Formula 
+\[
+\mathcal{I}=\frac{1}{\sigma^{2}}\mathbf{X}^{\mathsf{T}}\mathbf{X}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
 Comparison with empirical values
 \end_layout
 
@@ -865,7 +910,7 @@ with variance:
 .
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsubsection*
 Estimate of the noise variance
 \end_layout
 
