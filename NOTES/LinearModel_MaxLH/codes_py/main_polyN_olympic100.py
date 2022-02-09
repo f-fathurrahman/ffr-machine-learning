@@ -8,6 +8,8 @@ plt.rcParams.update({
     "font.size": 14}
 )
 
+from linear_model_polynomial import *
+
 # Load the data
 DATAPATH = "../../../DATA/olympic100m.txt"
 data = np.loadtxt(DATAPATH, delimiter=",")
@@ -25,18 +27,16 @@ plt.clf()
 plt.plot(x, t, marker="o", linewidth=0, label="data")
 
 for N in [1,2,3,9]:
-    print("\nUsing polynomial of order ", N)
-    w, σ2 = maxLH_fit_polyN(x, t, N)
-    print("Model parameters:")
-    print(w)
-    print("σ2 = ", σ2)
+    w, σ2 = fit_polynomial_maxLH(x, t, N)
+    print("%3d %10.5f" % (N, σ2))
     #
     NptsPlot = 100
     # make it slightly outside the original datarange
     xgrid = np.linspace(np.min(x), np.max(x), NptsPlot)
-    ygrid = maxLH_predict_polyN(xgrid, w)
+    ygrid = predict_polynomial(w, xgrid)
     plt.plot(xgrid, ygrid, label="order-"+str(N))
 
+plt.xlabel("Year (shifted and scaled)")
 plt.grid(True)
 plt.legend()
 plt.savefig("IMG_olympic100.pdf")
