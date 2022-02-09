@@ -1,6 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.style.use("seaborn-darkgrid")
 plt.rcParams.update({
     "text.usetex": True,
     "font.size": 14}
@@ -15,22 +17,11 @@ Ndata = len(data) # data.shape[0]
 x = data[:,0]
 t = data[:,1]
 
-# Build the input matrix
-X = np.zeros((Ndata,2))
-X[:,0] = 1.0
-X[:,1] = data[:,0]
+from linear_model_polynomial import *
 
-# Calculate model parameters
-XtX = X.T @ X
-XtXinv = np.linalg.inv(XtX)
-w = XtXinv @ X.T @ t
+w, σ2 = fit_polynomial_maxLH(x, t, 1)
 
 print("Model parameters:")
 print("w0 = %18.10e" % w[0])
 print("w1 = %18.10e" % w[1])
-
-# Calculate variance
-σ2 = (t.T @ t - t.T @ X @ w)/Ndata
 print("σ2 = ", σ2)
-
-t_pred = X @ w
