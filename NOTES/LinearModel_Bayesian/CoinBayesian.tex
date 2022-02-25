@@ -278,7 +278,7 @@ $P(y_N)$, acts as a normalizing constant to ensure that $p(r|y_N)$ is a properly
 defined density. It is known as the \emph{marginal distribution} of $y_N$ because it is
 computed by integrating $r$ out of the joint density $p(y_N,r)$:
 \begin{equation*}
-P(y_N) = \int_{r=0}^{r=1} p(y_N|r) \, \mathrm{d}r
+P(y_N) = \int_{r=0}^{r=1} p(y_N,r) \, \mathrm{d}r
 \end{equation*}
 This joint density can be factorized to give:
 \begin{equation*}
@@ -396,7 +396,7 @@ form:
 \begin{equation*}
 p(r) = K r^{\delta - 1} (1 - r)^{\gamma - 1}
 \end{equation*}
-where K is a constant. If we can arrange all of the terms, including $r$, on the right
+where $K$ is a constant. If we can arrange all of the terms, including $r$, on the right
 hand side of Equation \eqref{eq:posterior35}
 into something that looks like $r^{\delta - 1} (1 - r)^{\gamma - 1}$,
 we can be

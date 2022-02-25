@@ -41,6 +41,9 @@ toss_string = ""
 
 betapdf = scipy.stats.beta.pdf # shortcut
 
+expect_r = []
+var_r = []
+
 for i in range(len(toss_data)):
     #
     plt.clf()
@@ -50,6 +53,12 @@ for i in range(len(toss_data)):
     post_α = post_α + toss_data[i]
     post_β = post_β + 1.0 - toss_data[i]
     print("Data: %3d α = %f, β = %f" % (i+1, post_α, post_β))
+    #
+    # Calculate expectation value of r and its variance here
+    #
+    #expect_r.append(....)
+    #var_r.append(....)
+    #
     #mydist = scipy.stats.beta(post_α, post_β)
     plt.plot(r, betapdf(r, post_α, post_β), label="New posterior")
     #
@@ -66,6 +75,9 @@ for i in range(len(toss_data)):
     filesave = "IMG_coin_01_toss_data_{:04d}.png".format(i+1)
     plt.savefig(filesave, dpi=150)
 
+
+# Plot expectation and variance here
+# ....
 
 # Incorporate another 10 data
 plt.clf()

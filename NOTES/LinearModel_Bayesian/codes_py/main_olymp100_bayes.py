@@ -115,7 +115,9 @@ for Nsample in NsamplesTry:
     # Plot the contour plot
     #
     plt.clf()
-    plot_gauss_contour(μ_0, Σ_0, [9, 13], [-0.2, 0.2])
-    plot_gauss_contour(μ_w, Σ_w, [9, 13], [-0.2, 0.2])
+    #plot_gauss_contour(μ_0, Σ_0, [9, 13], [-0.2, 0.2])
+    #plot_gauss_contour(μ_w, Σ_w, [9, 13], [-0.2, 0.2])
+    plot_gauss_contour(μ_0, Σ_0, [-20, 20], [-6, 6])
+    plot_gauss_contour(μ_w, Σ_w, [-20, 20], [-6, 6])
     plt.savefig("IMG_olymp_contour_" + str(Nsample) + ".png", dpi=150)
 
