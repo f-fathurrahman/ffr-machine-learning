@@ -1,9 +1,12 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.style.use("ggplot")
-matplotlib.rc("text", usetex=True)
+matplotlib.style.use("seaborn-darkgrid")
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.size": 14}
+)
 
 from numpy.linalg import inv, det
 

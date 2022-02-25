@@ -4,7 +4,11 @@ import scipy.stats
 from numpy.linalg import inv
 
 import matplotlib
-matplotlib.style.use("ggplot")
+matplotlib.style.use("seaborn-darkgrid")
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.size": 14}
+)
 
 np.random.seed(1234)
 
@@ -105,13 +109,13 @@ for Nsample in NsamplesTry:
     plt.xlim(xlim)
     plt.ylim(ylim)
     plt.legend()
-    plt.savefig("IMG_sample_used_" + str(Nsample) + ".pdf")
-    plt.savefig("IMG_sample_used_" + str(Nsample) + ".png", dpi=150)
+    plt.savefig("IMG_olymp_" + str(Nsample) + ".pdf")
+    plt.savefig("IMG_olymp_" + str(Nsample) + ".png", dpi=150)
     #
     # Plot the contour plot
     #
     plt.clf()
     plot_gauss_contour(μ_0, Σ_0, [9, 13], [-0.2, 0.2])
     plot_gauss_contour(μ_w, Σ_w, [9, 13], [-0.2, 0.2])
-    plt.savefig("IMG_contour_" + str(Nsample) + ".png", dpi=150)
+    plt.savefig("IMG_olymp_contour_" + str(Nsample) + ".png", dpi=150)
 

@@ -4,7 +4,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import matplotlib
-matplotlib.style.use("ggplot")
+matplotlib.style.use("seaborn-darkgrid")
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.size": 14}
+)
 
 mat_data = scipy.io.loadmat("../../../DATA/coin_data.mat")
 

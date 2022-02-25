@@ -28,7 +28,6 @@ print("Prior parameters: α: %g, β: %g" % (α, β))
 r = np.linspace(0.0, 1.0, 501)
 
 mydist = scipy.stats.beta(α, β)
-
 plt.plot(r, mydist.pdf(r))
 plt.xlabel("r")
 plt.ylabel("p(r)")
