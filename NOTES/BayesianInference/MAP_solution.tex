@@ -1,0 +1,71 @@
+\section{A point estimate - the MAP solution}
+
+In the previous section we showed that, whilst we could not compute the posterior
+density $p(\mathbf{w} | \mathbf{X}, \mathbf{t}, \sigma^2)$,
+we could compute something proportional to it,
+$g(\mathbf{w}; \mathbf{X}, \mathbf{t}, \sigma^2)$.
+This is equal to the prior multiplied by the likelihood. The value of w that maximises
+$g(\mathbf{w}; \mathbf{X}, \mathbf{t}, \sigma^2)$
+will also correspond to the value at the maximum of the posterior. This
+will be the single most likely value of $\widehat{\mathbf{w}}$
+(under the posterior) and is a sensible choice
+if we decide to use a point estimate. Chapter 2 was devoted to finding the value of
+$\mathbf{w}$ that maximized the likelihood.
+The idea here is very similar except now we are
+maximising the likelihood multiplied by the prior. This solution is the
+\textbf{maximum a posteriori} (MAP) estimate that we first saw in
+Section 3.8.4 and is common within machine learning.
+
+As with finding the maximum likelihood solution, it is easiest to find the value
+of $\mathbf{w}$ that maximizes $\log g(\mathbf{w}; \mathbf{X}, \mathbf{t})$ rather than
+$g(\mathbf{w}; \mathbf{X}, \mathbf{t})$:
+\begin{equation*}
+\log g(\mathbf{w}; \mathbf{X}, \mathbf{t}) =
+\log p(\mathbf{t}|\mathbf{X},\mathbf{w}) + \log p(\mathbf{w}|\sigma^2)
+\end{equation*}
+
+Unlike the maximum likelihood solution for the linear model, we cannot obtain an
+exact expression for w by differentiating this expression and equating it to zero.
+Instead, we can use any one of many optimization algorithms that start with a guess
+for w and then keep updating it in such a way that
+$g(\mathbf{w}; \mathbf{X}, \mathbf{t})$
+increases until a maximum is reached.
+The Newton-Raphson procedure is one
+such method that updates $\mathbf{w}$ using the following equation:
+\begin{equation}
+\mathbf{w}' = \mathbf{w} - \left(
+\frac{\partial^2 \log g(\mathbf{w}; \mathbf{X}, \mathbf{t})}
+{\partial \mathbf{w} \partial \mathbf{w}^{\mathsf{T}}}
+\right)^{-1}
+\frac{\partial \log g(\mathbf{w}; \mathbf{X}, \mathbf{t})}{\partial \mathbf{w}}
+\end{equation}
+The new version ($\mathbf{w'}$) of $\mathbf{w}$
+is calculated by subtracting the inverse of the Hessian
+multiplied by the vector of partial derivatives. For any starting
+value of $\mathbf{w}$, this iterative procedure will update
+$\mathbf{w}$ until it reaches a point where
+the gradient is zero. To check that the point we have converged to corresponds to
+a maximum, we can check the Hessian to ensure that it is negative definite, just as
+we did for maximum likelihood before.
+
+In order to compute the vector of first derivatives, we first expand our expression
+for $\log g(\mathbf{w}; \mathbf{X}, \mathbf{t})$
+using Equations 4.2 and 4.5:
+\begin{align*}
+\log g(\mathbf{w}; \mathbf{X}, \mathbf{t}) & =
+\sum_{n=1}^{N} \log P(T_n = t_n | \mathbf{x}_n, \mathbf{w}) + \log p(\mathbf{w} | \sigma^2) \\
+& = \sum_{n=1}^{N} \log \left[
+\left(
+\frac{1}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x} )}
+\right)^{t_n}
+\left(
+\frac{\exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x}}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x} )}
+\right)^{1 - t_n}
+\right] + \log p(\mathbf{w} | \sigma^2)
+\end{align*}
+
+To stop this expression becoming too complicated, we will use the following shorthand:
+\begin{equation*}
+P_{n} = P(T_n = 1 | \mathbf{w}, \mathbf{x}_n) = 
+frac{1}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x} )}
+\end{equation*}

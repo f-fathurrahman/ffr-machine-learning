@@ -1,0 +1,241 @@
+In the previous chapter we introduced the key concepts required to adopt a Bayesian
+approach to machine learning.
+Within the Bayesian framework, all unknown quantities are treated as random variables.
+Each parameter is described by a distribution
+rather than an individual value. Uncertainty in our parameter estimates is naturally
+channeled into any predictions we make.
+We saw two examples of prior and likelihood combinations that were conjugate,
+meaning that the posterior would be of the
+same form as the prior and could be computed analytically. Examples where we can
+justify the choice of a conjugate prior and likelihood combination are rare. In the
+remainder, we cannot compute the posterior and must resort to approximations.
+In this chapter, we will introduce three such approximation techniques.
+
+
+\section{Non-conjugate models}
+
+In the previous chapter we saw two models for which exact Bayesian inference was
+possible. In the first case, we were modelling the tossing of a coin and the combination
+of a beta prior and binomial likelihood meant that we could state that the posterior
+would also belong to the beta family. In the second example, a Gaussian prior coupled
+with a Gaussian likelihood resulted in a Gaussian posterior. The fact that we knew
+the form of the posterior meant that we didn't need to calculate the normalization
+constant (the denominator in, for example, Equation 3.3). As long as we could find
+something proportional to the density of interest (i.e. proportional to a beta or a
+Gaussian), we could be certain that the normalisation would take care of itself. The
+beta-binomial and Gaussian-Gaussian combinations are not the only conjugate
+prior-likelihood pairs that we can use. Two other popular examples are the
+multinomial-Dirichlet and the gamma-Gaussian for discrete and continuous data, respectively.
+
+For many models, it is not possible (or not justifiable from a modelling
+perspective) to pick a conjugate prior and likelihood, and we are forced to approximate.
+In this chapter, we will introduce three approximation techniques through a binary
+classification problem. Binary classification is a common problem within machine
+learning and one for which no conjugate prior and likelihood combination exists.
+The three techniques that we will look at are a point estimate, an approximate
+density, and sampling. All three are widely used within machine learning.
+
+
+\section{Binary responses}
+
+Figure 4.1 shows a dataset that looks a bit different from those we have seen so far.
+Each object is described by two attributes, $x_1$ and $x_2$,
+and has a binary response,
+$t = {0, 1}$. The objects are plotted with a symbol that depends on their response: if
+$t = 0$, the point is plotted as a circle, and, if $t = 1$, as a square. We will use this data
+to build a model that will enable us to predict the response (0 or 1; circle or square)
+for a new object. This task is known as classification - we want to be able to classify
+objects into one of a set of classes (in this case there are two classes). Classification
+is one of the major problems within machine learning, and we will introduce several
+other classification algorithms in Chapter 5.
+
+\subsection{A model for binary responses}
+
+We will work with the following vector and matrix representations of our data:
+\begin{equation*}
+\mathbf{x}_{n} = \begin{bmatrix}
+x_{n1} \\ x_{n2}
+\end{bmatrix}, \,
+\mathbf{w} = \begin{bmatrix}
+w_{1} \\ w_{2}
+\end{bmatrix}, \,
+\mathbf{X} = \begin{bmatrix}
+\mathbf{x}_{1}^{\mathsf{T}} \\
+\mathbf{x}_{2}^{\mathsf{T}} \\
+\vdots \\
+\mathbf{x}_{N}^{\mathsf{T}} \\
+\end{bmatrix}
+\end{equation*}
+
+Our model (with parameters $\mathbf{w}$) will allow us to predict
+tnew for some new observation
+$x_{\mathrm{new}}$.
+Just as in our Olympics example in Section 3.8, we will need to compute the
+posterior density over the parameters of the model. According to Bayes' rule, this
+is given by
+\begin{equation}
+p(\mathbf{w}|\mathbf{t},\mathbf{X}) =
+\frac{p(\mathbf{t}|\mathbf{X},\mathbf{w})p(\mathbf{w})}{p(\mathbf{t}|\mathbf{X})}
+\end{equation}
+where the marginal likelihood $p(\mathbf{t}|\mathbf{X})$ is given by
+\begin{equation}
+p(\mathbf{t}|\mathbf{X}) = \int p(\mathbf{t}|\mathbf{X}) p(\mathbf{w})\, \mathrm{d}\mathbf{w}
+\end{equation}
+
+\textbf{Prior}: We shall use a Gaussian density for the prior, $p(\mathbf{w})$.
+In particular, $p(\mathbf{w}) = \mathcal{N}(\mathbf{0},\sigma^2 \mathbf{I})$.
+To be consistent, given that $p(\mathbf{w})$ depends on $\sigma^2$, we will denote the
+prior as $p(\mathbf{w}|\sigma^2)$. In previous chapters, the choice of a
+Gaussian density was often
+motivated by analytical convenience. Given that we are not going to be able to rely
+on conjugacy in this chapter, we are not restricted in our choice of prior density.
+However, our interest in this chapter is in the methods required to overcome non-
+conjugacy and for that, a Gaussian will suffice. Readers are recommended to try the
+methods introduced in this chapter with different forms of prior density, $p(\mathbf{w})$.
+
+\textbf{Likelihood}: To make headway with the likelihood,
+$p(\mathbf{t}|\mathbf{X},\mathbf{w})$, we start by assuming that the elements of
+$t$ are conditionally independent, conditioned on $w$:
+\begin{equation*}
+p(\mathbf{t}|\mathbf{X},\mathbf{w}) =
+\prod_{n=1}^{N} p(t_n | \mathbf{x}_n, \mathbf{w})
+\end{equation*}
+tn is a binary variable indicating the class (0 or 1) of the $n$-th object,
+$\mathbf{x}_n$.
+In the Gaussian Olympics example in the previous chapter, we treated $t_n$ as
+a Gaussian random variable with mean $\mathbf{w}_{\mathsf{T}} \mathbf{x}_n$
+and variance $\sigma2$, but this is only appropriate for
+real-valued $t_n$.
+Instead, we can model $t_n$ as a binary random variable - a single
+coin toss for each $n$. Rather than a mean and variance, this random variable is
+characterised by the probability that the class is 1 (the probability of belonging to
+class 0 is 1 minus the probability of belonging to class 1). To avoid confusion, we will
+denote this random variable $T_n$ (to distinguish it from the actual instance, $t_n$,
+that we observe). Therefore, we can write each of the $n$ likelihood terms as a probability:
+\begin{equation}
+p(\mathbf{t}|\mathbf{X},\mathbf{w}) =
+\prod_{n=1}^{N} P(T_{n}=t_{n} | \mathbf{x}_n, \mathbf{w})
+\end{equation}
+This likelihood function will be high if the model assigns high probabilities for class
+1 when we observe class 1 and high probabilities for class 0 when we observe class 0.
+It has a maximum value of 1 where all of the training points are predicted perfectly.
+
+Our task is now to choose a function of $\mathbf{x}_n$ and $\mathbf{w}$,
+$f(\mathbf{x}_n; \mathbf{w})$, that produces a
+probability. A popular technique is to take a simple linear function
+(e.g . $f(\mathbf{x}_n; \mathbf{w}) = \mathbf{w}_{\mathsf{T}} \mathbf{x}_n$)
+and then pass the result through a second function that squashes its output
+to ensure it produces a valid probability. One such squashing function is the sigmoid
+function shown in Figure 4.2. As $\mathbf{w}_{\mathsf{T}} \mathbf{x}$
+increases, the value converges to 1 and as it
+decreases, it converges to 0. The sigmoid function is defined as
+\begin{equation}
+P(T_{n} = 1 | \mathbf{x}_n, \mathbf{w}) =
+\frac{1}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x} )}
+\label{eq:sigmoidfunc}
+\end{equation}
+
+
+This expression gives us the probability that $T_{n} = 1$.
+In our likelihood we require
+the probability of the actual observation, some of which will be zero.
+Because $T_n$ can
+only take the value 0 or 1, we can easily compute
+$P(T_{n} = 0 | \mathbf{x},\mathbf{w})$ using Equation 2.2:
+\begin{align}
+P(T_{n}=0 | \mathbf{x}_{n}, \mathbf{w}) & = 1 - P(T_{n}=1 | \mathbf{x}_{n}, \mathbf{w}) \nonumber \\
+& = 1 - \frac{1}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x}_n )} \nonumber \\
+& = \frac{\exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x}}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x} )}
+\end{align}
+
+We combine Equations 4.3 and 4.4 to produce a single expression for
+$P(T_n = t_n| \mathbf{x}_n, \mathbf{w})$ as follows:
+\begin{equation*}
+P(T_n = t_n| \mathbf{x}_n, \mathbf{w}) = 
+P(T_n = 1| \mathbf{x}_n, \mathbf{w})^{t_n}
+P(T_n = 0| \mathbf{x}_n, \mathbf{w})^{1 - t_n}
+\end{equation*}
+where the observed data ($t_n$) switches the relevant term on and the other off.
+
+Substituting this into Equation 4.2 gives us the likelihood for all $N$ training
+points:
+\begin{align}
+p(\mathbf{t}|\mathbf{X},\mathbf{w}) & = \prod_{n=1}^{N}
+P(T_n = 1| \mathbf{x}_n, \mathbf{w})^{t_n}
+P(T_n = 0| \mathbf{x}_n, \mathbf{w})^{1 - t_n} \nonumber \\
+& = \prod_{n=1}^{N}
+\left(
+\frac{1}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x} )}
+\right)^{t_n}
+\left(
+\frac{\exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x}}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x} )}
+\right)^{1 - t_n}
+\end{align}
+
+
+\textbf{Posterior}: This definition of the likelihood combined with the Gaussian prior
+we chose earlier are all we need, in theory, to work out the posterior density,
+$p(\mathbf{w}|\mathbf{X}, \mathbf{t}, \sigma^2)$.
+Once we have the posterior density, we can predict the response (class)
+of new objects by taking an expectation with respect to this density:
+\begin{equation*}
+P(t_{\mathrm{new}}=1|\mathrm{x}_{\mathrm{new}},\mathbf{X},\mathbf{t}) =
+\mathbb{E}{p(\mathbf{w}|\mathbf{X}, \mathbf{t}, \sigma^2)}
+\left\{
+\frac{1}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x}_{\mathrm{new}} )}
+\right\}
+\end{equation*}
+
+In practice, this is not straightforward. The posterior is not of any standard form.
+To be able to evaluate it at a particular w, we would need to evaluate both the
+numerator and denominator of Equation 4.1 . The numerator is fine - we could
+evaluate the Gaussian prior density at w and the likelihood that we've just defined
+and multiply the two values together. The denominator is the problem, as we cannot
+analytically perform the integration required to compute the marginal likelihood:
+\begin{equation*}
+Z^{-1} = p(\mathbf{t}|\mathbf{X},\sigma^2) =
+\int p(\mathbf{t} | \mathbf{X}, \mathbf{w}) \, p(\mathbf{w}|\sigma^2) \,
+\mathrm{d}\mathbf{w}
+\end{equation*}
+
+In other words, we have a function
+\begin{equation*}
+g(\mathbf{w}; \mathbf{X}, \mathbf{t}, \sigma^2) =
+p(\mathbf{t}|\mathbf{X}, \mathbf{w}) p(\mathbf{w}| \sigma^2)   
+\end{equation*}
+which we know is proportional to the posterior:
+$p(\mathbf{w} | \mathbf{X}, \mathbf{t}, \sigma^2) = Z g(\mathbf{w}; \mathbf{X}, \mathbf{t}, \sigma^2)$,
+but we do not know
+the constant of proportionality, $Z^{-1}$
+(note that this constant is traditionally defined as $Z^{-1}$
+rather than $Z$).
+We are left with three options:
+\begin{enumerate}
+%
+\item Find the single value of w that corresponds to the highest value of the
+posterior. As $g(\mathbf{w}; \mathbf{X}, \mathbf{t}, \sigma^2)$ is proportional
+to the posterior, a maximum of
+$g(\mathbf{w}; \mathbf{X}, \mathbf{t}, \sigma^2)$ will also correspond to a maximum of the posterior.
+$Z^{-1}$ is not a function of $\mathbf{w}$.
+%
+\item Approximate $p(\mathbf{w} | \mathbf{X}, \mathbf{t}, \sigma^2)$ with some other density
+that we can compute analytically.
+%
+\item Sample directly from the posterior $p(\mathbf{w} | \mathbf{X}, \mathbf{t}, \sigma^2)$,
+knowing only $g(\mathbf{w}; \mathbf{X}, \mathbf{t}, \sigma^2)$.
+\end{enumerate}
+
+The first option is not very Bayesian - we will have to make predictions for new
+objects based on a single value of w and not a density. It is, however, easy to do and
+this makes it a popular technique. The second option leaves us with a density that
+is easy to work with (we can choose any density we like) but if the chosen density
+is very different from the posterior, our model will not be very reliable. The final
+option allows us to sample from the posterior (and hence get good approximations
+to any expectations that we might require) but can be difficult.
+
+These are the three options that are open to us in any problem where we can-
+not directly compute the posterior density. All three options have good and bad
+points and the choice of one over another will depend on the specifications (and
+computational limitations) of the problem at hand. We will now describe each in
+turn.
+
