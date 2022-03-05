@@ -54,11 +54,22 @@ for iterOpt in range(1,NiterMax+1):
 
 print("w = ", w)
 
-#for iterOpt in range(1,NiterMax+1)
+plt.clf()
+idx0 = t == 0
+plt.scatter(X[idx0,0], X[idx0,1], marker="o")
+idx1 = t == 1
+plt.scatter(X[idx1,0], X[idx1,1], marker="s")
 
-#plt.clf()
-#idx0 = t == 0
-#plt.scatter(X[idx0,0], X[idx0,1], marker="o")
-#idx1 = t == 1
-#plt.scatter(X[idx1,0], X[idx1,1], marker="s")
-#plt.savefig("IMG_logreg_data_02.pdf")
+# New data
+xgrid = np.linspace(-5.0, 5.0, 101)
+ygrid = np.linspace(-5.0, 5.0, 101)
+Xnew, Ynew = np.meshgrid(xgrid, ygrid)
+Pnew = 1/(1 + np.exp( -(w[0]*Xnew + w[1]*Ynew)) )
+
+ax = plt.gca()
+CS = ax.contour(Xnew, Ynew, Pnew)
+ax.clabel(CS, inline=True)
+ax.set_aspect("equal", "box")
+
+plt.tight_layout()
+plt.savefig("IMG_main_logreg_MAP_01.pdf")
