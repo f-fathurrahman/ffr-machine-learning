@@ -1,0 +1,116 @@
+\section{The Laplace approximation}
+
+There are various approximation methods used within machine learning to replace
+tricky posterior densities with approximations that are easier to handle. The most
+popular is the Laplace approximation.
+The idea is to approximate the density of
+interest with a Gaussian. Given the ease with which we can manipulate Gaussians,
+this seems to be a sensible choice - the expectations required to make predictions are
+likely to be easy to calculate given a Gaussian posterior. However, we should always
+bear in mind that our predictions will then only be as good as our approximation.
+If our true posterior is not very Gaussian, our predictions will be easy to compute
+but not very useful.
+
+The Gaussian density is defined by its mean and (co)variance. Using a
+Gaussian to approximate another density amounts to choosing suitable values for these
+parameters.
+To motivate the choices of parameters made by the Laplace approximation,
+imagine that, rather than having two parameters, our model has only one-
+$\widehat{w}$ - and that we know $\widehat{w}$ - the value corresponding
+to the highest value of the
+posterior. Our first step is to approximate
+$\log g(w; \mathbf{X}, \mathbf{t}, \sigma^2)$ using a Taylor expansion
+(see Comment 4.3) around the maximum, $\mathbf{w}$:
+\begin{align*}
+\log g(w; \mathbf{X}, \mathbf{t}, \sigma^2) & \approx
+\log(\widehat{w}; \mathbf{X}, \mathbf{t}, \sigma^2) +
+\left. \frac{\partial \log g(w; \mathbf{X}, \mathbf{t}, \sigma^2)}{\partial w} \right|_{\widehat{w}}
+\frac{(w - \widehat{w}}{1!} \\
+& + \left. \frac{\partial \log^2 g(w; \mathbf{X}, \mathbf{t}, \sigma^2)}{\partial w^2} \right|_{\widehat{w}}
+\frac{(w - \widehat{w})^2}{2!} + \cdots
+\end{align*}
+
+The second term is the first derivative (i.e. the gradient) evaluated at the maximum
+point and must therefore be zero. Discarding this, and ignoring terms of third-order
+and above, we are left with the following expression:
+\begin{equation}
+\log g(w; \mathbf{X}, \mathbf{t}, \sigma^2) \approx
+\log(\widehat{w}; \mathbf{X}, \mathbf{t}, \sigma^2) - \frac{v}{2}(w - \widehat{w})^2
+\end{equation}
+where $v$ is the negative of the second derivative of $\log g(w; \mathbf{X}, \mathbf{t}, \sigma^2)$
+evaluated at $w = \widehat{w}$:
+\begin{equation*}
+v = -\left. \frac{\partial \log^2 g(w; \mathbf{X}, \mathbf{t}, \sigma^2)}{\partial w^2} \right|_{\widehat{w}}
+\end{equation*}
+Now, the Gaussian density is defined as:
+\begin{equation*}
+\frac{1}{\sqrt{2\pi}\sigma} \exp\left\{
+-\frac{1}{2\sigma^2} (w - \mu)^2 \right\}
+\end{equation*}
+the log of which is equal to
+\begin{equation*}
+\log(K) - \frac{1}{2\sigma} (w - \mu)^2
+\end{equation*}
+where $K$ is the normalizing constant. This looks very similar to Equation 4.12xxx
+with $\mu = w$ and $\sigma^2 = \frac{1}{v}$.
+This is the Laplace approximation - we approximate the posterior
+with a Gaussian that has its mean at the posterior mode ($w$) and has variance
+inversely proportional to the curvature of the posterior (its second derivative) at its
+mode.
+Technically, it is actually a saddle-point approximation but has come to be known as the
+Laplace approximation within machine learning. In computational statistics, the Laplace
+approximation is a name given to something else entirely.
+
+This idea is easily extended to multivariate densities. In particular, the Laplace
+approximation to our true posterior $p(\mathbf{w} | \mathbf{X}, \mathbf{t}, \sigma^2)$
+is:
+\begin{equation*}
+p(\mathbf{w} | \mathbf{X}, \mathbf{t}, \sigma^2) \approx
+\mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})
+\end{equation*}
+where $\boldsymbol{\mu}$ is set to $\widehat{w}$ and $\boldsymbol{\Sigma}$ is the
+negative of the inverse Hessian:
+\begin{align}
+\boldsymbol{\mu} & = \widehat{w} \\
+\boldsymbol{\Sigma} & =
+-\left. \left( \frac{\partial \log^2 g(w; \mathbf{X}, \mathbf{t}, \sigma^2)}{\partial w^2}
+\right)
+\right|_{\widehat{w}}
+\end{align}
+
+
+\subsection{Laplace approximation example: Approximating a gamma density}
+
+Before we look at what this approximation looks like in the binary response exam-
+ple, it is useful to look at an example where we know the true density (see also
+Exercises 4.1, 4.2 and 4.3). This will allow us to
+see how good or bad the approximation is. The following is the gamma density for
+a random variable Y :
+
+....
+
+\subsection{Laplace approximation for the binary response model}
+
+Returning to our binary response model, we had to compute both the mode, w
+and the Hessian for the Newton-Raphson procedure. We therefore already have
+everything we need for the Laplace approximation to the posterior
+$p(\mathbf{w} | \mathbf{X}, \mathbf{t}, \sigma^2)$.
+In Figure 4.6(a) we can see the approximate posterior and in Figure 4.6(b) we can
+see the same approximation on top of $g(w; X, t)$, the unnormalised posterior. As
+for the gamma example in the previous section, the shape of the approximation is
+pretty good around the mode but diverges considerably from the true posterior as we
+move away from the mode. This is to be expected - the Laplace approximation only
+matches the shape (curvature) at the mode. We can also sample values of w from
+the approximate posterior and look at the decision boundaries that they correspond
+to. Twenty such boundaries are plotted in Figure 4.7(a). There appears to be a
+lot of variability in these boundaries, although all of them seem to split the classes
+reasonably well.
+
+The final step is to use the approximate posterior to compute predictions. We
+now have a density over w rather than a single value and we know,
+from Chapter 3, that we compute a prediction by averaging over this density.
+In particular, we should be calculating the expected value of
+$P(T_{\mathrm{new}} = 1| \mathbf{x}_{\mathrm{new}}, \mathbf{w})$ with respect to the
+approximate posterior over $w$ (which we've denoted as
+$\mathcal{N}(\mu,\Sigma)$)
+

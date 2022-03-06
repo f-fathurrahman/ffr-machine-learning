@@ -69,3 +69,70 @@ To stop this expression becoming too complicated, we will use the following shor
 P_{n} = P(T_n = 1 | \mathbf{w}, \mathbf{x}_n) = 
 frac{1}{1 + \exp( -\mathbf{w}^{\mathsf{T}} \mathbf{x} )}
 \end{equation*}
+Therefore, assuming that $\mathbf{w}$ is $D$-dimensional, we have the following expression:
+\begin{align*}
+\log g(\mathbf{w}; \mathbf{X}, \mathbf{t}) & =
+\log p(\mathbf{w} | \sigma^2) +
+\sum_{n=1}^{N} \log P_{n}^{t_n} + \log(1 - P_{n})^{1-t_n} \\
+& = -\frac{D}{2} \log(2\pi) - D \log \sigma - \frac{1}{2\sigma^2} \mathbf{w}^{\mathsf{T}}\mathbf{w} \\
+& + \sum_{n=1}^{N} t_{n} \log P_{n} + (1 - t_n) \log (1 - P_n)
+\end{align*}
+where the first three terms are the log of the (Gaussian) prior. To find the vector of
+partial derivatives, we can use the chain rule (see Comment 4.2) to give an expression
+in terms of the partial derivatives of $P_n$:
+
+....
+
+where we have used the chain rule a second time to turn
+$\dfrac{\partial (1 - P_n)}{\partial \mathbf{w}}$ into
+$-\dfrac{\partial P_n)}{\partial \mathbf{w}}$:
+
+....
+
+To calculate $\dfrac{\partial P_n)}{\partial \mathbf{w}}$ we can use the chain rule once more:
+
+....
+
+Substituting Equation 4.8 into Equation 4.7 gives us the required vector of partial
+derivatives:
+\begin{align}
+\frac{\partial \log g(\mathbf{w}; \mathbf{X}, \mathbf{t})}{\partial \mathbf{w}} & =
+-\frac{1}{\sigma^2} \mathbf{w} +
+\sum_{n=1}^{N} \left(
+  \mathbf{x}_n t_n (1 - P_n) - x_n (1 - t_n) P_n
+\right) \nonumber \\
+& = -\frac{1}{\sigma^2} \mathbf{w} +
+\sum_{n=1}^{N} \mathbf{x}_n \left(
+t_n - t_n P_n - P_n + t_n P_n
+\right) \nonumber \\
+& = -\frac{1}{\sigma^2} \mathbf{w} +
+\sum_{n=1}^{N} \mathbf{x}_n \left( t_n - P_n \right)
+\end{align}
+
+To compute the Hessian matrix of second derivatives, we differentiate this again
+with respect to $\mathbf{w}^{\mathsf{T}}$. Noting that
+\begin{equation*}
+\frac{\partial P_n}{\partial \mathbf{w}^{\mathsf{T}}} = 
+\left(
+  \frac{\partial P_n}{\partial \mathbf{w}^{\mathsf{T}}}
+\right)^{\mathsf{T}}
+\end{equation*}
+we obtain the following expression:
+\begin{align}
+\frac{\partial^2 \log g(\mathbf{w}; \mathbf{X}, \mathbf{t})}
+{\partial \mathbf{w} \mathbf{w}^{\mathsf{T}}} & = 
+-\frac{1}{\sigma^2} \mathbf{I} -
+\sum_{n=1}^{N} \mathbf{x}_{n} \frac{\partial P_n}{\partial \mathbf{w}^{\mathsf{T}}} \nonumber \\
+& = -\frac{1}{\sigma^2} \mathbf{I}
+- \sum_{n=1}^{N} \mathbf{x}_n \mathbf{x}_{n}^{\mathsf{T}} P_n (1 - P_n)
+\end{align}
+
+One thing to notice from the Hessian is that, because $0 \leq P_n \leq 1$,
+it will be
+negative definite for any set of $\mathbf{x}_n$
+and for any $\mathbf{w}$. Therefore,
+there can only be one optimum and it must be a maximum. Whatever value of $\mathbf{w}$
+the Newton-Raphson procedure converges to must correspond to the highest value
+of the posterior density. This is a consequence of the choice of prior and likelihood
+function, and changing either may result in a harder posterior density to optimize.
+
