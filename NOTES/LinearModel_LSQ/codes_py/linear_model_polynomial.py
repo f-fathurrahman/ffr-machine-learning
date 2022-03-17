@@ -6,10 +6,10 @@ def fit_polynomial(x, t, Npoly):
     X = np.zeros( (Ndata,Npoly+1) )
     X[:,0] = 1
     for i in range(1,Npoly+1):
-        X[:,i] = np.power( x, i )
-    XtX = X.transpose() @ X
+        X[:,i] = x**i
+    XtX = X.T @ X
     XtXinv = np.linalg.inv(XtX)
-    w = XtXinv @ X.transpose() @ t
+    w = XtXinv @ X.T @ t
     return X, w
 
 def fit_polynomial_ridge(x, t, Npoly, λ=0.0):
@@ -18,10 +18,10 @@ def fit_polynomial_ridge(x, t, Npoly, λ=0.0):
     X = np.zeros( (Ndata,Npoly+1) )
     X[:,0] = 1.0
     for i in range(1,Npoly+1):
-        X[:,i] = np.power( x, i )
-    XtX = X.transpose() @ X + Ndata*λ*np.eye(Ndata)
+        X[:,i] = x**i
+    XtX = X.T @ X + Ndata*λ*np.eye(Ndata)
     XtXinv = np.linalg.inv(XtX)
-    w = XtXinv @ X.transpose() @ t
+    w = XtXinv @ X.T @ t
     return X, w
 
 def predict_polynomial(w, x_eval):
@@ -31,7 +31,7 @@ def predict_polynomial(w, x_eval):
     X_eval = np.zeros( (Ndata_eval,Npoly+1) )
     X_eval[:,0] = 1.0
     for i in range(1,Npoly+1):
-        X_eval[:,i] = np.power( x_eval, i )
+        X_eval[:,i] = x_eval**i
     # evaluate
     t_eval = X_eval @ w
     return t_eval
