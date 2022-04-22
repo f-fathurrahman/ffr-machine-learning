@@ -1,0 +1,268 @@
+\documentclass[bahasa,11pt,aspectratio=169]{beamer}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usefonttheme[onlymath]{serif}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+\setbeamersize{text margin left=5pt, text margin right=5pt}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+
+\usepackage{minted}
+\newminted{python}{breaklines,fontsize=\normalsize,texcomments=true}
+\newminted{bash}{breaklines,fontsize=\normalsize,texcomments=true}
+\newminted{text}{breaklines,fontsize=\normalsize,texcomments=true}
+
+\newcommand{\txtinline}[1]{\mintinline[fontsize=\normalsize]{text}{#1}}
+\newcommand{\pyinline}[1]{\mintinline[fontsize=\normalsize]{python}{#1}}
+
+\definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
+\usepackage{mdframed}
+
+\BeforeBeginEnvironment{minted}{\begin{mdframed}[backgroundcolor=mintedbg]}
+\AfterEndEnvironment{minted}{\end{mdframed}}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\makeatletter
+
+ \newcommand\makebeamertitle{\frame{\maketitle}}%
+ % (ERT) argument for the TOC
+ \AtBeginDocument{%
+   \let\origtableofcontents=\tableofcontents
+   \def\tableofcontents{\@ifnextchar[{\origtableofcontents}{\gobbletableofcontents}}
+   \def\gobbletableofcontents#1{\origtableofcontents}
+ }
+
+\makeatother
+
+\usepackage{babel}
+
+\begin{document}
+
+
+\title{Pengenalan Principal Component Analysis}
+%\author{Estiyanti Ekawati \\
+%Fadjar Fathurrahman}
+\institute{
+Teknik Fisika \\
+Institut Teknologi Bandung
+}
+\date{} % 16 Oktober 2019
+
+\frame{\titlepage}
+
+
+\begin{frame}
+
+Bahan-bahan berikut ini diambil dari:
+
+Simon Rogers and Mark Girolami. A First Course in Machine Learning. 2nd Edition.
+CRC Press. 2017.
+
+\end{frame}
+
+%=========================
+\begin{frame}
+\frametitle{Proyeksi data}
+
+\begin{itemize}
+\item Misalkan kita memiliki dataset yang terdiri dari $N$ objek, $y_{n}$, $n=1,2,\ldots,N$.
+%
+\item Setiap objek adalah vektor dengan dimensi $M$ ($M$ dapat berupa jumlah fitur dari
+data yang kita miliki).
+%
+\item Banyak model mesin pembelajar yang memiliki parameter yang bertambah banyak jika
+dimensi dari data semakin banyak.
+%
+\item Data dengan dimensionalitas yang tinggi juga sulit untuk divisualisasi.
+%
+\item Terkadang transformasi data $M$-dimensi ke representasi $D$ dimensi (dengan $D$ < $M$)
+diperlukan. Proses ini dikenal dengan nama proyeksi.
+%
+\item Idealnya proyeksi ini tetap memiliki properti menarik dari data yang kita
+ingin pelajari.
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+\frametitle{Contoh proyeksi}
+
+\begin{center}
+\includegraphics[scale=1.0]{images_priv/tangan.pdf}
+\end{center}
+
+Objek tangan (3d) diproyeksikan ke 2d (bayangan).
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Contoh proyeksi}
+
+\begin{center}
+\includegraphics[scale=1.0]{images_priv/gambar_7_1_c.pdf}
+\end{center}
+
+Proyeksi suatu data ke sumbu $x$.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Bagaimana cara mengukur derajat "menarik/penting" dari data?}
+
+\begin{center}
+\includegraphics[scale=1.0]{images_priv/gambar_7_2_a.pdf}
+\end{center}
+
+Contoh proyeksi data ke dua arah (A dan B).
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Principal Component Analysis (PCA)}
+
+\begin{itemize}
+\item PCA adalah metode yang sering digunakan untuk melakukan proyeksi data ke dimensi
+yang lebih rendah.
+\item PCA adalah proyeksi linear: setiap dimensi proyeksi adalah kombinari linear dari
+dimensi asli. Jika kita melakukan proyeksi dari $M$ ke $D$ dimensi, PCA akan mendefisikan
+$D$ vektor, $\mathbf{w}_{d}$, yang masing-masingnya berdimensi $M$. Elemen ke-$d$ dari
+proyeksi $x_{nd}$ (di mana $[x_{n} = x_{n1},\ldots,x_{nD}]^{\mathsf{T}}$ ) adalah:
+$$
+x_{nd} = \mathbf{w}^{\mathsf{T}}_{d} \mathbf{y}_{n}
+$$
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{PCA}
+
+\begin{itemize}
+\item PCA menggunakan variansi pada ruang proyeksi sebagai kriteria untuk memilih
+$\mathbf{w}_{d}$.
+%
+\item Misalnya: $\mathbf{w}_{1}$ adalah proyeksi yang akan membuat variansi pada $x_{n1}$ semaksimal mungkin.
+%
+\item Dimensi proyeksi kedua juga dipilih untuk memaksimalkan variansi, namum $\mathbf{w}_{2}$
+harus ortogonal terhadap $\mathbf{w}_{1}$:
+$$
+\mathbf{w}_{2}^{\mathrm{T}} \mathbf{w}_{1} = 0
+$$
+%
+\item Begitu juga untuk dimensi proyeksi yang ketiga dan seterusnya. Secara umum:
+$$
+\mathbf{w}_{i}^{\mathrm{T}} \mathbf{w}_{j} = 0 \, \forall\, j \neq i
+$$
+\item PCA juga menambahkan konstrain bahwa tiap $\mathbf{w}_{i}$ memiliki panjang 1.
+$$
+\mathbf{w}_{i}^{\mathsf{T}} \mathbf{w}_{i} = 1
+$$
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prosedur PCA}
+
+Dapat ditunjukkan bahwa $\mathbf{w}_{i}$ dapat diperoleh dari persamaan eigen:
+$$
+\mathbf{C} \mathbf{w} = \lambda \mathbf{w}
+$$
+dengan $\mathbf{C}$ adalah matriks kovariansi:
+$$
+\mathbf{C} = \frac{1}{N} \sum_{n=1}^{N}
+(\mathbf{y}_{n} - \bar{\mathbf{y}})
+(\mathbf{y}_{n} - \bar{\mathbf{y}})^{\mathsf{T}}
+$$
+atau:
+$$
+\mathbf{C} = \frac{1}{N} \mathbf{Y}^{\mathsf{T}} \mathbf{Y}
+$$
+dan nilai eigen $\lambda$ adalah variansi dari data yang diprojeksikan ke arah $\mathbf{w}$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Prosedur PCA}
+
+\begin{itemize}
+\item Transformasi data sehingga memiliki rata-rata nol dengan cara mengurangi setiap
+titik data dengan rata-rata sampel:
+$$
+\bar{\mathbf{y}} = \frac{1}{N} \sum_{n=1}^{N} \mathbf{y}_{n}
+$$
+\item Hitung matriks kovariansi.
+\item Cari pasangan nilai eigen dari matriks kovariansi.
+\item Cari eigenvektor dengan $D$ nilai eigen tertinggi.
+\item Buat proyeksi data:
+$$
+\mathbf{X} = \mathbf{Y}\mathbf{W}
+$$
+di mana $\mathbf{W}$ adalah matriks $M \times D$ yang dibuat dari $D$ vektor eigen
+dari matriks kovariansi.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Tugas: PCA pada data sintetik}
+
+\begin{itemize}
+\item Buat data sintetik yang memiliki struktur klaster. Misalnya
+\begin{pythoncode}
+Y_1 = np.random.randn(20,2) # jumlah data adalah 20.
+Y_2 = np.random.randn(20,2) + 5.0
+Y_3 = np.random.randn(20,2) - 5.0
+Y = np.concatenate( (Y_1, Y_2, Y_3), axis=0 )
+\end{pythoncode}
+
+\item Tambahkan beberapa dimensi randam pada data yang tidak memiliki struktur
+klaster.
+\begin{pythoncode}
+Ndata = Y.shape[0]
+Y = np.concatenate( (Y, np.random.randn(Ndata,5)), axis=1) # tambah data 5 dimensi
+\end{pythoncode}
+\item Aplikasikan prosedur PCA pada data tersebut. Plot data yang sudah tereduksi
+dimensionalitasnya.
+\end{itemize}
+
+Bandingkan hasil yang Anda peroleh dengan menggunakan pustaka Scikit Learn.
+Apakah ada perbedaan yang Anda amati? Jelaskan apa yang mungkin menyebabkan
+perbedaan tersebut jika ada.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Hint}
+\begin{itemize}
+\item Lakukan visualisasi pada data sintetik yang dibuat. Buat scatterplot
+untuk pasangan data pada tiap dimensi (fitur).
+\item Untuk menghitung nilai dan vektor eigen: \texttt{np.linalg.eig}
+\item Untuk melakukan perkalian matriks: \texttt{np.matmul} (jika tipe data adalah
+\texttt{ndarray}).
+\end{itemize}
+\end{frame}
+
+
+\end{document}
