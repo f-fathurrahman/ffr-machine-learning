@@ -1,3 +1,5 @@
+*.csv
+
 IMG_*
 DATA
 data
