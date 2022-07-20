@@ -31,6 +31,7 @@ test_dataset = keras.utils.timeseries_dataset_from_array(
     raw_data[:-delay],
     targets=temperature[delay:],
     sampling_rate=sampling_rate,
+    sequence_length=sequence_length,
     shuffle=True,
     batch_size=batch_size,
     start_index=num_train_samples,
