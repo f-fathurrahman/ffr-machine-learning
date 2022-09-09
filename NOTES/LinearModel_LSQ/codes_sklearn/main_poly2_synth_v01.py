@@ -14,18 +14,18 @@ def true_model(x):
 np.random.seed(1234)
 
 Npoints = 40
-NOISE_AMP = 0.0
+NOISE_AMP = 50.0
 
 x = np.linspace(-10.0, 10.0, Npoints)
 y_no_noise = true_model(x)
 y = y_no_noise + NOISE_AMP*np.random.randn(Npoints)
 
-#plt.clf()
-#plt.plot(x, y, marker="o", label="(data) noisy")
-#plt.plot(x, y_no_noise, marker="o", label="no noise")
-#plt.grid(True)
-#plt.legend()
-#plt.savefig("IMG_poly2_synth_v01_DATA.pdf")
+plt.clf()
+plt.plot(x, y, marker="o", label="(data) noisy")
+plt.plot(x, y_no_noise, label="no noise")
+plt.grid(True)
+plt.legend()
+plt.savefig("IMG_poly2_synth_v01_DATA.pdf")
 
 # For sklearn input
 x = x.reshape(-1,1)
@@ -47,10 +47,11 @@ xnew = np.linspace(-10.0, 10.0, Npoints).reshape(-1,1)
 Xnew = poly2.fit_transform(xnew)
 ynew = model.predict(Xnew)
 
-#plt.clf()
-#plt.plot(xnew, ynew, marker="o", label="predict")
-#plt.plot(x, y, marker="o", label="data")
-#plt.grid(True)
-#plt.legend()
-#plt.savefig("IMG_poly2_synth_v01.pdf")
+plt.clf()
+plt.plot(x, y, marker="o", label="data")
+plt.plot(xnew, ynew, label="predict")
+plt.plot(x, y_no_noise, label="true model / no noise")
+plt.grid(True)
+plt.legend()
+plt.savefig("IMG_poly2_synth_v01.pdf")
 
