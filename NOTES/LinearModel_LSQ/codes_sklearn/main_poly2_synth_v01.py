@@ -43,8 +43,9 @@ print("coef = ", model.coef_)
 print("intercept = ", model.intercept_)
 
 # For evaluating model
-xnew = np.linspace(-10.0, 10.0, Npoints)
-ynew = model.predict(poly2.fit_transform(xnew.reshape(-1,1)))
+xnew = np.linspace(-10.0, 10.0, Npoints).reshape(-1,1)
+Xnew = poly2.fit_transform(xnew)
+ynew = model.predict(Xnew)
 
 #plt.clf()
 #plt.plot(xnew, ynew, marker="o", label="predict")
