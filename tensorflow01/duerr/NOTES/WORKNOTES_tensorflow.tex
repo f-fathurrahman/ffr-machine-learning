@@ -1,0 +1,160 @@
+\documentclass[a4paper,12pt]{article} % screen setting
+
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=1.5cm,bmargin=1.5cm,lmargin=1.5cm,rmargin=1.5cm}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+%\usepackage{cmbright}
+%\renewcommand{\familydefault}{\sfdefault}
+
+%\usepackage{fontspec}
+\usepackage[libertine]{newtxmath}
+\usepackage[no-math]{fontspec}
+\setmainfont{Linux Libertine O}
+\setmonofont{Julia Mono}
+%\setmonofont{DejaVu Sans Mono}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{minted}
+
+\newminted{julia}{breaklines,fontsize=\footnotesize}
+\newminted{python}{breaklines,fontsize=\footnotesize}
+
+\newminted{bash}{breaklines,fontsize=\footnotesize}
+\newminted{text}{breaklines,fontsize=\footnotesize}
+
+\newcommand{\txtinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{text}{#1}}
+\newcommand{\jlinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{julia}{#1}}
+\newcommand{\pyinline}[1]{\mintinline[breaklines,fontsize=\footnotesize]{python}{#1}}
+
+\newmintedfile[juliafile]{julia}{breaklines,fontsize=\footnotesize}
+\newmintedfile[pythonfile]{python}{breaklines,fontsize=\footnotesize}
+
+\definecolor{mintedbg}{rgb}{0.90,0.90,0.90}
+\usepackage{mdframed}
+\BeforeBeginEnvironment{minted}{
+    \begin{mdframed}[backgroundcolor=mintedbg,%
+        topline=false,bottomline=false,%
+        leftline=false,rightline=false]
+}
+\AfterEndEnvironment{minted}{\end{mdframed}}
+
+
+\usepackage{setspace}
+
+\onehalfspacing
+
+\usepackage{appendix}
+
+
+\newcommand{\highlighteq}[1]{\colorbox{blue!25}{$\displaystyle#1$}}
+\newcommand{\highlight}[1]{\colorbox{red!25}{#1}}
+
+
+
+\begin{document}
+
+
+\title{TensorFlow Worknotes}
+\author{Fadjar Fathurrahman}
+\date{}
+\maketitle
+
+
+\section{Simple neuron}
+
+Define the model
+\begin{pythoncode}
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+model = Sequential()
+model.add( Dense(1, batch_input_shape=(None,2), activation="sigmoid") )
+\end{pythoncode}
+
+\begin{pythoncode}
+from tensorflow.keras import optimizers
+sgd = optimizers.SGD(lr=0.15)
+\end{pythoncode}
+
+Compile the model, using \txtinline{binary_crossentropy}.
+
+\begin{pythoncode}
+model.compile(
+    loss="binary_crossentropy",
+    optimizer=sgd,
+    metrics=["accuracy"]
+)
+\end{pythoncode}
+
+Print model summary
+\begin{pythoncode}
+print(model.summary())
+\end{pythoncode}
+
+Train the model
+\begin{pythoncode}
+history = model.fit(
+    X, Y,epochs=400,
+    batch_size=128,
+    verbose=1
+)
+\end{pythoncode}
+
+Example of prediction:
+\begin{pythoncode}
+model.predict( np.array([[1.0, 1.0]]) )
+\end{pythoncode}
+
+Note that the input should be an array of size \txtinline{(1,2)}.
+The first dimension can be of any size instead of one.
+
+\section{Using hidden layer}
+
+Second layer is added with size 8, output layer with softmax activation.
+\begin{pythoncode}
+model = Sequential()
+model.add( Dense(8, batch_input_shape=(None,2), activation="sigmoid") )
+model.add( Dense(2, activation='softmax'))
+\end{pythoncode}
+Second (output) layer has two nodes corresponding to two classes.
+
+We need to convert the target value to categorical:
+\begin{pythoncode}
+# Transform Y=0 to (1,0) and Y=1 to (0,1)
+Y_c = to_categorical(Y, 2)
+\end{pythoncode}
+
+Compile the model, using \txtinline{categorical_crossentropy} loss function:
+\begin{pythoncode}
+model.compile(
+    loss="categorical_crossentropy",
+    optimizer=sgd,
+    metrics=["accuracy"]
+)
+\end{pythoncode}
+
+Training:
+\begin{pythoncode}
+history = model.fit(
+    X, Y_c,epochs=400,
+    batch_size=128,
+    verbose=1
+)
+\end{pythoncode}
+
+\bibliographystyle{unsrt}
+\bibliography{BIBLIO}
+
+\end{document}
