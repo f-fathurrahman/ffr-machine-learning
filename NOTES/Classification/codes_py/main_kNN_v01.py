@@ -32,7 +32,7 @@ xgrid = np.arange(xmin, xmax, 0.1)
 ygrid = np.arange(ymin, ymax, 0.1)
 Xnew, Ynew = np.meshgrid(xgrid, ygrid)
 
-k = 59
+k = 1
 C_new = np.zeros(Xnew.shape) # new classes
 NpointsData = len(X)
 # Preallocate

@@ -1,0 +1,101 @@
+\documentclass[english,10pt,aspectratio=169,fleqn]{beamer}
+
+\usepackage{amsmath} % load this before unicode-math
+\usepackage{amssymb}
+\usepackage{mathabx}
+%\usepackage{unicode-math}
+
+\usepackage{fontspec}
+\setmonofont{DejaVu Sans Mono}
+%\setmathfont{STIXMath}
+%\setmathfont{TeX Gyre Termes Math}
+
+\usefonttheme[onlymath]{serif}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+%\setbeamersize{text margin left=5pt, text margin right=5pt}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+
+\usepackage{minted}
+\newminted{julia}{breaklines,fontsize=\scriptsize,texcomments=true}
+\newminted{python}{breaklines,fontsize=\scriptsize,texcomments=true}
+\newminted{bash}{breaklines,fontsize=\scriptsize,texcomments=true}
+\newminted{text}{breaklines,fontsize=\scriptsize,texcomments=true}
+
+\newcommand{\txtinline}[1]{\mintinline[fontsize=\scriptsize]{text}{#1}}
+\newcommand{\jlinline}[1]{\mintinline[fontsize=\scriptsize]{julia}{#1}}
+
+\definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
+\usepackage{mdframed}
+
+%\BeforeBeginEnvironment{minted}{\begin{mdframed}[backgroundcolor=mintedbg]}
+%\AfterEndEnvironment{minted}{\end{mdframed}}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\makeatletter
+
+ \newcommand\makebeamertitle{\frame{\maketitle}}%
+ % (ERT) argument for the TOC
+ \AtBeginDocument{%
+   \let\origtableofcontents=\tableofcontents
+   \def\tableofcontents{\@ifnextchar[{\origtableofcontents}{\gobbletableofcontents}}
+   \def\gobbletableofcontents#1{\origtableofcontents}
+ }
+
+\makeatother
+
+\usepackage{babel}
+
+\begin{document}
+
+
+\title{Classification}
+\subtitle{TF4063}
+\author{Fadjar Fathurrahman}
+\institute{
+Program Studi Teknik Fisika\\
+Institut Teknologi Bandung
+}
+\date{}
+
+
+\frame{\titlepage}
+
+
+\begin{frame} % ---------------------------------------------------------------
+\frametitle{Probabilistic classifiers}
+
+
+\begin{equation*}
+P(T_{\mathrm{new}}=c | \mathbf{x}_{\mathrm{new}}, \mathbf{X}, \mathbf{t})
+\end{equation*}
+
+\end{frame} % -----------------------------------------------------------------
+
+
+\begin{frame} % ---------------------------------------------------------------
+\frametitle{Bayes classifier}
+
+\begin{equation*}
+P(T_{\mathrm{new}}=c | \mathbf{x}_{\mathrm{new}}, \mathbf{X}, \mathbf{t}) =
+\frac{p p}{p(\mathbf{x}_{\mathrm{new}})}
+\end{equation*}
+
+\end{frame} % -----------------------------------------------------------------
+
+
+%\begin{frame} % ---------------------------------------------------------------
+%\frametitle{Template}
+%\end{frame} % -----------------------------------------------------------------
+
+
+
+\end{document}
+

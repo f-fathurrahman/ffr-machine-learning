@@ -92,7 +92,7 @@ where symbols with overline denotes their average value, for examples
 \overline{t} & = \frac{1}{N} \sum_{n=1}^{N} t_{n}
 \end{align*}
 
-\textbf{Example}
+\subsection{Example: olympic100m dataset}
 
 Now we want to implement least square approach to linear regression based on
 Eq. \ref{eq:w0_w1_simple}. For this purpose, we need a simple data to work on.
@@ -116,53 +116,65 @@ Year & Seconds \\
 \end{center}
 \end{table}
 
+The data is plotted in Figure \ref{fig:olympic100m}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.60]{codes_py/IMG_data_olympic100m.pdf}
+\end{center}
+\caption{$xy$ plot of olympic100m data}
+\label{fig:olympic100m}
+\end{figure}
+
+From Figure \ref{fig:olympic100m} we see that there is a tendency that winning time
+to decrease as time progress. We might want to apply linear regression to this case.
+The following Python program implements the equation \label{eq:w0_w1_simple} for this
+simple dataset.
 
 \begin{pythoncode}
 import numpy as np
+
 import matplotlib.pyplot as plt
-  
 import matplotlib
 matplotlib.style.use("seaborn-darkgrid")
-  
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.size": 14}
+)
+
 # Load the data
-DATAPATH = "olympic100m.txt"
-data = np.loadtxt(DATAPATH, delimiter=",")
-  
-Ndata = len(data) # data.shape[0]
-  
+# set the actual path for your case
+DATA_PATH = "olympic100m.txt"
+data = np.loadtxt(DATA_PATH, delimiter=",")
+
 x = data[:,0]
 t = data[:,1]
-  
-# Calculate parameters
-tbar = np.sum(t)/Ndata # np.average also can be used
-xbar = np.sum(x)/Ndata
-xtbar = np.sum(x*t)/Ndata
-x2bar = np.sum(x**2)/Ndata
-  
+    
+# Calculate the parameters
+tbar = np.average(t)
+xbar = np.average(x)
+xtbar = np.average(x*t)
+x2bar = np.average(x**2)
+    
 w1 = (xtbar - xbar*tbar)/(x2bar - xbar**2)
 w0 = tbar - w1*xbar
-  
+    
 print("Model parameters:")
-print("w0 = %18.10e" % w0)
-print("w1 = %18.10e" % w1)
-  
+print("w0 = %18.10f" % w0)
+print("w1 = %18.10f" % w1)
+    
 t_pred = w0 + w1*x
-  
-plt.clf()
-plt.plot(x, t, marker="o", linewidth=0, label="data")
-plt.plot(x, t_pred, marker="x", label="linear-fit")
-plt.grid(True)
-plt.legend()
-plt.xlabel("Year")
-plt.ylabel("Time (seconds)")
-plt.savefig("IMG_fit_linear_olympic100_simple.pdf")  
+
+# Plotting stuffs
+# ....
 \end{pythoncode}
 
-We have the following result for the weights (paramaters of the model)
+From the previous program, we get the following result
+for the weights (paramaters of the model)
 \begin{textcode}
 Model parameters:
-w0 =   3.6416455903e+01
-w1 =  -1.3330885711e-02
+w0 =      36.4164559025
+w1 =      -0.0133308857
 \end{textcode}
 
 We can visualize the result by plotting the data and the a line described
