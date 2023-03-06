@@ -517,7 +517,7 @@ assuming that $\sigma^2=0.05$.
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[scale=1.5]{../images_priv/Rogers_Fig_2_10.pdf}
+\includegraphics[width=\textwidth]{../images_priv/Rogers_Fig_2_10.pdf}
 \end{center}
 \end{figure}
 
@@ -549,7 +549,7 @@ This is a joint density over all of the responses in our dataset.
 We will write this compactly
 as $p( \mathbf{t} | \mathbf{X}, \mathbf{w}, \sigma^2)$.
 Evaluating this density at the observed data points gives a single
-likelihood value for the whole dataset, which we can optimise by varying $\mathbf{w}$
+likelihood value for the whole dataset, which we can optimize by varying $\mathbf{w}$
 and $\sigma^2$.
 
 The assumption that the noise at each data point is independent, i.e.
@@ -565,7 +565,7 @@ L = p(\mathbf{t} | \mathbf{X},\mathbf{w},\sigma^2)
 = \prod_{n=1}^{N} \mathcal{N}(\mathbf{w}^{T}\mathbf{x}_{n},\sigma^2)
 \end{equation}
 
-For analytical reasons, we will maximise the natural logarithm of the likelihood.
+For analytical reasons, we will maximize the natural logarithm of the likelihood.
 We will follow the Machine Learning convention of using $\log(y)$ to denote the
 natural logarithm of y, often denoted elsewhere as $\mathrm{ln}(y)$).
 We can do this because the estimated arguments $\widehat{\mathbf{w}}$
@@ -668,7 +668,7 @@ we decrease $\widehat{\sigma^2}$.
 
 The more complex model is overfitting - we have given the model too
 much freedom and it is attempting to make sense out of what is essentially noise.
-We showed how regularization could be used to penalise overcomplex
+We showed how regularization could be used to penalize overcomplex
 parameter values. The same can be done with probabilistic models through the use
 of prior distributions on the parameter values.
 
