@@ -4,6 +4,7 @@ from functools import partial
 from scipy.integrate import solve_ivp
 
 class HydroTrans():
+
     def __init__(self):
 
         self.dim_n=4
@@ -33,6 +34,7 @@ class HydroTrans():
         sol=solve_ivp(dx_dt,t_interval, self.x, method='RK45', t_eval=None,rtol=1e-6, atol=1e-6, dense_output=False, events=None, vectorized=False)
         self.x=sol.y[...,-1]
         #return partial(self.dynamics, u=u)
+
     def dynamics(self,t,x,u):
         x1,x2,x3,x4=x
         u1,u2=u*1e-3
@@ -43,5 +45,6 @@ class HydroTrans():
         x4_d=((self.ig**2)*(self.ia**2)*self.eta_g*self.eta_mh*self.Vmaxp*1e-4*x2*x3-self.d_vc*(self.ia**2)*x4-self.TLw*self.ig*self.ia)/self.Jv
 
         return [x1_d,x2_d,x3_d,x4_d]
+
     def Read_sensor(self):
         return self.x
