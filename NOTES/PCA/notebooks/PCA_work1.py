@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.15.2
+#       jupytext_version: 1.16.2
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -15,7 +15,7 @@
 # %% [markdown]
 # <h1 style="text-align: center;">Principal component analysis</h1>
 
-# %% [markdown] heading_collapsed=true jp-MarkdownHeadingCollapsed=true
+# %% [markdown] heading_collapsed=true
 # # Teori singkat
 
 # %% [markdown] hidden=true
@@ -26,7 +26,6 @@
 # $$
 # x_{nd} = \mathbf{w}^{\mathrm{T}}_{d} \mathbf{y}_{n}
 # $$
-#
 
 # %% [markdown] hidden=true
 # Proses pembelajaran dalam hal ini adalah berapa dimensi $D$ dan memilih vektor proyeksi $\mathbf{w}_{d}$ untuk setiap dimensi.
@@ -118,7 +117,7 @@ matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
 
 # %%
 import matplotlib
-matplotlib.style.use("dark_background")
+matplotlib.style.use("default")
 matplotlib.rcParams.update({
     "axes.grid" : True,
     "grid.color" : "gray",
@@ -137,12 +136,26 @@ Y_2 = np.random.randn(20,2) + 5
 Y_3 = np.random.randn(20,2) - 5
 
 # %%
+plt.scatter(Y_1[:,0], Y_1[:,1]);
+plt.scatter(Y_2[:,0], Y_2[:,1]);
+plt.scatter(Y_3[:,0], Y_3[:,1]);
+
+# %% [markdown]
+# Indeks untuk "kelas" atau klaster:
+
+# %%
 idx_1 = range(0,20)
 idx_2 = range(20,40)
 idx_3 = range(40,60)
 
+# %% [markdown]
+# Gabung data dari tiga "klaster" sebelumnya menjadi satu data
+
 # %%
 Y = np.concatenate( (Y_1, Y_2, Y_3), axis=0 );
+
+# %%
+Y.shape
 
 # %%
 plt.clf()
@@ -151,11 +164,14 @@ plt.scatter(Y[idx_2,0], Y[idx_2,1], marker="s", color="green")
 plt.scatter(Y[idx_3,0], Y[idx_3,1], marker="o", color="red");
 
 # %% [markdown]
-# Add random dimensions:
+# Tambah data acak yang tidak memiliki pola tertentu (tidak ada klaster atau kelas tertentu)
 
 # %%
 Ndata = Y.shape[0]
 Y = np.concatenate( (Y, np.random.randn(Ndata,5)), axis=1 )
+
+# %% [markdown]
+# Data kita sekarang memiliki dimensi 7, dengan jumlah titik data 60:
 
 # %%
 Y.shape
@@ -170,6 +186,9 @@ dim2 = 3
 plt.scatter(Y[idx_1,dim1], Y[idx_1,dim2], marker="*", color="blue")
 plt.scatter(Y[idx_2,dim1], Y[idx_2,dim2], marker="s", color="green")
 plt.scatter(Y[idx_3,dim1], Y[idx_3,dim2], marker="o", color="red");
+
+# %% [markdown]
+# Tidak ada pola yang terlihat.
 
 # %%
 plt.clf()
@@ -188,6 +207,14 @@ plt.scatter(Y[idx_2,dim1], Y[idx_2,dim2], marker="s", color="green")
 plt.scatter(Y[idx_3,dim1], Y[idx_3,dim2], marker="o", color="red");
 
 # %%
+plt.clf()
+dim1 = 6 # idx start from 0
+dim2 = 0
+plt.scatter(Y[idx_1,dim1], Y[idx_1,dim2], marker="*", color="blue")
+plt.scatter(Y[idx_2,dim1], Y[idx_2,dim2], marker="s", color="green")
+plt.scatter(Y[idx_3,dim1], Y[idx_3,dim2], marker="o", color="red");
+
+# %%
 labels = np.concatenate( ([0]*20, [1]*20, [2]*20) )
 
 # %%
@@ -201,15 +228,8 @@ for i in range(3):
     plt.scatter(Y[idx,0], Y[idx,1], marker=markers[i])
 plt.grid()
 
-# %%
-plt.clf()
-markers = ["o", "s", "*"]
-for i in range(3):
-    idx = labels==i
-    plt.scatter(Y[idx,0], Y[idx,1], marker=markers[i])
-plt.gca().axis("square");
-
-# %%
+# %% [markdown]
+# ## Mulai melakukan PCA
 
 # %% [markdown]
 # Hitung rata-rata: $\bar{\mathbf{y}}$, gunakan metode `np.mean`.
@@ -238,6 +258,9 @@ np.mean(Yshifted,axis=0)
 # $$
 
 # %%
+Yshifted.shape
+
+# %%
 N = Yshifted.shape[0]
 
 # %%
@@ -252,11 +275,18 @@ C.shape
 # %% [markdown]
 # Alternatif:
 # ```python
-# C = np.matmul( Yshifted.transpose(), Yshifted )/N
+# C = np.matmul( Yshifted.transpose(), Yshifted ) / N
 # ```
+#
+
+# %% [markdown]
+# Matriks $\mathbf{C}$ ini bersifat simetrik:
 
 # %%
-C[1,2], C[2,1]
+plt.matshow(C)
+
+# %%
+C.T - C
 
 # %% [markdown]
 # Hitung pasangan eigen dari matriks kovariansi:
@@ -283,16 +313,22 @@ w_unsrt.shape
 # $$
 
 # %%
-C @ w_unsrt[:,2]
+C @ w_unsrt[:,1]
 
 # %%
-λ_unsrt[2] * w_unsrt[:,2]
+λ_unsrt[1] * w_unsrt[:,1]
 
 # %%
-np.dot(w_unsrt[:,6], w_unsrt[:,6])
+np.dot(w_unsrt[:,5], w_unsrt[:,5]) 
+
+# %%
+plt.matshow(w_unsrt.T @ w_unsrt);
 
 # %% [markdown]
 # (Lakukan sort jika perlu)
+
+# %% [markdown]
+# Urutkan dari besar ke kecil:
 
 # %%
 idx_sorted = np.argsort(λ_unsrt)[::-1]
@@ -354,15 +390,15 @@ plt.scatter(Yproj[idx_3,0], Yproj[idx_3,1], marker="o", color="red");
 plt.xlabel("1st proj dim")
 plt.ylabel("2nd proj dim");
 
-# %%
-plt.plot(Yproj_1, np.ones(Yproj_1.shape[0]), marker="o", lw=0)
-
 # %% [markdown]
 # Hanya memproyeksikan ke 1st proj dim (nilai eigen paling besar):
 
 # %%
 Yproj_1 = np.matmul(Y, w[:,0:1] )
 Yproj_1.shape
+
+# %%
+plt.plot(Yproj_1, np.ones(Yproj_1.shape[0]), marker="o", lw=0);
 
 # %%
 plt.plot(Yproj_1[idx_1], np.zeros(len(idx_1)), marker="*", color="blue", lw=0)
@@ -386,12 +422,16 @@ plt.grid()
 # Bagaimana jika data diproyeksi ke dimensi proyeksi ke-dua saja?
 
 # %%
+Yproj_2 = np.matmul(Y, w[:,2:4] )
+Yproj_2.shape
+
+# %%
 plt.clf()
 markers = ["o", "s", "*"]
 for i in range(3):
     idx = labels==i
     yplot = Yproj_2[idx]
-    plt.plot(yplot, np.ones(len(yplot)), marker=markers[i], lw=0)
+    plt.scatter(Yproj_2[idx,0], Yproj_2[idx,1], marker=markers[i], lw=0)
 plt.grid()
 
 # %% [markdown]
@@ -467,8 +507,6 @@ Y = np.concatenate( (Y, np.random.randn(Ndata,5)), axis=1 )
 # %%
 plt.clf()
 plt.scatter(Y[:,4], Y[:,5])
-
-# %%
 
 # %%
 ybar = np.mean(Y,axis=0)
