@@ -1,21 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
-plt.rcParams['figure.figsize'] = [12, 12]
-plt.rcParams.update({'font.size': 18})
+
+#plt.rcParams['figure.figsize'] = [12, 12]
+#plt.rcParams.update({'font.size': 18})
 
 
 n = 128
 L = 30
 dx = L/n
-x = np.arange(-L/2,L/2,dx,dtype='complex_')
+x = np.arange(-L/2, L/2, dx, dtype=np.complex128)
 f = np.cos(x) * np.exp(-np.power(x,2)/25) # Function
 df = -(np.sin(x) * np.exp(-np.power(x,2)/25) + (2/25)*x*f) # Derivative
 
 ## Approximate derivative using finite difference
-dfFD = np.zeros(len(df),dtype='complex_')
+dfFD = np.zeros(len(df), dtype=np.complex128)
 for kappa in range(len(df)-1):
     dfFD[kappa] = (f[kappa+1]-f[kappa])/dx
-    
+
 dfFD[-1] = dfFD[-2]
 
 ## Derivative using FFT (spectral derivative)
