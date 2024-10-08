@@ -1,0 +1,345 @@
+#LyX 2.4 created this file. For more info see https://www.lyx.org/
+\lyxformat 620
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children no
+\language american
+\language_package default
+\inputencoding utf8
+\fontencoding auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_roman_osf false
+\font_sans_osf false
+\font_typewriter_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement class
+\float_alignment class
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize a4
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_formatted_ref 0
+\use_minted 0
+\use_lineno 0
+\index Index
+\shortcut idx
+\color #008080
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip halfline
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tablestyle default
+\tracking_changes false
+\output_changes false
+\change_bars false
+\postpone_fragile_content true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\docbook_table_output 0
+\docbook_mathml_prefix 1
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+Transformasi Fourier
+\end_layout
+
+\begin_layout Standard
+Dari definisi deret Fourier untuk domain 
+\begin_inset Formula $x\in[-L,L)$
+\end_inset
+
+ dan 
+\begin_inset Formula $L\rightarrow\infty$
+\end_inset
+
+:
+ (periode adalah 
+\begin_inset Formula $2L$
+\end_inset
+
+)
+\begin_inset Formula 
+\[
+f(x)=\frac{a_{0}}{2}+\sum_{k=1}^{\infty}\left[a_{k}\cos\left(\frac{k\pi x}{L}\right)+b_{k}\sin\left(\frac{k\pi x}{L}\right)\right]=\sum_{k=-\infty}^{\infty}c_{k}\mathrm{e}^{\imath k\pi x/L}
+\]
+
+\end_inset
+
+dengan koefisien
+\begin_inset Formula 
+\[
+c_{k}=\frac{1}{2L}\left\langle \psi_{k},f(x)\right\rangle =\frac{1}{2L}\int_{-L}^{L}f(x)\ \mathrm{e}^{-ik\pi x/L}\ \mathrm{d}x
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Frekuensi dari eksponensial kompleks adalah diskrit:
+ 
+\begin_inset Formula $\omega_{k}=k\pi/L$
+\end_inset
+
+.
+ Pada limit 
+\begin_inset Formula $L\rightarrow\infty$
+\end_inset
+
+ frekuensi tersebut menjadi kontinu.
+ Dengan definisi 
+\begin_inset Formula $\omega=k\pi/L$
+\end_inset
+
+,
+ 
+\begin_inset Formula $\Delta\omega=\pi/L$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+f(x)=\lim_{\Delta\omega\rightarrow0}\sum_{k=-\infty}^{\infty}\frac{\Delta\omega}{2\pi}\underbrace{\int_{-\pi/\Delta\omega}^{\pi/\Delta\omega}f(\xi)\ \mathrm{e}^{-\imath k\Delta\omega\xi}\ \mathrm{d}\xi}_{\left\langle \psi_{k}(x),f(x)\right\rangle }\ \mathrm{e}^{\imath k\Delta\omega x}
+\]
+
+\end_inset
+
+Ekspresi 
+\begin_inset Formula $\left\langle \psi_{k}(x),f(x)\right\rangle $
+\end_inset
+
+ pada limit 
+\begin_inset Formula $L\rightarrow\infty$
+\end_inset
+
+ menjadi transformasi Fourier:
+\begin_inset Formula 
+\[
+\hat{f}(\omega)=\mathcal{F}\left[f(x)\right]=\int_{-\infty}^{\infty}f(x)\ \mathrm{e}^{-\imath\omega x}\ \mathrm{d}x
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Operasi inversnya adalah inverse transformasi Fourier:
+\begin_inset Formula 
+\[
+f(x)=\mathcal{F}^{-1}\left[\hat{f}(\omega)\right]=\frac{1}{2\pi}\int_{-\infty}^{\infty}\hat{f}(\omega)\ \mathrm{e}^{\imath\omega x}\ \mathrm{d}\omega
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Transformasi Fourier Diskrit
+\end_layout
+
+\begin_layout Standard
+Definisi:
+\begin_inset Formula 
+\[
+\hat{f}_{k}=\sum_{j=0}^{n-1}f_{j}\mathrm{e}^{-\imath2\pi jk/n}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f_{k}=\frac{1}{n}\sum_{j=0}^{n-1}\hat{f}_{j}\mathrm{e}^{i2\pi jk/n}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Turunan spektral
+\end_layout
+
+\begin_layout Standard
+Untuk turunan pertama:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathcal{F}\left[\frac{\mathrm{d}f}{\mathrm{d}x}\right]=\imath\omega\mathcal{F}\left[f\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Untuk turunan kedua:
+\begin_inset Formula 
+\[
+\mathcal{F}\left[\frac{\mathrm{d}^{2}f}{\mathrm{d}x^{2}}\right]=(\imath\omega)(\imath\omega)F\left[f\right]=-\omega^{2}F\left[f\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Penurunan:
+\begin_inset Formula 
+\begin{align*}
+\mathcal{F}\left[\frac{\mathrm{d}}{\mathrm{d}x}f(x)\right] & =\int_{-\infty}^{\infty}\overbrace{\frac{\mathrm{d}}{\mathrm{d}x}f(x)}^{\mathrm{d}v}\ \overbrace{\mathrm{e}^{-\imath\omega x}}^{u}\,\mathrm{d}x\\
+ & =\left[f(x)\ \mathrm{e}^{-\imath\omega x}\right]_{-\infty}^{\infty}-\int_{-\infty}^{\infty}f(x)\left[-\imath\omega\mathrm{e}^{-\imath\omega x}\right]\,\mathrm{d}x\\
+ & =\imath\omega\int_{-\infty}^{\infty}f(x)\ \mathrm{e}^{-\imath\omega x}\,\mathrm{d}x\\
+ & =\imath\omega\mathcal{F}\left[f(x)\right]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Aplikasi pada PDE
+\end_layout
+
+\begin_layout Standard
+Persamaan difusi atau konduksi kalor:
+\begin_inset Formula 
+\[
+\frac{\partial u}{\partial t}=\alpha^{2}\frac{\partial^{2}u}{\partial x^{2}}
+\]
+
+\end_inset
+
+Dengan menggunakan transformasi Fourier pada variabel spasial 
+\begin_inset Formula $x$
+\end_inset
+
+ menjadi frekuensi 
+\begin_inset Formula $\omega$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\mathcal{F}\left[u(t,x)\right]=\hat{u}(t,\omega)
+\]
+
+\end_inset
+
+persamaan diferensial parsial ini menjadi:
+\begin_inset Formula 
+\[
+\frac{\partial\hat{u}}{\partial t}=-\alpha^{2}\omega^{2}\hat{u}
+\]
+
+\end_inset
+
+yang merupakan persamaan diferensial biasa.
+\end_layout
+
+\begin_layout Standard
+Diberikan syarat awal 
+\begin_inset Formula $u(t=0,x)=u_{0}(x)$
+\end_inset
+
+ yang telah terdiskritisasi:
+ 
+\begin_inset Formula $u_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Transformasi ke domain frekuensi 
+\begin_inset Formula $\omega_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dapatkan solusi untuk waktu selanjutnya dengan ukuran langkah 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+ dengan menyelesaikan ODE.
+ Ini dilakukan untuk seluruh komponen frekuensi yang digunakan.
+\end_layout
+
+\begin_layout Standard
+w
+\end_layout
+
+\begin_layout Standard
+w
+\end_layout
+
+\begin_layout Standard
+w
+\end_layout
+
+\begin_layout Standard
+w
+\end_layout
+
+\end_body
+\end_document
