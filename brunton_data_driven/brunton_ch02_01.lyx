@@ -88,7 +88,43 @@
 
 \begin_body
 
+\begin_layout Subsection*
+Deret Fourier
+\end_layout
+
 \begin_layout Standard
+Untuk fungsi periodik pada 
+\begin_inset Formula $[0,L)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+f(x)=\frac{a_{0}}{2}+\sum_{k=1}^{\infty}\left(a_{k}\cos\left(\frac{2\pi kx}{L}\right)+b_{k}\sin\left(\frac{2\pi kx}{L}\right)\right)
+\]
+
+\end_inset
+
+dengan koefisien:
+\begin_inset Formula 
+\[
+a_{k}=\frac{2}{L}\int_{0}^{L}f(x)\cos\left(\frac{2\pi kx}{L}\right)\ \mathrm{d}x
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+b_{k}=\frac{2}{L}\int_{0}^{L}f(x)\sin\left(\frac{2\pi kx}{L}\right)\ \mathrm{d}x
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
 Transformasi Fourier
 \end_layout
 
@@ -185,7 +221,7 @@ f(x)=\mathcal{F}^{-1}\left[\hat{f}(\omega)\right]=\frac{1}{2\pi}\int_{-\infty}^{
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsection*
 Transformasi Fourier Diskrit
 \end_layout
 
