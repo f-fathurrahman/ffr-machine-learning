@@ -16,15 +16,27 @@
 # # Chapter: Control Charts for Statistical Process Control
 #
 #
-# # Topic: EWMA Control Chart
+# ## Topic: EWMA Control Chart
 
 # %%
 # import required packages
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({'font.size': 12})
-np.random.seed(10)
+# %%
+import matplotlib_inline
+matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
+
+import matplotlib
+matplotlib.style.use("dark_background")
+matplotlib.rcParams.update({
+    "axes.grid" : True,
+    "grid.color": "gray",
+    "font.size": 12
+})
+
+# %%
+np.random.seed(1234)
 
 # %%
 # generate data
@@ -42,12 +54,10 @@ x = np.hstack((x0,x1))
 # %%
 # plots
 plt.figure(figsize=(10,3))
-plt.plot(x0,'--',marker='o', markersize=4, color='teal')
-plt.grid()
+plt.plot(x0,'--',marker='o', markersize=4)
 
 plt.figure(figsize=(12.5,3))
-plt.plot(x,'--',marker='o', markersize=4, color='teal')
-plt.grid()
+plt.plot(x,'--',marker='o', markersize=4)
 plt.show()
 
 # %%
@@ -64,10 +74,11 @@ for i in range(1,len(x)):
     z[i] = smoothFactor*x[i] + (1-smoothFactor)*z[i-1]
 
 plt.figure(figsize=(10,3))
-plt.plot(z,'--',marker='o', markersize=4, color='teal')
-plt.plot([1,len(x)],[LCL,LCL], color='red'), plt.plot([1,len(x)],[UCL,UCL], color='red')
-plt.plot([1,len(x)],[mu,mu], '--', color='maroon')
-plt.xlabel('sample #'), plt.ylabel('EWMA Statistic')
-plt.grid()
+plt.plot(z,'--',marker='o', markersize=4)
+plt.plot([1,len(x)],[LCL,LCL])
+plt.plot([1,len(x)],[UCL,UCL])
+plt.plot([1,len(x)],[mu,mu], '--')
+plt.xlabel('sample #')
+plt.ylabel('EWMA Statistic')
 
 plt.show()

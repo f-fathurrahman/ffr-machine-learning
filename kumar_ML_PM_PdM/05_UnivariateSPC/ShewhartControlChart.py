@@ -23,7 +23,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({'font.size': 12})
+# %%
+import matplotlib_inline
+matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
+
+import matplotlib
+matplotlib.style.use("dark_background")
+matplotlib.rcParams.update({
+    "axes.grid" : True,
+    "grid.color": "gray",
+    "font.size": 12
+})
+
+# %%
 np.random.seed(10)
 
 # %%
@@ -46,20 +58,20 @@ mu, sigma = np.mean(x0), np.std(x0)
 UCL, LCL = mu + 3*sigma, mu - 3*sigma
 
 plt.figure(figsize=(10,3))
-plt.plot(x0,'--',marker='o', markersize=4, color='teal')
-plt.plot([1,len(x0)],[UCL,UCL], color='red'), plt.plot([1,len(x0)],[LCL,LCL], color='red')
-plt.plot([1,len(x0)],[mu,mu], '--', color='maroon')
-plt.xlabel('sample #'), plt.ylabel('x')
-plt.grid()
+plt.plot(x0,'--',marker='o', markersize=4)
+plt.plot([1,len(x0)],[UCL,UCL])
+plt.plot([1,len(x0)],[LCL,LCL])
+plt.plot([1,len(x0)],[mu,mu], '--')
+plt.xlabel('sample #')
+plt.ylabel('x')
 plt.show()
 
 # %%
 # control chart for combined data
 plt.figure(figsize=(10,3))
-plt.plot(x,'--',marker='o', markersize=4, color='teal')
-plt.plot([1,len(x)],[UCL,UCL], color='red')
-plt.plot([1,len(x)],[LCL,LCL], color='red')
-plt.plot([1,len(x)],[mu,mu], '--', color='maroon')
+plt.plot(x,'--',marker='o', markersize=4)
+plt.plot([1,len(x)],[UCL,UCL])
+plt.plot([1,len(x)],[LCL,LCL])
+plt.plot([1,len(x)],[mu,mu], '--')
 plt.xlabel('sample #'), plt.ylabel('x')
-plt.grid()
 plt.show()

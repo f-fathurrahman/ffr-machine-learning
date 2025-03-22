@@ -19,11 +19,22 @@
 # # Topic: CUSUM Introduction
 
 # %%
-# import required packages
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({'font.size': 12})
+# %%
+import matplotlib_inline
+matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
+
+import matplotlib
+matplotlib.style.use("dark_background")
+matplotlib.rcParams.update({
+    "axes.grid" : True,
+    "grid.color": "gray",
+    "font.size": 12
+})
+
+# %%
 np.random.seed(10)
 
 # %%
@@ -42,12 +53,10 @@ x = np.hstack((x0,x1))
 # %%
 # plots
 plt.figure(figsize=(10,3))
-plt.plot(x0,'--',marker='o', markersize=4, color='teal')
-plt.grid()
+plt.plot(x0,'--',marker='o', markersize=4)
 
 plt.figure(figsize=(12.5,3))
-plt.plot(x,'--',marker='o', markersize=4, color='teal')
-plt.grid()
+plt.plot(x,'--',marker='o', markersize=4)
 plt.show()
 
 # %%
@@ -56,15 +65,11 @@ mu = np.mean(x0)
 
 S = np.zeros((len(x),))
 S[0] = 0
-
-
 for i in range(1,len(S)):
     S[i] = (x[i]-mu) + S[i-1]
 
-
 plt.figure(figsize=(10,3))
-plt.plot(S,'--',marker='o', markersize=4, color='teal')
-plt.plot([1,len(S)],[0,0], '--', color='maroon')
+plt.plot(S,'--',marker='o', markersize=4)
+plt.plot([1,len(S)],[0,0], '--')
 plt.xlabel('sample #'), plt.ylabel('CUSUM Statistic')
-plt.grid()
 plt.show()

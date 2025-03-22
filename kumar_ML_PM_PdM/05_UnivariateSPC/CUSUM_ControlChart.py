@@ -23,16 +23,27 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({'font.size': 12})
-np.random.seed(10)
+# %%
+import matplotlib_inline
+matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
+
+import matplotlib
+matplotlib.style.use("dark_background")
+matplotlib.rcParams.update({
+    "axes.grid" : True,
+    "grid.color": "gray",
+    "font.size": 12
+})
 
 # %%
+np.random.seed(10)
+
 # generate data
 # NOC data
 N = 250
 x0 = np.random.normal(loc=10, scale=2, size=N)
 
-# faulty data
+# faulty data (different mean)
 N = 50
 x1 = np.random.normal(loc=11, scale=2, size=N)
 
@@ -40,14 +51,15 @@ x1 = np.random.normal(loc=11, scale=2, size=N)
 x = np.hstack((x0,x1))
 
 # %%
+x.shape
+
+# %%
 # plots
 plt.figure(figsize=(10,3))
-plt.plot(x0,'--',marker='o', markersize=4, color='teal')
-plt.grid()
+plt.plot(x0, '--', marker='o', markersize=4)
 
 plt.figure(figsize=(12.5,3))
-plt.plot(x,'--',marker='o', markersize=4, color='teal')
-plt.grid()
+plt.plot(x, '--', marker='o', markersize=4)
 plt.show()
 
 # %%
@@ -67,11 +79,11 @@ for i in range(1,len(x)):
     S_negative[i] = np.max([0, (mu-k)-x[i] + S_negative[i-1]])
 
 plt.figure(figsize=(10,3))
-plt.plot(S_positive,'--',marker='o', markersize=4, color='teal', label='S+')
-plt.plot(S_negative,'--',marker='*', markersize=4, color='steelblue', label='S-')
+plt.plot(S_positive,'--',marker='o', markersize=4, label='S+')
+plt.plot(S_negative,'--',marker='*', markersize=4, label='S-')
 plt.plot([1,len(x)],[H,H], color='red')
-plt.plot([1,len(x)],[0,0], '--', color='maroon')
-plt.xlabel('sample #'), plt.ylabel('CUSUM Statistic')
-plt.grid()
+plt.plot([1,len(x)],[0,0], '--')
+plt.xlabel('sample #')
+plt.ylabel('CUSUM Statistic')
 plt.legend()
 plt.show()
