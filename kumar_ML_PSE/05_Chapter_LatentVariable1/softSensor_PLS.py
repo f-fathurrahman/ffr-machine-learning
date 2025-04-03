@@ -5,9 +5,9 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.16.4
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -65,7 +65,7 @@ y_train_normal = y_scaler.fit_transform(y_train)
 y_test_normal = y_scaler.transform(y_test)
 
 # %%
-#%% Finding # latents using kFold cross validation
+# %% Finding # latents using kFold cross validation
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
 from sklearn.cross_decomposition import PLSRegression

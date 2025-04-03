@@ -5,9 +5,9 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.16.4
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -16,50 +16,71 @@
 # # Chapter: Dimension Reduction and Latent Variable Methods (Part 1)
 #
 #
-# # Topic: Process Monitoring using PCA
+# ## Topic: Process Monitoring using PCA
 
 # %%
-##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-##                          train PCA model
-## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# %%
-# import required packages
 import numpy as np
 import pandas as pd
+
+# %%
+import matplotlib.pyplot as plt
+
+# %%
+import matplotlib_inline
+matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
+
+# %%
+import matplotlib
+matplotlib.style.use("dark_background")
+matplotlib.rcParams.update({
+    "axes.grid": True,
+    "grid.color": "gray"
+})
+
+# %%
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
-# %%
-# fetch data
-data = pd.read_excel('proc1a.xls', skiprows = 1,usecols = 'C:AI')
+# %% [markdown]
+# Load data:
 
+# %%
+data = pd.read_excel('proc1a.xls', skiprows=1, usecols='C:AI')
+
+# %%
+data.head()
+
+# %%
 # separate train data
 data_train = data.iloc[0:69,]
-           
+
+# %%
 # scale data
 scaler = StandardScaler()
 data_train_normal = scaler.fit_transform(data_train)
-           
+
+# %%
 # PCA
 pca = PCA()
 score_train = pca.fit_transform(data_train_normal)
 
+# %%
 # decide # of PCs to retain and compute reduced data in PC space
 explained_variance = 100*pca.explained_variance_ratio_ # in percentage
 cum_explained_variance = np.cumsum(explained_variance) # cumulative % variance explained
 
+# %%
 n_comp = np.argmax(cum_explained_variance >= 90) + 1
-score_train_reduced = score_train[:,0:n_comp]
-
 print('Number of PCs cumulatively explaining atleast 90% variance: ', n_comp)
+
+# %%
+score_train_reduced = score_train[:,0:n_comp]
 
 # %%
 # reconstruct original data
 V_matrix = pca.components_.T
 P_matrix = V_matrix[:,0:n_comp] 
-
 data_train_normal_reconstruct = np.dot(score_train_reduced, P_matrix.T)
 
 # %%
@@ -99,7 +120,7 @@ z_alpha = scipy.stats.norm.ppf(1-alpha)
 Q_CL = theta1*(z_alpha*np.sqrt(2*theta2*h0**2)/theta1+ 1 + theta2*h0*(1-h0)/theta1**2)**2 
 
 # %%
-#%% Q_train plot with CL
+# %% Q_train plot with CL
 plt.figure()
 plt.plot(Q_train)
 plt.plot([1,len(Q_train)],[Q_CL,Q_CL], color='red')
@@ -107,7 +128,7 @@ plt.xlabel('Sample #')
 plt.ylabel('Q for training data')
 plt.show()
 
-#%% T2_train plot with CL
+# %% T2_train plot with CL
 plt.figure()
 plt.plot(T2_train)
 plt.plot([1,len(T2_train)],[T2_CL,T2_CL], color='red')
@@ -115,10 +136,8 @@ plt.xlabel('Sample #')
 plt.ylabel('T$^2$ for training data')
 plt.show()
 
-# %%
-##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-##                          test data
-## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %% [markdown]
+# ## Test data
 
 # %%
 # get test data, normalize it
@@ -165,10 +184,8 @@ plt.xlabel('Sample #')
 plt.ylabel('Q for training and test data')
 plt.show()
 
-# %%
-##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-##                          fault diagnosis by contribution plots
-## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %% [markdown]
+# ## Fault diagnosis by contribution plots
 
 # %%
 # T2 contribution
@@ -176,7 +193,7 @@ sample = 85 - 69
 data_point = np.transpose(data_test_normal[sample-1,])
 
 D = np.dot(np.dot(P_matrix,lambda_k_inv),P_matrix.T)
-T2_contri = np.dot(scipy.linalg.sqrtm(D),data_point)**2 # vector of contributions
+T2_contri = np.dot(scipy.linalg.sqrtm(D), data_point)**2 # vector of contributions
 
 plt.figure()
 plt.plot(T2_contri)

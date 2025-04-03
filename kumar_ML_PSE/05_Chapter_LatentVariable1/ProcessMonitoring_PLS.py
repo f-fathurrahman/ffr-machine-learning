@@ -5,9 +5,9 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.16.4
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -18,20 +18,28 @@
 #
 # # Topic: Process Monitoring using PLS
 
-# %%
-##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-##                          train PLS model
-## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %% [markdown]
+# ## Train PLS model
 
 # %%
-# import required packages
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
 # %%
+import matplotlib_inline
+matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
+
+import matplotlib
+matplotlib.style.use("dark_background")
+matplotlib.rcParams.update({
+    "axes.grid": True,
+    "grid.color": "gray"
+})
+
+# %%
 # fetch data
-data = pd.read_csv('LDPE.csv', usecols = range(1,20)).values
+data = pd.read_csv('../datasets/LDPE.csv', usecols = range(1,20)).values
 data_train = data[:-4,:] # exclude last 4 samples
 
 # plot quality variables
@@ -157,10 +165,8 @@ plt.xlabel('Sample #')
 plt.ylabel('SPEy for training data')
 plt.show()
 
-# %%
-##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-##                          fault detection on complete data
-## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %% [markdown]
+# ## Fault detection on complete data
 
 # %%
 # get test data, normalize it
