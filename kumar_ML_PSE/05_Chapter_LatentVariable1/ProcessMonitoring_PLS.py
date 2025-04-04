@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.16.4
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -39,7 +39,7 @@ matplotlib.rcParams.update({
 
 # %%
 # fetch data
-data = pd.read_csv('../datasets/LDPE.csv', usecols = range(1,20)).values
+data = pd.read_csv('LDPE.csv', usecols = range(1,20)).values
 data_train = data[:-4,:] # exclude last 4 samples
 
 # plot quality variables

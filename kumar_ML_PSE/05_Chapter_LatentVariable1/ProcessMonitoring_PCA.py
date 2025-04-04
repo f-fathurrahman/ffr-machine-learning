@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.16.4
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -29,7 +29,6 @@ import matplotlib.pyplot as plt
 import matplotlib_inline
 matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
 
-# %%
 import matplotlib
 matplotlib.style.use("dark_background")
 matplotlib.rcParams.update({
@@ -40,10 +39,9 @@ matplotlib.rcParams.update({
 # %%
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
 
 # %% [markdown]
-# Load data:
+# Load data (we might need to install `xlrd`): 
 
 # %%
 data = pd.read_excel('proc1a.xls', skiprows=1, usecols='C:AI')
@@ -119,7 +117,6 @@ h0 = 1-2*theta1*theta3/(3*theta2**2)
 z_alpha = scipy.stats.norm.ppf(1-alpha)
 Q_CL = theta1*(z_alpha*np.sqrt(2*theta2*h0**2)/theta1+ 1 + theta2*h0*(1-h0)/theta1**2)**2 
 
-# %%
 # %% Q_train plot with CL
 plt.figure()
 plt.plot(Q_train)
@@ -186,6 +183,9 @@ plt.show()
 
 # %% [markdown]
 # ## Fault diagnosis by contribution plots
+
+# %% [markdown]
+# TODO: Need to convert complex to real
 
 # %%
 # T2 contribution
