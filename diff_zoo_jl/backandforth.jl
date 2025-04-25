@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+Pkg.activate("AUTODIFF", shared=true)
+
 # Forward- and Reverse-Mode Differentiation
 # =========================================
 
@@ -75,8 +78,8 @@ Wengert(y)
 # derivatives for both? Do we have to do the whole thing twice over?
 
 y = quote
-  y2 = sin(x^2)
-  y3 = y2 * 5
+    y2 = sin(x^2)
+    y3 = y2 * 5
 end
 
 # Let's say we want both of the derivatives $\frac{dy_2}{dx}$ and
@@ -100,7 +103,7 @@ derive(Wengert(y), :x)
 # $b$, where we'd like to get $\frac{dy}{da}$ and $\frac{dy}{db}$.
 
 y = :(sin(a) * b)
-#-
+
 Wengert(y)
 
 # This one is a bit tougher. We can start the forward-mode differentiation
@@ -144,21 +147,21 @@ y = f(x)
 #
 # $$
 # \begin{align}
-# \frac{dy_1}{dx_1} &= \frac{d}{dx_1} x_1 \times x_2 = x_2 \\
-# \frac{dy_1}{dx_2} &= \frac{d}{dx_2} x_1 \times x_2 = x_1 \\
-# \frac{dy_2}{dx_1} &= \frac{d}{dx_1} \cos(x_1) = -\sin(x_1) \\
-# \frac{dy_2}{dx_2} &= \frac{d}{dx_2} \cos(x_1) = 0 \\
+# \frac{\mathrm{d}y_1}{\mathrm{d}x_1} &= \frac{\mathrm{d}}{\mathrm{d}x_1} x_1 \times x_2 = x_2 \\
+# \frac{\mathrm{d}y_1}{\mathrm{d}x_2} &= \frac{\mathrm{d}}{\mathrm{d}x_2} x_1 \times x_2 = x_1 \\
+# \frac{\mathrm{d}y_2}{\mathrm{d}x_1} &= \frac{\mathrm{d}}{\mathrm{d}x_1} \cos(x_1) = -\sin(x_1) \\
+# \frac{\mathrm{d}y_2}{\mathrm{d}x_2} &= \frac{\mathrm{d}}{\mathrm{d}x_2} \cos(x_1) = 0 \\
 # \end{align}
 # $$
 #
 # It's a little easier if we organise all of these derivatives into a matrix.
 #
 # $$
-# J_{ij} = \frac{dy_i}{dx_j}
+# J_{ij} = \frac{\mathrm{d}y_i}{\mathrm{d}x_j}
 # $$
 #
 # This $2\times2$ matrix is called the *Jacobian*, and in general it's what we mean by
-# $\frac{dy}{dx}$. (The Jacobian for a scalar function like $y = \sin(x)$ only
+# $\frac{\mathrm{d}y}{\mathrm{d}x}$. (The Jacobian for a scalar function like $y = \sin(x)$ only
 # has one element, so it's consistent with our current idea of the derivative
 # $\frac{dy}{dx}$.) The key point here is that the Jacobian is a potentially
 # large object: it has a size `length(y) * length(x)`. Now, we discussed that
