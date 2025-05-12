@@ -8,4 +8,4 @@ matplotlib.rcParams.update({
     "grid.color": "gray"
 })
 
-
+pd.options.mode.chained_assignment = None
