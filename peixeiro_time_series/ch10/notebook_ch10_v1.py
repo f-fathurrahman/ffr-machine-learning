@@ -58,7 +58,7 @@ ax2.plot(macro_econ_data['realcons'])
 ax2.set_xlabel('Date')
 ax2.set_ylabel('Real consumption (k$)')
 ax2.set_title('realcons')
-ax2.spines['top'].set_alpha(0)
+ax2.spines['top'].set_alpha(0) # make top spine transparent
 
 plt.xticks(np.arange(0, 208, 16), np.arange(1959, 2010, 4))
 
@@ -162,12 +162,7 @@ best_model_fit.plot_diagnostics(figsize=(10,8), variable=1);
 realgdp_residuals = best_model_fit.resid['realdpi']
 
 res = acorr_ljungbox(realgdp_residuals, np.arange(1, 11, 1))
-
-# %%
 res
-
-# %%
-type(res)
 
 # %%
 realcons_residuals = best_model_fit.resid['realcons']
@@ -176,7 +171,12 @@ res
 
 
 # %%
-def rolling_forecast(df: pd.DataFrame, train_len: int, horizon: int, window: int, method: str) -> list:
+def rolling_forecast(
+    df: pd.DataFrame,
+    train_len: int,
+    horizon: int,
+    window: int,
+    method: str) -> list:
     
     total_len = train_len + horizon
     end_idx = train_len
@@ -219,7 +219,7 @@ TRAIN_LEN = len(train)
 HORIZON = len(test)
 WINDOW = 4
 
-realdpi_pred_VAR, realcons_pred_VAR = recursive_forecast(endog_diff, TRAIN_LEN, HORIZON, WINDOW, 'VAR')
+realdpi_pred_VAR, realcons_pred_VAR = rolling_forecast(endog_diff, TRAIN_LEN, HORIZON, WINDOW, 'VAR')
 
 # %%
 test = endog[163:]
@@ -233,7 +233,7 @@ test['realcons_pred_VAR'] = endog.iloc[162]['realcons'] + np.cumsum(realcons_pre
 test
 
 # %%
-realdpi_pred_last, realcons_pred_last = recursive_forecast(endog, TRAIN_LEN, HORIZON, WINDOW, 'last')
+realdpi_pred_last, realcons_pred_last = rolling_forecast(endog, TRAIN_LEN, HORIZON, WINDOW, 'last')
 
 test['realdpi_pred_last'] = realdpi_pred_last
 test['realcons_pred_last'] = realcons_pred_last
@@ -244,8 +244,8 @@ test
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(10,8))
 
 ax1.plot(macro_econ_data['realdpi'])
-ax1.plot(test['realdpi_pred_VAR'], 'k--', label='VAR')
-ax1.plot(test['realdpi_pred_last'], 'r:', label='last')
+ax1.plot(test['realdpi_pred_VAR'], '--', label='VAR')
+ax1.plot(test['realdpi_pred_last'], ':', label='last')
 ax1.set_xlabel('Date')
 ax1.set_ylabel('Real disposable income ($))')
 ax1.set_title('realdpi')
@@ -255,8 +255,8 @@ ax1.set_xlim(100, 202)
 ax1.legend(loc=2)
 
 ax2.plot(macro_econ_data['realcons'])
-ax2.plot(test['realcons_pred_VAR'], 'k--', label='VAR')
-ax2.plot(test['realcons_pred_last'], 'r:', label='last')
+ax2.plot(test['realcons_pred_VAR'], '--', label='VAR')
+ax2.plot(test['realcons_pred_last'], ':', label='last')
 ax2.set_xlabel('Date')
 ax2.set_ylabel('Real consumption (k$)')
 ax2.set_title('realcons')
@@ -270,8 +270,6 @@ plt.xlim(100, 202)
 
 fig.autofmt_xdate()
 plt.tight_layout()
-
-plt.savefig('figures/CH10_F06_peixeiro.png', dpi=300)
 
 
 # %%
@@ -287,7 +285,7 @@ mape_realcons_VAR = mape(test['realcons'], test['realcons_pred_VAR'])
 mape_realcons_last = mape(test['realcons'], test['realcons_pred_last'])
 
 # %%
-fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(10,6))
+fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(5,5))
 
 x = ['last', 'VAR']
 y1 = [mape_realdpi_last, mape_realdpi_VAR]
