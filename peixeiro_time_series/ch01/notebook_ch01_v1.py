@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.16.4
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -24,12 +24,14 @@ from statsmodels.tsa.seasonal import seasonal_decompose, STL
 import matplotlib_inline
 matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
 
-import matplotlib
-matplotlib.style.use("dark_background")
-matplotlib.rcParams.update({
-    "axes.grid" : True,
-    "grid.color": "gray"
-})
+matplotlib.style.use("default")
+
+#import matplotlib
+#matplotlib.style.use("dark_background")
+#matplotlib.rcParams.update({
+#    "axes.grid" : True,
+#    "grid.color": "gray"
+#})
 
 # %%
 df = pd.read_csv('../data/jj.csv')

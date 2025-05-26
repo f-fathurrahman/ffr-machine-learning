@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.16.4
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -21,12 +21,12 @@ import matplotlib.pyplot as plt
 import matplotlib_inline
 matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
 
-import matplotlib
-matplotlib.style.use("dark_background")
-matplotlib.rcParams.update({
-    "axes.grid" : True,
-    "grid.color": "gray"
-})
+#import matplotlib
+#matplotlib.style.use("dark_background")
+#matplotlib.rcParams.update({
+#    "axes.grid" : True,
+#    "grid.color": "gray"
+#})
 
 # %%
 pd.options.mode.chained_assignment = None
@@ -72,6 +72,9 @@ historical_mean
 test.loc[:, 'pred_mean'] = historical_mean
 test
 
+
+# %% [markdown]
+# Mean absolute percentage error
 
 # %%
 def mape(y_true, y_pred):

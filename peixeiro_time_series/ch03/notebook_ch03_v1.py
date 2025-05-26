@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.16.4
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -25,11 +25,11 @@ import matplotlib_inline
 matplotlib_inline.backend_inline.set_matplotlib_formats("svg")
 
 import matplotlib
-matplotlib.style.use("dark_background")
-matplotlib.rcParams.update({
-    "axes.grid" : True,
-    "grid.color": "gray"
-})
+#matplotlib.style.use("dark_background")
+#matplotlib.rcParams.update({
+#    "axes.grid" : True,
+#    "grid.color": "gray"
+#})
 
 # %%
 pd.options.mode.chained_assignment = None
@@ -63,6 +63,15 @@ np.random.seed(42)
 steps = np.random.standard_normal(1000)
 steps[0] = 0.0
 random_walk = np.cumsum(steps)
+
+# %%
+steps[:5]
+
+# %%
+random_walk[:5]
+
+# %%
+plt.plot(steps)
 
 # %%
 fig, ax = plt.subplots(figsize=(6,3))
@@ -209,6 +218,15 @@ GOOGL_diff_ADF_result = adfuller(diff_close)
 
 print(f'ADF Statistic: {GOOGL_diff_ADF_result[0]}')
 print(f'p-value: {GOOGL_diff_ADF_result[1]}')
+
+# %%
+plt.plot(diff_close)
+
+# %%
+fig, ax = plt.subplots(figsize=(6,3))
+plot_acf(df['Close'], lags=20, ax=ax);
+plt.ylim(-1.1, 1.1)
+plt.tight_layout()
 
 # %%
 fig, ax = plt.subplots(figsize=(6,3))
