@@ -1,0 +1,9 @@
+{
+  "files.exclude": {
+    "ORIG_*": true,
+    "LOG_*": true,
+ }
+}
+
+
+
